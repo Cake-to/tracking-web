@@ -537,6 +537,8 @@ body{letter-spacing:-.005em}
 .qnew{display:block;margin:8px auto 0}
 .track-a{display:flex;flex-direction:column;align-items:flex-end}
 .track-h .track-a .link{padding:3px 0 3px 8px}
+.kinds .kind[aria-pressed="true"]{background:var(--sel)!important;color:var(--sel-ink)}
+.kinds .kind:disabled{opacity:.38}
 .cat-x{font:inherit;font-weight:700;color:var(--a);margin-left:3px}
 /* véu único do fundo, controlado em Aparência → Fundo (0 a 80%) */
 #bg::after,#bg.img::after,#bg.live::after{display:block;z-index:1;transition:background .4s;background:linear-gradient(180deg,rgba(7,9,13,calc(var(--dim,.5) * .72 + var(--dx,0))) 0%,rgba(7,9,13,calc(var(--dim,.5) * .9 + var(--dx,0))) 45%,rgba(7,9,13,calc(var(--dim,.5) * 1.05 + var(--dx,0))) 80%,rgba(7,9,13,calc(var(--dim,.5) * .9 + .25 + var(--dx,0))) 100%)}
@@ -1089,7 +1091,7 @@ html[data-motion=sutil] .rw{transition-duration:.12s,.2s}
 
 <div id="layer"></div>
 
-<script>/* ota-guard: se uma versão nova não abrir em 12 s, volta para a anterior */window.WEB_BUILD=11;window.WEB_DATE="2026-11-26T16:56:00-03:00";(function(){try{var C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform())return;var pend=localStorage.getItem("ota.pending");if(pend!==String(window.WEB_BUILD))return;
+<script>/* ota-guard: se uma versão nova não abrir em 12 s, volta para a anterior */window.WEB_BUILD=12;window.WEB_DATE="2026-11-26T17:07:00-03:00";(function(){try{var C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform())return;var pend=localStorage.getItem("ota.pending");if(pend!==String(window.WEB_BUILD))return;
 setTimeout(function(){if(window.__appOk)return;try{localStorage.setItem("ota.bad",pend);localStorage.removeItem("ota.pending");var prev=localStorage.getItem("ota.prev")||"public",W=C.Plugins.WebView;if(prev==="public")W.setServerAssetPath({path:"public"});else W.setServerBasePath({path:prev});}catch(e){}},12000);}catch(e){}})();</script>
 <script>
 (function(){
@@ -2297,6 +2299,7 @@ function moreHTML(){
     <p class="hint">O som sai no volume de mídia do celular. Para silenciar, abaixe a mídia ou desligue aqui.</p></section></details>
   </div></div>
   <div class="setg"><h2 class="setg-h">Tasks e metas</h2><div class="setg-l">
+  ${smartHTML()}${widgetHTML()}
   <details class="dd acc"><summary><span>Tasks</span></summary><section class="sec">${S.quests.filter(q=>q.status==="active"&&q.type==="main"&&!q.archived).map(q=>{const off=q.goals.filter(g=>g.off).length;return `<div class="log" style="--a:${AREAS[q.area].color}"><div class="d"><b>${esc(q.title)}</b><span>${q.goals.length-off} ativas${off?" · "+off+" desativadas":""}</span></div><button class="btn sm" data-mgr="${q.id}">Editar tasks</button></div>`}).join("")}</section></details>
   <details class="dd acc"><summary><span>Conexões e bônus</span></summary><section class="sec"><p class="hint">Depois de um registro, o app sugere o próximo passo. Fazendo dentro do prazo, ganha XP bônus.</p>
     ${LINKS.map(k=>{const on=!((S.linksOff||[]).includes(k.id));return `<div class="log"><div class="qicon">${IC[k.to.ic]||IC.zap}</div><div class="d"><b>${esc(k.fl)} → ${esc(k.to.l)}</b><span>em até ${k.min>=60?(k.min/60)+" h":k.min+" min"} · +${k.xp} XP</span></div><button class="btn sm${on?" gold":" ghost"}" data-linkt="${esc(k.id)}" aria-pressed="${on}">${on?"Ligada":"Desligada"}</button></div>`;}).join("")}</section></details>
@@ -2542,9 +2545,7 @@ function doOpt(c,o){if(!o)return;BUMP=c.id;S.catLast=Object.assign({},S.catLast,
   const kind=optKind(c,o);
   if(kind==="stat"){saveState();closeSheet();logSheet("stat",o.statId||(S.stats[0]&&S.stats[0].id));return;}
   if(o.ask){askValue(c,o);saveState();return;}
-  const l={kind,sub:o.sub||undefined,note:""};if(o.sub&&KINDS[kind]&&(KINDS[kind].custom||!(KINDS[kind].subs||{})[o.sub]))l.label=o.l;
-  if(kind==="dinheiro"){l.value=o.sub==="retirei"?-Math.abs(+o.value||0):Math.abs(+o.value||0);}
-  if(kind==="estudo")l.value=+o.value||0;
+  const l=optLog(c,o);
   const r0=rwSnap(c);saveState();RWQ=rwOn();addLog(l);RWQ=false;reward(c,o,l,r0);}
 let LASTLOG=null;
 function undoToast(c,o){return;const ls=allLogs();LASTLOG=ls.length?ls.reduce((m,l)=>!m||l.t>m.t?l:m,null):null;setTimeout(()=>{const t=document.querySelector(".toast .tx");if(t&&LASTLOG&&!t.querySelector("[data-undo]"))t.insertAdjacentHTML("beforeend",`<div class="tundo"><span>${esc(c.name)} · ${esc(o.l)}</span><button class="link" data-undo="${LASTLOG.id}">Desfazer</button></div>`);},30);}
@@ -2769,6 +2770,80 @@ async function otaConfirm(){window.__appOk=true;if(!IS_NATIVE())return;const pen
   localStorage.setItem("ota.when",new Date().toISOString());
   setTimeout(()=>toast(`↻ <b>App atualizado</b> · ${esc(localStorage.getItem("ota.label")||"")}`),900);
   try{const ls=await P.Filesystem.readdir({path:"ota",directory:"DATA"});for(const f of ls.files||[]){const n=typeof f==="string"?f:f.name;if(n!=="b"+WEB_BUILD)await P.Filesystem.rmdir({path:"ota/"+n,directory:"DATA",recursive:true}).catch(()=>{});}}catch(e){}}
+/* ---------- Lembretes inteligentes: só avisam quando você está ficando para trás ---------- */
+const SMART_SETS={leve:{n:"Leve",t:["15:00","19:30"]},normal:{n:"Normal",t:["12:00","15:00","18:00","20:30"]}};
+function smartCfg(){return Object.assign({on:true,lvl:"normal",from:"08:00",to:"22:00"},S&&S.smart);}
+function hmM(t){return +t.slice(0,2)*60+ +t.slice(3);}
+function gName(g){return String(g.base||g.title||"Task").replace(/\s*·.*$/,"");}
+function behindAt(at){ // o que vai estar atrasado no horário "at", contando só o que já foi registrado até agora
+  const cfg=smartCfg(),d=new Date(at),mins=d.getHours()*60+d.getMinutes(),f0=hmM(cfg.from),f1=hmM(cfg.to);
+  const frac=Math.max(0,Math.min(1,(mins-f0)/Math.max(60,f1-f0))),today=dayKey(d)===dayKey(new Date()),sameWeek=weekKey(d)===weekKey(Date.now());
+  const ws=new Date(weekKey(d)+"T00:00").getTime(),di=Math.floor((d.getTime()-ws)/864e5),out=[];
+  const rec=allLogs().filter(l=>new Date(l.t).getTime()>=Date.now()-14*864e5); // só cobra hábito que você tem feito nas últimas 2 semanas
+  S.quests.filter(q=>q.status==="active"&&q.type==="main"&&!q.archived).forEach(q=>q.goals.filter(g=>!g.off&&g.src==="count"&&+g.target>0).forEach(g=>{
+    const t=+g.target;if(!rec.some(l=>l.kind===g.kind&&(!g.sub||l.sub===g.sub)))return;
+    if(g.period==="day"){const cur=today?(+goalProgress(g).cur||0):0;if(cur<t&&cur<t*frac-Math.max(.5,t*.15))out.push({g,need:t-cur,w:(t-cur)/t,wk:0});}
+    else if(g.period==="week"&&mins>=18*60){const cur=sameWeek?(+goalProgress(g).cur||0):0;const exp=t*(di+1)/7;
+      if(cur<t&&cur<exp-Math.max(.5,t*.12))out.push({g,need:t-cur,w:(t-cur)/t*.8,wk:7-di});}}));
+  return out.sort((a,b)=>(a.wk?1:0)-(b.wk?1:0)||b.w-a.w);}
+function smartText(at,items){const d=new Date(at),h=d.getHours(),m=d.getMinutes();
+  const n=items.length,title=`Já são ${h}h${m?String(m).padStart(2,"0"):""} · ${n===1?"1 task atrasada":n+" tasks atrasadas"}`;
+  const parts=items.slice(0,2).map(x=>`${gName(x.g)}: ${x.need===1?"falta 1":"faltam "+fmtNum(x.need,0)}${x.wk?` (${x.wk===1?"último dia":"restam "+x.wk+" dias"})`:""}`);
+  return {title,body:parts.join(" · ")+(n>2?` · e mais ${n-2}`:"")};}
+function smartPlan(){const cfg=smartCfg(),out=[],now=Date.now();if(!S||!cfg.on)return out;const ts=(SMART_SETS[cfg.lvl]||SMART_SETS.normal).t;
+  for(let k=0;k<3;k++){const d=new Date();d.setDate(d.getDate()+k);
+    ts.forEach(t=>{const at=new Date(d.getFullYear(),d.getMonth(),d.getDate(),+t.slice(0,2),+t.slice(3)).getTime();if(at<=now+60000)return;
+      const it=behindAt(at);if(!it.length)return;const tx=smartText(at,it);out.push({at,title:tx.title,body:tx.body});});}
+  return out;}
+function smartTick(){if(!S||IS_NATIVE())return;const cfg=smartCfg();if(!cfg.on)return;const n=new Date(),dk=dayKey(n),nowM=n.getHours()*60+n.getMinutes();
+  (SMART_SETS[cfg.lvl]||SMART_SETS.normal).t.forEach(t=>{const m=hmM(t),key="smart|"+dk+"|"+t;if(FIRED[key]||nowM<m||nowM>m+20)return;FIRED[key]=1;try{localStorage.setItem("rpg.fired",JSON.stringify(FIRED))}catch(e){}
+    const it=behindAt(n.getTime());if(!it.length)return;const tx=smartText(n.getTime(),it);
+    let shown=false;try{if(NOTIF_OK()&&Notification.permission==="granted"){shown=true;(navigator.serviceWorker&&navigator.serviceWorker.ready?navigator.serviceWorker.ready.then(r=>r.showNotification(tx.title,{body:tx.body,tag:key,icon:"icon-192.png",badge:"icon-192.png"})):Promise.reject()).catch(()=>new Notification(tx.title,{body:tx.body}));}}catch(e){shown=false}
+    if(!shown||document.visibilityState==="visible")toast(`🔔 <b>${esc(tx.title)}</b> · ${esc(tx.body)}`);});}
+setInterval(smartTick,30000);setTimeout(smartTick,3500);
+function smartHTML(){const c=smartCfg();
+  return `<details class="dd acc"><summary><span>Lembretes inteligentes</span><span class="dd-n">${c.on?esc((SMART_SETS[c.lvl]||SMART_SETS.normal).n):"Desligados"}</span></summary><section class="sec">
+    <p class="hint">Só avisam quando você está ficando para trás, por exemplo "Beber água: faltam 3" às 18h. Se estiver em dia, não chega nada.</p>
+    <div class="seg" role="radiogroup" aria-label="Lembretes inteligentes">${[["off","Desligados"],["leve","Leve · 2 por dia"],["normal","Normal · até 4"]].map(([k,l])=>`<button type="button" data-smart="${k}" aria-pressed="${k==="off"?!c.on:c.on&&c.lvl===k}">${l}</button>`).join("")}</div>
+    <p class="hint">${c.on?`Horários: ${(SMART_SETS[c.lvl]||SMART_SETS.normal).t.map(x=>x.replace(":00","h").replace(":","h")).join(", ")}. Tasks diárias são conferidas em todos; as semanais, a partir das 18h.`:"Os lembretes de cada task continuam funcionando."}</p></section></details>`;}
+
+/* ---------- Widget na tela inicial (APK) ---------- */
+let WSIG="",WT=null;const WICON={};
+function WPL(){const C=window.Capacitor;return C&&C.Plugins&&C.Plugins.TrackingWidget;}
+function cssCol(c){const m=/^var\((--[\w-]+)\)$/.exec(c||"");return (m?getComputedStyle(document.documentElement).getPropertyValue(m[1]).trim():c)||"#f0c24b";}
+function iconPng(ic,col){const k=ic+"|"+col;if(WICON[k]!=null)return Promise.resolve(WICON[k]);
+  return new Promise(res=>{const svg=(IC[ic]||IC.star).replace("<svg ",`<svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" color="${col}" `);const im=new Image();
+    im.onload=()=>{try{const c=document.createElement("canvas");c.width=c.height=72;c.getContext("2d").drawImage(im,0,0,72,72);WICON[k]=c.toDataURL("image/png").split(",")[1];}catch(e){WICON[k]="";}res(WICON[k]);};
+    im.onerror=()=>{WICON[k]="";res("");};im.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);});}
+function wVis(){return cats().filter(c=>!c.off&&c.opts.length&&!(AREAS[c.area]||{}).off);}
+function widgetCats(){const vis=wVis();let ids;
+  if(Array.isArray(S.widget))ids=S.widget.filter(id=>vis.some(c=>c.id===id));
+  else{const since=Date.now()-14*864e5,cnt={};allLogs().forEach(l=>{if(new Date(l.t).getTime()<since)return;const c=vis.find(c=>optMatch(c,l));if(c)cnt[c.id]=(cnt[c.id]||0)+1;});
+    const ord=areaKeys();ids=vis.slice().sort((a,b)=>(cnt[b.id]||0)-(cnt[a.id]||0)||ord.indexOf(a.area)-ord.indexOf(b.area)).map(c=>c.id);}
+  return ids.slice(0,4).map(id=>vis.find(c=>c.id===id)).filter(Boolean);}
+function quickOpt(c){const ok=o=>o&&!o.ask&&optKind(c,o)!=="stat";const l=catLast(c);return ok(l)?l:(c.opts.find(ok)||null);}
+function optLog(c,o){const kind=optKind(c,o);const l={kind,sub:o.sub||undefined,note:""};if(o.sub&&KINDS[kind]&&(KINDS[kind].custom||!(KINDS[kind].subs||{})[o.sub]))l.label=o.l;
+  if(kind==="dinheiro"){l.value=o.sub==="retirei"?-Math.abs(+o.value||0):Math.abs(+o.value||0);}
+  if(kind==="estudo")l.value=+o.value||0;return l;}
+function wFmt(u,v){return u==="R$"?(v>=1000?String(+(v/1000).toFixed(1)).replace(".",",")+"k":String(Math.round(v))):u==="min"?(v>=60?String(+(v/60).toFixed(1)).replace(".",",")+"h":Math.round(v)+"m"):fmtNum(v,0);}
+async function widgetData(){const t=xpWeek(),lv=levelOf(t.total),today=dayKey(new Date()),tl=allLogs().filter(l=>dayKey(l.t)===today);
+  const cs=await Promise.all(widgetCats().map(async c=>{const a=AREAS[c.area]||AREAS.body,col=cssCol(a.color),cg=aggGoal(c),o=quickOpt(c);let cur=0,target=0,per="",n=0,v=0,done=false,u="";
+    if(cg){const p=cg.p||goalProgress(cg.g);cur=+p.cur||0;target=+p.target||0;per=cg.g.period||"";u=cg.g.unit||"";[n,v]=ringSegs(cg.g,p);done=!!(p.done||p.claimed);}
+    return {id:c.id,name:c.name,color:col,icon:await iconPng(c.icon,col),cur,target,unit:u,txt:target?(u==="R$"?"R$ ":"")+wFmt(u,cur)+"/"+wFmt(u,target):"",pre:u==="R$"?"R$ ":"",tz:wFmt(u,target),z0:wFmt(u,0),per,reset:per&&per!=="all"?cycleEnd(per):0,n,v,done,opt:o?o.id:"",optL:o?o.l:""};}));
+  return {lv:lv.L,title:titleOf(lv.L),xp:tl.reduce((a,l)=>a+lxp(l),0),logs:tl.length,day:today,dayEnd:cycleEnd("day"),cats:cs};}
+function wPush(now){const W=WPL();if(!W||!S)return;clearTimeout(WT);WT=setTimeout(async()=>{try{const d=await widgetData(),js=JSON.stringify(d);if(js===WSIG)return;await W.update({data:js});WSIG=js;}catch(e){}},now?60:1500);}
+async function widgetDrain(){const W=WPL();if(!W||!S)return;let r;try{r=await W.drain();}catch(e){return;}
+  let q=[];try{q=JSON.parse(r.queue||"[]");}catch(e){}let n=0;RWQ=true;
+  q.forEach(it=>{const c=cats().find(x=>x.id===it.cat),o=c&&c.opts.find(x=>x.id===it.opt);if(!c||!o)return;const l=optLog(c,o);if(it.t)l.t=new Date(+it.t).toISOString();addLog(l);n++;});
+  RWQ=false;if(n){render();setTimeout(()=>toast(`<b>${n}</b> ${n===1?"registro feito":"registros feitos"} pelo widget`),300);}
+  if(r.open){const c=cats().find(x=>x.id===r.open);if(tab!=="track"){tab="track";LASTHTML="";app.innerHTML="";render();}if(c)setTimeout(()=>catSheet(c),250);}
+  WSIG="";wPush(true);}
+function widgetHTML(){const vis=wVis(),sel=widgetCats().map(c=>c.id),auto=!Array.isArray(S.widget);
+  return `<details class="dd acc"><summary><span>Widget na tela inicial</span><span class="dd-n">${sel.length} ${sel.length===1?"bolha":"bolhas"}</span></summary><section class="sec">
+    <p class="hint">Para colocar: segure num espaço vazio da tela inicial do celular, toque em Widgets e escolha Tracking. O widget mostra o nível e até 4 bolhas. O + registra a última opção usada sem abrir o app; tocar na bolha abre o app nela.</p>
+    <div class="kinds wsel">${vis.map(c=>{const on=sel.includes(c.id);return `<button type="button" class="kind" data-wcat="${esc(c.id)}" aria-pressed="${on}" style="--a:${(AREAS[c.area]||AREAS.body).color}" ${!on&&sel.length>=4?"disabled":""}>${IC[c.icon]||IC.star}<span>${esc(c.name)}</span></button>`;}).join("")}</div>
+    <p class="hint">${auto?"Agora ele mostra as 4 bolhas que você mais usou nos últimos 14 dias. Toque para escolher as suas.":`Escolhidas por você (até 4). <button class="link" data-wauto>Voltar ao automático</button>`}${WPL()?"":" O widget precisa do APK 1.0.10 ou mais novo."}</p></section></details>`;}
+
 /* ---------- Nativo (APK) ---------- */
 let NSCHED=null,NSIG="";
 function cycleEnd(p){const n=new Date();if(p==="day")return new Date(n.getFullYear(),n.getMonth(),n.getDate()+1).getTime();
@@ -2781,16 +2856,19 @@ function nativePlan(){const out=[],now=Date.now();if(!S)return out;
     for(let k=0;k<14;k++){const d=new Date();d.setDate(d.getDate()+k);if(!days.includes(d.getDay()))continue;
       times.forEach(t=>{const at=new Date(d.getFullYear(),d.getMonth(),d.getDate(),+t.slice(0,2),+t.slice(3)).getTime();if(at<=now+30000||at<until)return;
         out.push({at,title:g.title,body:q.title});});}}));
-  out.sort((a,b)=>a.at-b.at);return out.slice(0,400).map((n,i)=>({id:1000+i,title:n.title,body:n.body,schedule:{at:new Date(n.at),allowWhileIdle:true},smallIcon:"ic_stat_tracking",iconColor:"#f0c24b"}));}
+  out.sort((a,b)=>a.at-b.at);const mk=(n,id)=>({id,title:n.title,body:n.body,schedule:{at:new Date(n.at),allowWhileIdle:true},smallIcon:"ic_stat_tracking",iconColor:"#f0c24b"});
+  let sm=[];try{sm=smartPlan().map((n,i)=>mk(n,5000+i));}catch(e){}
+  return out.slice(0,380).map((n,i)=>mk(n,1000+i)).concat(sm);}
 function nativeSchedule(ask){if(!IS_NATIVE())return;clearTimeout(NSCHED);NSCHED=setTimeout(async()=>{const P=window.Capacitor.Plugins,LN=P&&P.LocalNotifications;if(!LN||!S)return;
-  const list=nativePlan(),sig=JSON.stringify(list.map(n=>[n.title,+n.schedule.at]));if(sig===NSIG&&!ask)return;
+  const list=nativePlan(),sig=JSON.stringify(list.map(n=>[n.title,n.body,+n.schedule.at]));if(sig===NSIG&&!ask)return;
   try{let perm=await LN.checkPermissions();if(list.length&&perm.display!=="granted"&&ask)perm=await LN.requestPermissions();
     const pend=await LN.getPending();if(pend.notifications.length)await LN.cancel({notifications:pend.notifications.map(n=>({id:n.id}))});
     if(list.length&&perm.display==="granted")await LN.schedule({notifications:list});NSIG=sig;}catch(e){}},ask?50:900);}
-if(IS_NATIVE()){const _ss=saveState;saveState=function(){_ss.apply(this,arguments);nativeSchedule(false);};
+if(IS_NATIVE()){const _ss=saveState;saveState=function(){_ss.apply(this,arguments);nativeSchedule(false);wPush();};
+  const _sm=saveMonth;saveMonth=function(){_sm.apply(this,arguments);nativeSchedule(false);wPush();};setTimeout(widgetDrain,1800);
   const P=window.Capacitor.Plugins;setTimeout(()=>nativeSchedule(false),1500);
   setTimeout(async()=>{if(await otaApply())return;otaConfirm();setTimeout(()=>otaCheck(true),4000);},1200);
-  if(P.App){P.App.addListener("appStateChange",st=>{if(st.isActive){NSIG="";nativeSchedule(false);render();otaCheck(false);}else otaApply();});
+  if(P.App){P.App.addListener("appStateChange",st=>{if(st.isActive){NSIG="";nativeSchedule(false);render();otaCheck(false);widgetDrain();}else{wPush(true);otaApply();}});
     P.App.addListener("backButton",()=>{const no=document.querySelector(".cpop-w [data-cpno]")||document.querySelector(".sug-w [data-sugno]");if(no){no.click();}else if(layer.querySelector(".scrim")){closeSheet();render();}else if(tab!=="track"){const b=document.querySelector('.nav [data-tab="track"]');b?b.click():P.App.minimizeApp();}else P.App.minimizeApp();});}}
 /* ---------- Eventos ---------- */
 const TABORD=["quests","track","home","log","more"];let ENTT=0;
@@ -2928,6 +3006,9 @@ app.addEventListener("click",e=>{
   if("newquest" in d||"newq2" in d){newQuestSheet();return;}
   if(d.qedit){questEdit(d.qedit);return;}
   if("torg" in d){orgSheet();return;}
+  if(d.smart){S.smart=Object.assign({},S.smart,d.smart==="off"?{on:false}:{on:true,lvl:d.smart});saveState();render();if(S.smart.on){askNotify();if(IS_NATIVE())nativeSchedule(true);}toast(S.smart.on?"Lembretes inteligentes ligados":"Lembretes inteligentes desligados");return;}
+  if(d.wcat){let l=widgetCats().map(c=>c.id);l=l.includes(d.wcat)?l.filter(x=>x!==d.wcat):l.concat([d.wcat]).slice(0,4);S.widget=l;saveState();render();wPush(true);return;}
+  if("wauto" in d){delete S.widget;saveState();render();wPush(true);return;}
   if("newstat" in d){statSheet();return;}
   if(d.editstat){statSheet(d.editstat);return;}
   if("export" in d){exportFile();return;}
