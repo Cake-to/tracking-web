@@ -1,0 +1,28 @@
+{
+  "build": 9,
+  "minNative": 6,
+  "label": "versão 9",
+  "date": "2026-11-26T16:03:57.816Z",
+  "files": [
+    {
+      "p": "index.html",
+      "h": "675e16359c1af5053e20e1787b475492fb3f56ede49dfa037940c26b485bd372"
+    },
+    {
+      "p": "manifest.webmanifest",
+      "h": "0604baa8abc05e9e7a662df86aaa30e8c75de0bda7f572cd8de3edb4f217ae2a"
+    },
+    {
+      "p": "icon.svg",
+      "h": "1c65658490fe56469c40160de3be44f11964daec62553e0d11a0ae8b73d4d121"
+    },
+    {
+      "p": "icon-192.png",
+      "h": "d0d2461981c0467d58fc91fa9aacdc8a210cdbc1a16121a05a73ee3dd39e3ee3"
+    },
+    {
+      "p": "icon-512.png",
+      "h": "56f14b1d1a933c25ff42f423ff03305a0bcb1256ab29e19e458c0cad1765a01e"
+    }
+  ]
+}
