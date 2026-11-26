@@ -512,6 +512,31 @@ body{letter-spacing:-.005em}
 .cityres button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:left;padding:10px 12px;border:0;border-radius:12px;background:var(--surf);color:var(--fg);font:inherit;font-weight:600;cursor:pointer;overflow-wrap:anywhere}
 .cityres small{color:var(--muted);font-size:12px;font-weight:500}
 .cityact{display:flex;flex-wrap:wrap;gap:4px 14px}
+.swl{display:flex;flex-wrap:wrap;gap:10px}
+.sw{width:34px;height:34px;border-radius:50%;background:var(--c);border:2px solid transparent;box-shadow:inset 0 0 0 2px rgba(0,0,0,.25);padding:0;cursor:pointer}
+.sw[aria-pressed=true]{border-color:var(--fg);box-shadow:inset 0 0 0 3px var(--bg)}
+.qe-c .qicon{width:40px;height:40px;flex:none}
+.qe-l{flex:1;min-width:0;display:flex;flex-direction:column}
+.qe-l b{overflow-wrap:anywhere}
+.qe-l small{color:var(--muted);font-size:12px}
+.org{display:flex;flex-direction:column;gap:4px;padding:10px 0;border-top:1px solid var(--line)}
+.org-h{display:flex;align-items:center;gap:10px}
+.org-h .qicon{width:34px;height:34px;flex:none;border-radius:10px}
+.org-h b{flex:1;min-width:0;overflow-wrap:anywhere;color:var(--a)}
+.org-r{display:flex;align-items:center;gap:8px;padding-left:12px}
+.org-r.off{opacity:.5}
+.org-i{width:22px;height:22px;flex:none;color:var(--a);display:grid;place-items:center}
+.org-i svg{width:100%;height:100%}
+.org-n{flex:1;min-width:0;overflow-wrap:anywhere}
+.org-n small{color:var(--muted)}
+.org-b{display:flex;gap:2px;flex:none}
+.org-b .btn{min-width:32px;padding:6px 7px}
+.ts-orb .tg-l{flex-wrap:wrap}
+.tg-row{display:flex;justify-content:space-evenly;align-items:flex-start;gap:10px}
+.tg-row>.tg{min-width:0}
+.qnew{display:block;margin:8px auto 0}
+.track-a{display:flex;flex-direction:column;align-items:flex-end}
+.track-h .track-a .link{padding:3px 0 3px 8px}
 .cat-x{font:inherit;font-weight:700;color:var(--a);margin-left:3px}
 /* véu único do fundo, controlado em Aparência → Fundo (0 a 80%) */
 #bg::after,#bg.img::after,#bg.live::after{display:block;z-index:1;transition:background .4s;background:linear-gradient(180deg,rgba(7,9,13,calc(var(--dim,.5) * .72 + var(--dx,0))) 0%,rgba(7,9,13,calc(var(--dim,.5) * .9 + var(--dx,0))) 45%,rgba(7,9,13,calc(var(--dim,.5) * 1.05 + var(--dx,0))) 80%,rgba(7,9,13,calc(var(--dim,.5) * .9 + .25 + var(--dx,0))) 100%)}
@@ -1064,7 +1089,7 @@ html[data-motion=sutil] .rw{transition-duration:.12s,.2s}
 
 <div id="layer"></div>
 
-<script>/* ota-guard: se uma versão nova não abrir em 12 s, volta para a anterior */window.WEB_BUILD=10;window.WEB_DATE="2026-11-26T14:49:00-03:00";(function(){try{var C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform())return;var pend=localStorage.getItem("ota.pending");if(pend!==String(window.WEB_BUILD))return;
+<script>/* ota-guard: se uma versão nova não abrir em 12 s, volta para a anterior */window.WEB_BUILD=11;window.WEB_DATE="2026-11-26T16:56:00-03:00";(function(){try{var C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform())return;var pend=localStorage.getItem("ota.pending");if(pend!==String(window.WEB_BUILD))return;
 setTimeout(function(){if(window.__appOk)return;try{localStorage.setItem("ota.bad",pend);localStorage.removeItem("ota.pending");var prev=localStorage.getItem("ota.prev")||"public",W=C.Plugins.WebView;if(prev==="public")W.setServerAssetPath({path:"public"});else W.setServerBasePath({path:prev});}catch(e){}},12000);}catch(e){}})();</script>
 <script>
 (function(){
@@ -1132,7 +1157,7 @@ const ICON_LIST=["dumbbell","run","walk","bike","swim","yoga","ball","flame","za
 const AREAS={
   money:{name:"Dinheiro e Estudo",short:"Dinheiro & Estudo",color:"var(--money)",icon:"coin"},
   body:{name:"Mente e Corpo",short:"Mente & Corpo",color:"var(--body)",icon:"pulse"},
-  family:{name:"Pai e Marido",short:"Pai & Marido",color:"var(--family)",icon:"home"},
+  family:{name:"Casa e Família",short:"Casa & Família",color:"var(--family)",icon:"home"},
 };
 const KINDS={
   stat:{label:"Stat",icon:"scale",area:"body"},
@@ -1188,7 +1213,7 @@ function template(name,peso,alvo){
         ...INGEST_TASKS(g),
         g({title:"3 meditações na semana",src:"count",kind:"mente",sub:"meditacao",period:"week",target:3,unit:"sessões",xp:30,icon:"leaf"}),READ_TASK(g),
       ]},
-      {id:uid(),area:"family",type:"main",status:"active",title:"Pai e Marido",desc:"Presença de verdade com quem importa.",xp:0,goals:[
+      {id:uid(),area:"family",type:"main",status:"active",title:"Casa e Família",desc:"Presença de verdade com quem importa.",xp:0,goals:[
         g({title:"3 momentos com filho(s) na semana",src:"count",kind:"familia",sub:"filho",period:"week",target:3,unit:"momentos",xp:40}),
         g({title:"1 momento a dois na semana",src:"count",kind:"familia",sub:"casal",period:"week",target:1,unit:"momento",xp:30}),
         g({title:"1 programa a dois no mês",src:"count",kind:"familia",sub:"casal",period:"month",target:1,unit:"programa",xp:60}),
@@ -1279,7 +1304,7 @@ function xpTotals(fromT,toT,wf){
   (S?S.quests:[]).forEach(q=>{(q.goals||[]).forEach(g=>{if(g.kind==="dinheiro")return;(g.claims||[]).forEach(pk=>add(q.area,g.xp,(g.claimT||{})[pk]));});if(q.status==="done")add(q.area,q.xp,q.doneAt);});
   if(S&&S.conq)Object.keys(S.conq).forEach(k=>{const [id,i]=k.split(":"),c=CQ[id];if(c&&!c.noxp&&CQT[+i])add(c.a,CQT[+i].xp,S.conq[k]);});
   if(wf)Object.keys(by).forEach(k=>by[k]=Math.round(by[k]));
-  return {by,total:by.money+by.body+by.family};
+  return {by,total:Object.values(by).reduce((a,x)=>a+x,0)};
 }
 function xpAt(at){return xpTotals(at-WIN,at+1,t=>decayW(at-t));}
 const WEEK=7*864e5;
@@ -1490,7 +1515,7 @@ function showSug(k){document.querySelectorAll(".sug-w").forEach(x=>x.remove());c
   requestAnimationFrame(()=>w.classList.add("on"));const tm=setTimeout(()=>sugClose(w),15000);
   w.addEventListener("click",e=>{if(e.target.closest("[data-sugok]")){clearTimeout(tm);sugClose(w);vib(18);const [c2,o2]=linkOpt(k);if(c2&&o2&&!o2.ask&&optKind(c2,o2)!=="stat")doOpt(c2,o2);else addLog({kind:k.to.kind,sub:k.to.sub,note:""});return;}
     if(e.target.closest("[data-sugno]")){clearTimeout(tm);sugClose(w);}});}
-function xpCat(l){const k=l.kind;if(k==="treino"||k==="mente"||k==="estudo"||k==="familia")return k;if(k==="agua"||(k==="ingestao"&&l.sub!=="porcaria"))return "ingestao";return null;}
+function xpCat(l){const k=l.kind;if(KINDS[k]&&KINDS[k].custom)return k;if(k==="treino"||k==="mente"||k==="estudo"||k==="familia")return k;if(k==="agua"||(k==="ingestao"&&l.sub!=="porcaria"))return "ingestao";return null;}
 let XPC={key:"",m:{},d:{}};
 function xpMap(){const ls=allLogs();const key=ls.length+"|"+(ls[0]?ls[0].id:"")+"|"+(ls.length?ls[ls.length-1].id:"")+"|"+((S&&S.linksOff)||[]).join();if(XPC.key===key)return XPC;
   const asc=ls.slice().reverse();const m={},byDay={},stDay={};
@@ -1596,7 +1621,7 @@ function migrate(){ // v2: só quests principais + tasks. Nada de registro é ap
   S.v=2;saveState();}
 function render(){
   applyBg();
-  if(S&&!(S.v>=14)){ // migrações em ordem; nenhum registro é apagado
+  if(S&&!(S.v>=15)){ // migrações em ordem; nenhum registro é apagado
   if(!(S.v>=2))migrate();
   if(S&&!(S.v>=3)){S.panelHidden=Object.assign({},S.panelHidden,{rings:true});if(!S.panelOrder||!S.panelOrder.length)S.panelOrder=["hero"];if(!S.panelOrder.includes("quick")){const i=S.panelOrder.indexOf("hero");S.panelOrder.splice(i<0?0:i+1,0,"quick");}S.v=3;saveState();}
   if(S&&!(S.v>=4)){S.panelOrder=(S.panelOrder||["hero"]).filter(k=>k!=="quick");const i=S.panelOrder.indexOf("hero");if(!S.panelOrder.includes("ladder"))S.panelOrder.splice(i<0?0:i+1,0,"ladder");S.v=4;saveState();}
@@ -1629,7 +1654,9 @@ function render(){
     const q=S.quests.find(x=>x.area==="body"&&x.type==="main");if(q&&!q.goals.some(g=>!g.off&&g.kind==="mente"&&g.sub==="sol"))q.goals.push(SUN_TASK(o=>Object.assign({id:uid(),since:now,claims:[]},o)));
     S.v=13;saveState();reconcileClaims();autoClaim();}
   if(!(S.v>=14)){S.quests.forEach(q=>q.goals.forEach(g=>{if(!g.base&&canAuto(g)){g.base=baseOf(g);syncTitle(g);}}));S.v=14;saveState();}
+  if(!(S.v>=15)){const q=S.quests.find(x=>x.type==="main"&&x.area==="family");if(q&&q.title==="Pai e Marido")q.title="Casa e Família";S.v=15;saveState();}
   }
+  syncAreas();
   const ti=document.getElementById("topinfo");if(ti&&mode!=="loading"){const th=topHTML();if(ti._h!==th){ti._h=th;ti.innerHTML=th;}}
   document.querySelectorAll(".nav .tab").forEach(b=>b.setAttribute("aria-current",b.dataset.tab===tab?"page":"false"));
   if(mode==="loading"){return;}
@@ -1664,7 +1691,7 @@ function heroHTML(){
     <div style="min-width:0"><h1 class="num">${t.total} XP</h1><div class="cls">XP ativo</div></div></div>
     <div class="xpbar" role="progressbar" aria-valuenow="${Math.round(lv.pct*100)}" aria-valuemin="0" aria-valuemax="100" aria-label="XP para o próximo nível"><i style="width:${(lv.pct*100).toFixed(1)}%"></i></div>
     <div class="xpmeta"><span class="num">${lv.max?t.total+" XP ativo":lv.into+" / "+lv.need+" XP"}</span><span>${lv.max?"<b>Nível máximo!</b>":`faltam <b class="num">${lv.need-lv.into}</b> para o nível ${lv.L+1}`}</span></div>
-    <div class="hud">${Object.entries(AREAS).map(([k,a])=>{const l=areaLevel(t.by[k]||0);return `<div class="hud-row" style="--a:${a.color}">${IC[areaIcon(k)]}<div class="hud-bar" role="progressbar" aria-label="${esc(a.name)}" aria-valuenow="${Math.round(l.pct*100)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${(l.pct*100).toFixed(0)}%"></i></div><span>${esc(a.short)} <b>Nv ${l.L}</b></span></div>`}).join("")}</div></div>`;
+    <div class="hud">${areaKeys().map(k=>[k,AREAS[k]]).map(([k,a])=>{const l=areaLevel(t.by[k]||0);return `<div class="hud-row" style="--a:${a.color}">${IC[areaIcon(k)]}<div class="hud-bar" role="progressbar" aria-label="${esc(a.name)}" aria-valuenow="${Math.round(l.pct*100)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${(l.pct*100).toFixed(0)}%"></i></div><span>${esc(a.short)} <b>Nv ${l.L}</b></span></div>`}).join("")}</div></div>`;
 }
 function ladderRow(L,cur,total){const st=L<cur?"done":L===cur?"cur":"next";const need=xpToReach(L);const when=S.lvHist&&S.lvHist[L];
   let right="";if(st==="cur"){const lv=levelOf(total);right=lv.max?`<b>máximo</b>`:`<span class="num">${total} / ${xpToReach(L+1)}</span>`;}
@@ -1716,7 +1743,7 @@ function maybeWeekly(){if(WK_TRY||!S||tab!=="track"||layer.innerHTML)return;cons
 function weekStars(){let n=0,d=0;S.quests.filter(q=>q.status==="active"&&q.type==="main"&&!q.archived).forEach(q=>q.goals.filter(g=>!g.off).forEach(g=>{if(g.period==="week"&&g.src!=="manual"){n++;d+=goalProgress(g).pct;}}));const k=n?Math.round(d/n*5):0;return "★".repeat(k)+"☆".repeat(5-k);}
 function homeHTML(){
   const t=xpWeek();
-  const areas=Object.entries(AREAS).map(([k,a])=>{const lv=areaLevel(t.by[k]||0);return `<div class="area" style="--a:${a.color}"><div class="t">${esc(a.short)}</div><div class="l">Nv ${lv.L}</div><div class="mini"><i style="width:${(lv.pct*100).toFixed(0)}%"></i></div><div class="small muted num">${t.by[k]||0} XP</div></div>`}).join("");
+  const areas=areaKeys().map(k=>[k,AREAS[k]]).map(([k,a])=>{const lv=areaLevel(t.by[k]||0);return `<div class="area" style="--a:${a.color}"><div class="t">${esc(a.short)}</div><div class="l">Nv ${lv.L}</div><div class="mini"><i style="width:${(lv.pct*100).toFixed(0)}%"></i></div><div class="small muted num">${t.by[k]||0} XP</div></div>`}).join("");
   const at=attrs().map(a=>`<span class="k" style="--a:${a.a}" title="${esc(a.h)}">${a.k}</span><div class="mini" style="--a:${a.a}" title="${esc(a.n)}: ${esc(a.h)}"><i style="width:${a.v}%"></i></div><span class="v">${a.v}</span>`).join("");
   const stats=S.stats.map(statHTML).join("");
   // Tasks ativas mais próximas de concluir
@@ -2226,7 +2253,7 @@ function questHTML(q){
   return `<article class="quest ${open?"open":""}" style="--a:${a.color}"><button class="qhead" data-qtog="${q.id}" aria-expanded="${open}"><div class="qicon">${IC[areaIcon(q.area)]}</div><div class="qtitle"><h3>${esc(q.title)}</h3>
     <div class="meta"><span>Nv ${lv.L}</span><span>·</span><span class="num">${dn}/${ag.length} tasks</span></div></div><span class="chev" aria-hidden="true">▾</span></button>
     ${open?`<div class="goals">${cycGroups(ag).map(([k,gs],i,arr)=>(arr.length>1?`<div class="gcyc">${esc(CYCN[k])}</div>`:"")+gs.map(g=>goalHTML(q,g,false)).join("")).join("")||`<div class="goal muted small">Nenhuma task ativa.</div>`}${offN?`<div class="goal small muted">${offN} ${offN===1?"task desativada":"tasks desativadas"} em Editar tasks</div>`:""}</div>
-    <div class="qfoot"><button class="btn" data-mgr="${q.id}">Editar tasks</button></div>`:""}</article>`;
+    <div class="qfoot"><button class="btn" data-qedit="${q.id}">Editar quest</button><button class="btn" data-mgr="${q.id}">Editar tasks</button></div>`:""}</article>`;
 }
 let QOPEN=new Set();
 function questsHTML(){
@@ -2234,7 +2261,7 @@ function questsHTML(){
   const n=conqCount();
   return `<div class="hero" style="padding-top:18px"><h1>Quests</h1></div>
   <div class="seg qseg" role="tablist"><button type="button" data-qview="q" aria-pressed="${QVIEW!=="c"}">Quests</button><button type="button" data-qview="c" aria-pressed="${QVIEW==="c"}">Conquistas <span class="num">${n.got}/${n.all}</span></button></div>
-  ${QVIEW==="c"?conqHTML():mains.slice().sort((a,b)=>["family","money","body"].indexOf(a.area)-["family","money","body"].indexOf(b.area)).map(questHTML).join("")}`;
+  ${QVIEW==="c"?conqHTML():(()=>{const ord=areaKeys();return mains.slice().sort((a,b)=>ord.indexOf(a.area)-ord.indexOf(b.area)).map(questHTML).join("")+`<button class="btn ghost qnew" data-newq2>+ Nova quest</button>`;})()}`;
 }
 function logHTML(){
   const ls=allLogs();if(!ls.length)return `<div class="hero"><h1>Diário</h1></div><div class="empty">Nenhum registro ainda. Toque no botão + para registrar peso, treino, estudo, dinheiro ou momento em família.</div>`;
@@ -2303,7 +2330,7 @@ function onboardHTML(){
     <div class="field"><label for="o-name">Nome do personagem</label><input id="o-name" placeholder="Seu nome" maxlength="40" required></div>
     <div class="row2"><div class="field"><label for="o-peso">Peso atual (kg)</label><input id="o-peso" inputmode="decimal" placeholder="ex: 88,5"></div>
     <div class="field"><label for="o-alvo">Peso alvo (kg)</label><input id="o-alvo" inputmode="decimal" placeholder="ex: 80"></div></div>
-    <p class="hint">Começa com as 3 quests principais (Dinheiro e Estudo, Mente e Corpo, Pai e Marido), com tasks de exemplo que você pode editar, desativar ou trocar. Em cada quest, Editar tasks traz ideias extras.</p>
+    <p class="hint">Começa com as 3 quests principais (Dinheiro e Estudo, Mente e Corpo, Casa e Família), com tasks de exemplo que você pode editar, desativar ou trocar. Em cada quest, Editar tasks traz ideias extras.</p>
     <button class="btn gold" type="submit" style="padding:13px;font-size:16px">Começar a jornada</button></form>`;
 }
 const num=v=>{if(v==null)return NaN;v=String(v).trim().replace(/\s/g,"");if(v.includes(","))v=v.replace(/\./g,"").replace(",",".");return parseFloat(v);};
@@ -2323,13 +2350,13 @@ function logSheet(kind,statId){
     if(k==="stat"){f=`<div class="field"><label for="l-stat">Stat</label><select id="l-stat">${S.stats.map(s=>`<option value="${esc(s.id)}" ${s.id===statId?"selected":""}>${esc(s.name)} (${esc(s.unit)})</option>`).join("")}</select></div>
       <div class="field"><label for="l-val">Valor</label><input id="l-val" inputmode="decimal" placeholder="${(()=>{const v=latestStat(statId||S.stats[0]&&S.stats[0].id);return v!=null?"último: "+fmtNum(v):"ex: 85,4"})()}" required></div>`;}
     else{
-      if(K.subs)f+=`<div class="field"><label>Tipo</label><div class="seg" style="--a:${a.color}" id="l-sub">${Object.entries(K.subs).map(([s,l],i)=>`<button type="button" data-sub="${s}" aria-pressed="${i===0}">${l}</button>`).join("")}</div></div>`;
+      if(K.subs)f+=`<div class="field"><label>Tipo</label><div class="seg" style="--a:${a.color}" id="l-sub">${Object.entries(K.subs).map(([s,l],i)=>`<button type="button" data-sub="${esc(s)}" aria-pressed="${i===0}">${esc(l)}</button>`).join("")}</div></div>`;
       if(k==="dinheiro")f+=`<div class="field"><label for="l-val">Valor (R$)</label><div class="chipsel" style="--a:${a.color}">${[20,50,100,200,500].map(c=>`<button type="button" data-fill="${c}">R$ ${c}</button>`).join("")}</div><input id="l-val" inputmode="decimal" placeholder="ou digite um valor, ex: 137,50" required></div>`;
       if(k==="estudo")f+=`<div class="row2"><div class="field"><label for="l-val">Minutos</label><input id="l-val" inputmode="numeric" placeholder="ex: 45" required></div><div class="field"><label for="l-topic">Assunto</label><input id="l-topic" placeholder="opcional"></div></div>`;
       if(k==="treino"||k==="mente")f+=`<div class="field"><label for="l-min">Duração (min)</label><input id="l-min" inputmode="numeric" placeholder="opcional, dá mais XP"></div>`;
     }
     f+=`<div class="field"><label for="l-note">Nota</label><input id="l-note" placeholder="opcional" maxlength="140"></div>`;
-    return `<h2>Registrar</h2><div class="kinds">${Object.entries(KINDS).map(([kk,KK])=>`<button type="button" class="kind" data-kind="${kk}" aria-pressed="${kk===k}" style="--a:${AREAS[KK.area].color}">${IC[KK.icon]}${KK.label}</button>`).join("")}</div>
+    return `<h2>Registrar</h2><div class="kinds">${Object.entries(KINDS).filter(([kk,KK])=>!KK.hide||kk===k).map(([kk,KK])=>`<button type="button" class="kind" data-kind="${kk}" aria-pressed="${kk===k}" style="--a:${(AREAS[KK.area]||AREAS.body).color}">${IC[KK.icon]||IC.star}${esc(KK.label)}</button>`).join("")}</div>
       <form id="logf" class="sec" style="gap:12px">${f}<div class="actions"><button type="button" class="btn ghost" data-cancel>Cancelar</button><button class="btn gold" type="submit">Salvar</button></div></form>`;
   };
   const mount=sh=>{
@@ -2356,25 +2383,30 @@ function syncTitle(g){if(g.base&&!g.fixName&&canAuto(g))g.title=autoTitle(g);}
 function baseOf(g){let t=String(g.title||"").trim().replace(/\s*·.*$/,"").replace(/\s+(na|por|no|ao|em|toda|todo|a|o)\s+(semana|dia|mês|mes|ano)$/i,"").replace(/\s+(hoje|diári[oa]s?|semana(l|is)?|mensa(l|is)|anua(l|is))$/i,"").trim();
   if(!t||/^\d/.test(t)||/\d+\s*(x|vezes|h|min)\b/i.test(t))return BASEN[g.kind+":"+(g.sub||"")]||BASEN[g.kind]||t.replace(/^[\d.,]+\s*(x\s*)?/,"")||"Task";
   return t[0].toUpperCase()+t.slice(1);}
+function gsOpts(q,first){const cu=!!(AREAS[q.area]||{}).custom;if(cu!==first)return "";const cs=cats().filter(c=>c.area===q.area&&!NOPT_KINDS.has(c.kind));let h="";
+  cs.forEach(c=>{if(c.opts.length<8)h+=`<option value="new:${esc(c.id)}">Registro novo na bolha ${esc(c.name)} (vira opção)</option>`;
+    if(S.kinds&&S.kinds[c.kind]){h+=`<option value="count:${esc(c.kind)}">Registros na bolha ${esc(c.name)}</option>`;c.opts.forEach(o=>{if(o.sub)h+=`<option value="count:${esc(c.kind)}:${esc(o.sub)}">Quantidade de ${esc(o.l)}</option>`;});}});
+  if(!cs.length)h+=`<option value="new:+">Registro novo (cria a bolha no Tracking)</option>`;return h;}
 function goalSheet(qid){
   const q=S.quests.find(x=>x.id===qid);
   openSheet(`<h2>Nova task · ${esc(q.title)}</h2><form id="gf" class="sec" style="gap:12px">
     <div class="field"><label for="g-title">Nome</label><input id="g-title" placeholder="ex: Beber água" required maxlength="80"></div>
-    <div class="field"><label for="g-src">Como medir</label><select id="g-src">
+    <div class="field"><label for="g-src">Como medir</label><select id="g-src">${gsOpts(q,true)}
       <option value="sum:dinheiro">Soma de dinheiro guardado (R$)</option><option value="sum:estudo">Soma de minutos de estudo</option><option value="sum:mente">Soma de minutos de mente</option>
       <option value="count:treino">Quantidade de treinos</option><option value="count:treino:cardio">Quantidade de cardios</option><option value="count:treino:forca">Quantidade de treinos de força</option>
       <option value="count:mente">Quantidade de sessões de mente</option><option value="count:mente:meditacao">Quantidade de meditações</option><option value="count:mente:leitura">Quantidade de leituras</option><option value="count:mente:livro">Livros terminados</option><option value="count:mente:reflexao">Quantidade de diários</option><option value="count:dinheiro:guardei">Quantidade de aportes</option><option value="count:familia">Quantidade de momentos em família</option><option value="count:familia:casal">Quantidade de programas a dois</option><option value="count:familia:filho">Quantidade de momentos com filho(s)</option>
       ${S.stats.map(s=>`<option value="stat:${esc(s.id)}">Stat: ${esc(s.name)} até um alvo</option>`).join("")}
       <option value="count:agua">Copos de água</option><option value="count:ingestao:fruta">Porções de vitaminas</option><option value="count:mente:sol">Banhos de sol</option><option value="count:ingestao:refeicao">Refeições boas</option><option value="count:ingestao:proteina">Doses de proteína</option><option value="count:treino:alongamento">Alongamentos</option><option value="count:familia:todos">Momentos com a família toda</option>
-      <option value="manual">Manual (eu atualizo com + e −)</option></select></div>
+      ${gsOpts(q,false)}<option value="manual">Manual (eu atualizo com + e −)</option></select></div>
     <div class="row2"><div class="field"><label for="g-target">Alvo</label><input id="g-target" inputmode="decimal" required placeholder="ex: 5000"></div>
     <div class="field"><label for="g-period">Ciclo</label><select id="g-period"><option value="day">Diário</option><option value="week" selected>Semanal</option><option value="month">Mensal</option><option value="year">Anual</option><option value="all">Sem ciclo (acumula)</option></select></div></div>
     <div class="row2"><div class="field"><label for="g-unit">Unidade (manual)</label><input id="g-unit" placeholder="ex: livros" maxlength="12"></div>
     <div class="field"><label for="g-xp">Recompensa (XP)</label><input id="g-xp" inputmode="numeric" value="50"></div></div>
-    <p class="hint">Escreva só o nome: o alvo e o ciclo entram sozinhos (ex: Beber água · 8x por dia). Tasks de estudo usam minutos (10h = 600).</p>
+    <p class="hint">Em "Registro novo", o nome da task vira uma opção da bolha no Tracking. Escreva só o nome: o alvo e o ciclo entram sozinhos (ex: Beber água · 8x por dia). Tasks de estudo usam minutos (10h = 600).</p>
     <div class="actions"><button type="button" class="btn ghost" data-cancel>Cancelar</button><button class="btn gold" type="submit">Criar task</button></div></form>`,sh=>{
     sh.addEventListener("submit",e=>{e.preventDefault();const v=id=>sh.querySelector("#"+id).value;
-      const [src,kind,sub]=v("g-src").split(":");const target=num(v("g-target"));if(!isFinite(target)){toast("Informe o alvo em número");return;}
+      let [src,kind,sub]=v("g-src").split(":");const target=num(v("g-target"));if(!isFinite(target)){toast("Informe o alvo em número");return;}
+      if(src==="new"){const c=kind==="+"?newCat(q.area,q.title.slice(0,20),areaIcon(q.area)):ownCats().find(x=>x.id===kind);if(!c)return;const o=addOpt(c,v("g-title").trim()||"Registro");if(!o){toast("Essa bolha já tem 8 opções");return;}src="count";kind=c.kind;sub=o.sub;syncAreas();}
       const g={id:uid(),title:v("g-title").trim(),src,since:new Date().toISOString(),claims:[],xp:Math.max(0,Math.round(num(v("g-xp"))||0)),target,period:v("g-period")};
       if(src==="sum"||src==="count"){g.kind=kind;if(sub)g.sub=sub;g.unit=src==="count"?"x":kind==="dinheiro"?"R$":"min";}
       else if(src==="stat"){const st=S.stats.find(s=>s.id===kind);g.statId=kind;g.unit=st.unit;g.period="all";const cur=latestStat(kind);g.start=cur!=null?cur:(st.start??target);}
@@ -2387,7 +2419,7 @@ function questSheet(){
   openSheet(`<h2>Nova quest</h2><form class="sec" style="gap:12px">
     <div class="field"><label for="q-title">Nome</label><input id="q-title" required maxlength="60" placeholder="ex: Quitar o carro"></div>
     <div class="field"><label for="q-desc">Descrição</label><input id="q-desc" maxlength="140" placeholder="opcional"></div>
-    <div class="row2"><div class="field"><label for="q-area">Área</label><select id="q-area">${Object.entries(AREAS).map(([k,a])=>`<option value="${k}">${esc(a.name)}</option>`).join("")}</select></div>
+    <div class="row2"><div class="field"><label for="q-area">Área</label><select id="q-area">${areaKeys().map(k=>[k,AREAS[k]]).map(([k,a])=>`<option value="${k}">${esc(a.name)}</option>`).join("")}</select></div>
     <div class="field"><label for="q-type">Tipo</label><select id="q-type"><option value="side">Secundária</option><option value="main">Principal</option></select></div></div>
     <div class="field"><label for="q-xp">Bônus ao concluir (XP)</label><input id="q-xp" inputmode="numeric" value="150"></div>
     <div class="actions"><button type="button" class="btn ghost" data-cancel>Cancelar</button><button class="btn gold" type="submit">Criar e adicionar tasks</button></div></form>`,sh=>{
@@ -2403,7 +2435,7 @@ function statSheet(id){
     <div class="field"><label for="s-unit">Unidade</label><input id="s-unit" maxlength="10" value="${esc(st.unit)}" placeholder="ex: cm"></div></div>
     <div class="row2"><div class="field"><label for="s-dir">Objetivo</label><select id="s-dir"><option value="down" ${st.dir==="down"?"selected":""}>Diminuir</option><option value="up" ${st.dir==="up"?"selected":""}>Aumentar</option></select></div>
     <div class="field"><label for="s-target">Alvo</label><input id="s-target" inputmode="decimal" value="${st.target!=null?esc(String(st.target).replace(".",",")):""}" placeholder="opcional"></div></div>
-    <div class="field"><label for="s-area">Ligada à quest</label><select id="s-area">${Object.entries(AREAS).map(([k,a])=>`<option value="${k}" ${st.area===k?"selected":""}>${esc(a.name)}</option>`).join("")}</select></div>
+    <div class="field"><label for="s-area">Ligada à quest</label><select id="s-area">${areaKeys().map(k=>[k,AREAS[k]]).map(([k,a])=>`<option value="${k}" ${st.area===k?"selected":""}>${esc(a.name)}</option>`).join("")}</select></div>
     <div class="actions"><button type="button" class="btn ghost" data-cancel>Cancelar</button><button class="btn gold" type="submit">Salvar</button></div></form>`,sh=>{
     sh.addEventListener("submit",e=>{e.preventDefault();const v=x=>sh.querySelector("#"+x).value;const t=num(v("s-target"));
       const o={name:v("s-name").trim(),unit:v("s-unit").trim(),dir:v("s-dir"),area:v("s-area"),target:isFinite(t)?t:null};
@@ -2481,24 +2513,28 @@ function catHTML(c){const a=AREAS[c.area]||AREAS.body;const cg=aggGoal(c);let ri
 function fitTrack(){fitOrbs();animRings();}
 function fitOrbs(){const t=document.querySelector(".track");if(!t)return;const z=parseFloat(document.documentElement.style.zoom||1)||1;const nv=document.querySelector(".nav").getBoundingClientRect();const r=t.getBoundingClientRect();
   const h=(nv.top-r.top)/z-16,W=t.clientWidth;let o=96;
-  o=Math.min((h-64-3*(62+(t.querySelector(".cat-cy")?14:0))-24)/3,(W-2*22)/3-14,104);
+  const nR=Math.max(1,t.querySelectorAll(".tg-row").length),nC=Math.max(3,...[...t.querySelectorAll(".tg-row")].map(x=>+x.dataset.n+(x.children.length-1)*.6));
+  o=Math.min((h-64-nR*(62+(t.querySelector(".cat-cy")?14:0))-24)/nR,(W-2*22)/nC-14,104);
   o=Math.max(44,Math.floor(o));t.style.setProperty("--orb",o+"px");t.classList.toggle("tight",o<64);
   const fits=()=>{const cs=t.querySelectorAll("[data-cat]");const last=cs[cs.length-1];return !last||last.getBoundingClientRect().bottom<=nv.top-4;};
   for(let i=0;i<12&&!fits()&&o>44;i++){o-=4;t.style.setProperty("--orb",o+"px");t.classList.toggle("tight",o<64);}}
 window.addEventListener("resize",()=>{if(tab==="track")fitTrack();});
-function trackHTML(){setTimeout(fitTrack,0);const by={};cats().filter(c=>!c.off).forEach(c=>{(by[c.area]=by[c.area]||[]).push(c);});
+function trackHTML(){setTimeout(fitTrack,0);const by={};cats().filter(c=>!c.off&&c.opts.length&&!(AREAS[c.area]||{}).off).forEach(c=>{(by[c.area]=by[c.area]||[]).push(c);});
   const today=dayKey(new Date());const tl=allLogs().filter(l=>dayKey(l.t)===today);const xp=tl.reduce((a,l)=>a+lxp(l),0);
   const t=xpWeek(),lv=levelOf(t.total);
-  const order=["family","money","body"].filter(k=>by[k]);
+  const order=areaKeys().filter(k=>by[k]);
   const ts="orb",rs=brl(allLogs().filter(l=>l.kind==="dinheiro").reduce((x,l)=>x+(+l.value||0),0));
-  const rows=order.map(k=>{const a=AREAS[k];return `<section class="tg" style="--a:${a.color}"><h3 class="tg-h">${esc(a.name)}${k==="money"?`<span class="tg-r num">${esc(rs)}</span>`:""}</h3><div class="tg-l n${by[k].length}">${by[k].map(catHTML).join("")}</div></section>`;}).join("");
+  // com mais de 3 quests, quests de poucas bolhas dividem a mesma linha (até 3 bolhas por linha)
+  const packs=[];order.forEach(k=>{const n=by[k].length,L=packs[packs.length-1];if(order.length>3&&L&&L.n+n<=3){L.ks.push(k);L.n+=n;}else packs.push({ks:[k],n});});
+  const sec=k=>{const a=AREAS[k];return `<section class="tg" style="--a:${a.color}"><h3 class="tg-h">${esc(a.name)}${k==="money"?`<span class="tg-r num">${esc(rs)}</span>`:""}</h3><div class="tg-l n${by[k].length}">${by[k].map(catHTML).join("")}</div></section>`;};
+  const rows=packs.map(r=>`<div class="tg-row" data-n="${r.n}">${r.ks.map(sec).join("")}</div>`).join("");
   return `<div class="track ts-${ts}">
     <div class="track-h"><div><div class="track-d">${esc(new Date().toLocaleDateString("pt-BR",{weekday:"short",day:"2-digit",month:"short"}).replace(/\./g,""))}</div><div class="track-s"><b class="num">${tl.length}</b> ${tl.length===1?"registro":"registros"} · <b class="num">+${xp}</b> XP hoje</div>${(()=>{const pl=pendingLinks();return pl.length?`<button class="track-bn" data-sugopen="${esc(pl[0].k.id)}">${IC.zap}<span>Bônus: ${pl.map(p=>`${esc(p.k.to.l)} <b>+${p.k.xp}</b>`).join(" · ")}</span></button>`:"";})()}</div>
-<button class="link" data-full>+ Registro</button></div>
+<div class="track-a"><button class="link" data-full>+ Registro</button><button class="link" data-torg>Organizar</button></div></div>
     <div class="track-rows">${rows}</div>
   </div>`;}
-function quickHTML(){const by={};cats().filter(c=>!c.off).forEach(c=>{(by[c.area]=by[c.area]||[]).push(c);});
-  const rows=Object.keys(AREAS).filter(k=>by[k]).map(k=>{const a=AREAS[k];const lv=areaLevel(xpWeek().by[k]||0);
+function quickHTML(){const by={};cats().filter(c=>!c.off&&c.opts.length&&!(AREAS[c.area]||{}).off).forEach(c=>{(by[c.area]=by[c.area]||[]).push(c);});
+  const rows=areaKeys().filter(k=>by[k]).map(k=>{const a=AREAS[k];const lv=areaLevel(xpWeek().by[k]||0);
     return `<div class="qrow" style="--a:${a.color}"><div class="qrow-h"><span class="qrow-i">${IC[areaIcon(k)]}</span><b>${esc(a.name)}</b></div><div class="cats">${by[k].map(catHTML).join("")}</div></div>`;}).join("");
   return `<section class="sec"><div class="sec-head"><h2>${pn("quick","Registrar")}</h2><span class="small muted">toque ou segure</span></div>${rows}</section>`;}
 function catLast(c){const id=((S.catLast||{})[c.id]);return c.opts.find(o=>o.id===id)||c.opts[0];}
@@ -2506,7 +2542,7 @@ function doOpt(c,o){if(!o)return;BUMP=c.id;S.catLast=Object.assign({},S.catLast,
   const kind=optKind(c,o);
   if(kind==="stat"){saveState();closeSheet();logSheet("stat",o.statId||(S.stats[0]&&S.stats[0].id));return;}
   if(o.ask){askValue(c,o);saveState();return;}
-  const l={kind,sub:o.sub||undefined,note:""};if(o.sub&&KINDS[kind]&&!(KINDS[kind].subs||{})[o.sub])l.label=o.l;
+  const l={kind,sub:o.sub||undefined,note:""};if(o.sub&&KINDS[kind]&&(KINDS[kind].custom||!(KINDS[kind].subs||{})[o.sub]))l.label=o.l;
   if(kind==="dinheiro"){l.value=o.sub==="retirei"?-Math.abs(+o.value||0):Math.abs(+o.value||0);}
   if(kind==="estudo")l.value=+o.value||0;
   const r0=rwSnap(c);saveState();RWQ=rwOn();addLog(l);RWQ=false;reward(c,o,l,r0);}
@@ -2588,20 +2624,95 @@ function catSheet(c){CATOPEN=c.id;const a=AREAS[c.area]||AREAS.body;const ks=new
     if(b.dataset.plus){e.stopPropagation();const [qi,gi]=b.dataset.plus.split("|");closeSheet();quickPlus(qi,gi);return;}});
   sh.addEventListener("click",e=>{const g=e.target.closest("[data-open]");if(g&&!e.target.closest("button")){const [qi,gi]=g.dataset.open.split("|");goalDetail(qi,gi);}});});}
 /* editar botões e opções */
+function optMin(c){return S.kinds&&S.kinds[c.kind]?1:2;}
 function catEdit(id,refresh){const c=ownCats().find(k=>k.id===id);if(!c)return;const a=AREAS[c.area]||AREAS.body;
   openSheet(`<div class="mgr-head">${icPick("cat:"+c.id,c.icon,"Trocar ícone do botão")}<div style="flex:1;min-width:0"><div class="small muted">Botão de ${esc(a.name)}</div><input id="ce-name" class="ce-name" maxlength="20" value="${esc(c.name)}" aria-label="Nome do botão"></div></div>
     <div class="sec" style="gap:8px"><h2 class="sub">Opções do radial (${c.opts.length})</h2>
-    ${c.opts.map(o=>`<div class="ce-o">${icPick("opt:"+c.id+":"+o.id,o.ic,"Trocar ícone da opção")}<input data-ol="${esc(o.id)}" maxlength="20" value="${esc(o.l)}" aria-label="Nome da opção"><button class="btn sm danger" data-odel="${esc(o.id)}" aria-label="Tirar opção" ${c.opts.length<=2?"disabled":""}>−</button></div>`).join("")}
+    ${c.opts.map(o=>`<div class="ce-o">${icPick("opt:"+c.id+":"+o.id,o.ic,"Trocar ícone da opção")}<input data-ol="${esc(o.id)}" maxlength="20" value="${esc(o.l)}" aria-label="Nome da opção"><button class="btn sm danger" data-odel="${esc(o.id)}" aria-label="Tirar opção" ${c.opts.length<=optMin(c)?"disabled":""}>−</button></div>`).join("")}
     ${c.opts.length<8?`<div class="ce-o ce-new"><span class="ce-plus">＋</span><input id="ce-new" maxlength="20" placeholder="Nova opção, ex: Natação"><button class="btn sm gold" data-oadd>Adicionar</button></div>`:""}
-    <p class="hint">Opções novas contam como ${esc((KINDS[c.kind]||{label:c.name}).label.toLowerCase())} nas tasks e no XP. O radial aceita de 2 a 8 opções.</p></div>
+    <p class="hint">Opções novas contam como ${esc((KINDS[c.kind]||{label:c.name}).label.toLowerCase())} nas tasks e no XP. O radial aceita de ${optMin(c)} a 8 opções.</p></div>
     <div class="actions" style="justify-content:space-between"><button class="btn ghost" data-coff>${c.off?"Mostrar botão":"Esconder botão"}</button><button class="btn gold" data-csave>Salvar</button></div>`,sh=>{if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
     const saveNames=()=>{c.name=sh.querySelector("#ce-name").value.trim()||c.name;sh.querySelectorAll("[data-ol]").forEach(i=>{const o=c.opts.find(x=>x.id===i.dataset.ol);if(o)o.l=i.value.trim()||o.l;});};
     sh.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
-      if(b.dataset.odel){saveNames();if(c.opts.length<=2)return;c.opts=c.opts.filter(o=>o.id!==b.dataset.odel);saveState();render();catEdit(c.id,true);toast("Opção removida");return;}
-      if("oadd" in b.dataset){saveNames();const v=sh.querySelector("#ce-new").value.trim();if(!v){toast("Escreva o nome da opção");return;}const nid="c"+uid();c.opts.push({id:nid,l:v,ic:c.icon,sub:c.kind==="estudo"?undefined:nid,value:c.kind==="estudo"?30:c.kind==="dinheiro"?undefined:undefined,ask:c.kind==="dinheiro"?1:undefined});saveState();render();catEdit(c.id,true);return;}
+      if(b.dataset.odel){saveNames();if(c.opts.length<=optMin(c))return;c.opts=c.opts.filter(o=>o.id!==b.dataset.odel);saveState();render();catEdit(c.id,true);toast("Opção removida");return;}
+      if("oadd" in b.dataset){saveNames();const v=sh.querySelector("#ce-new").value.trim();if(!v){toast("Escreva o nome da opção");return;}const nid="c"+uid();c.opts.push({id:nid,l:v,ic:c.icon,sub:c.kind==="estudo"?undefined:nid,value:c.kind==="estudo"?30:c.kind==="dinheiro"?undefined:undefined,ask:c.kind==="dinheiro"?1:undefined});saveState();syncAreas();render();catEdit(c.id,true);return;}
       if("coff" in b.dataset){saveNames();c.off=!c.off;saveState();closeSheet();render();toast(c.off?"Botão escondido. Volte pelo lápis.":"Botão visível");return;}
-      if("csave" in b.dataset){saveNames();saveState();closeSheet();render();toast("Botão salvo");return;}});},refresh);}
+      if("csave" in b.dataset){saveNames();saveState();syncAreas();closeSheet();render();toast("Botão salvo");return;}});},refresh);}
 
+
+/* ---------- Quests editáveis: nome, ícone, cor, quests novas e ordem do Tracking ---------- */
+const AREA_C0={money:"var(--money)",body:"var(--body)",family:"var(--family)"};
+const AREA_PAL=["#e0a85a","#4fb3c9","#d77fb0","#8fb45a","#7d8ce0","#c98a5e","#5fc2a4","#d4c25a"];
+const NOPT_KINDS=new Set(["dinheiro","estudo","agua","stat"]);
+function shortOf(t){return String(t||"").replace(/\s+e\s+/gi," & ");}
+function mainOf(k){return S.quests.find(q=>q.type==="main"&&q.area===k&&!q.archived)||S.quests.find(q=>q.type==="main"&&q.area===k);}
+function syncAreas(){if(!S||!Array.isArray(S.quests))return;
+  S.quests.filter(q=>q.type==="main").forEach(q=>{let a=AREAS[q.area];
+    if(!a)a=AREAS[q.area]={name:q.title,short:shortOf(q.title),color:q.color||AREA_PAL[0],icon:"star",custom:1};
+    if(q.archived&&mainOf(q.area)!==q)return;
+    a.name=q.title;a.short=shortOf(q.title);a.color=q.color||AREA_C0[q.area]||a.color;a.off=!!q.archived;});
+  const cs=(S.cats||[]);
+  Object.entries(S.kinds||{}).forEach(([k,d])=>{const c=cs.find(c=>c.kind===k);const subs={};if(c)c.opts.forEach(o=>{if(o.sub)subs[o.sub]=o.l;});
+    KINDS[k]={label:c?c.name:d.label,icon:c?c.icon:(d.icon||"star"),area:d.area,custom:1,subs:Object.keys(subs).length?subs:undefined,hide:!c||c.off||!!(AREAS[d.area]||{}).off};});}
+function areaKeys(all){const live=k=>AREAS[k]&&(all||!AREAS[k].off)&&S.quests.some(q=>q.type==="main"&&q.area===k&&(all||!q.archived));
+  const ks=(S.areaOrder||["family","money","body"]).filter(live);Object.keys(AREAS).forEach(k=>{if(!ks.includes(k)&&live(k))ks.push(k);});return ks;}
+function newCat(area,name,icon){const kid="k"+uid();S.kinds=Object.assign({},S.kinds,{[kid]:{label:name,area,icon}});
+  const c={id:"c"+uid(),area,name,icon,kind:kid,agg:1,opts:[]};ownCats().push(c);return c;}
+function addOpt(c,l){if(c.opts.length>=8)return null;const nid="o"+uid();const o={id:nid,l:String(l).trim().slice(0,20)||"Registro",ic:c.icon,sub:nid};c.opts.push(o);return o;}
+function swatches(cur,def){return `<div class="swl" role="radiogroup" aria-label="Cor">${(def?[def]:[]).concat(AREA_PAL).map(col=>`<button type="button" class="sw" data-sw="${esc(col)}" style="--c:${esc(col)}" aria-pressed="${col===cur}" aria-label="${col===def?"Cor original":"Cor"}"></button>`).join("")}</div>`;}
+function bindSw(sh,set){sh.addEventListener("click",e=>{const b=e.target.closest("[data-sw]");if(!b)return;sh.querySelectorAll("[data-sw]").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));set(b.dataset.sw);});}
+let QARM=null;
+function questEdit(qid,refresh){const q=S.quests.find(x=>x.id===qid);if(!q)return;const a=AREAS[q.area]||AREAS.body,def=AREA_C0[q.area];let col=q.color||def||a.color;
+  const cs=cats().filter(c=>c.area===q.area);
+  openSheet(`<div class="mgr-head" style="--a:${a.color}">${icPick("area:"+q.area,areaIcon(q.area),"Trocar ícone da quest")}<div style="flex:1;min-width:0"><div class="small muted">Toque no ícone para trocar</div><input id="qe-name" class="ce-name" maxlength="40" value="${esc(q.title)}" aria-label="Nome da quest"></div></div>
+    <div class="field"><label for="qe-desc">Descrição</label><input id="qe-desc" maxlength="140" value="${esc(q.desc||"")}" placeholder="opcional"></div>
+    <div class="field"><label>Cor</label>${swatches(col,def)}</div>
+    <div class="sec" style="gap:8px"><h2 class="sub">Botões no Tracking</h2>
+      ${cs.map(c=>`<div class="ce-o qe-c"><span class="qicon" style="--a:${a.color}">${IC[c.icon]||IC.star}</span><span class="qe-l"><b>${esc(c.name)}</b><small>${c.opts.length} ${c.opts.length===1?"opção":"opções"}${c.off?" · oculto":""}</small></span><button class="btn sm" data-qecat="${esc(c.id)}">Editar</button></div>`).join("")||`<div class="hint">Nenhum botão ainda.</div>`}
+      <div class="ce-o ce-new"><span class="ce-plus">＋</span><input id="qe-newcat" maxlength="20" placeholder="Novo botão, ex: Inglês"><button class="btn sm gold" data-qeaddcat>Criar</button></div></div>
+    <p class="hint">O nome muda em todo o app: Tracking, Nível, avisos e tasks. Os registros continuam os mesmos.</p>
+    ${a.custom?`<button class="btn sm danger" data-qearch style="align-self:flex-start">${QARM===q.id?"Toque de novo para arquivar":"Arquivar quest"}</button>`:""}
+    <div class="actions" style="justify-content:space-between"><button class="btn ghost" data-mgr2="${q.id}">Editar tasks</button><button class="btn gold" data-qesave>Salvar</button></div>`,sh=>{
+    bindSw(sh,v=>{col=v;});
+    const save=()=>{const old=q.title,nt=sh.querySelector("#qe-name").value.trim().slice(0,40);if(nt)q.title=nt;q.desc=sh.querySelector("#qe-desc").value.trim();
+      if(col&&col!==def)q.color=col;else delete q.color;
+      if(old!==q.title)ownCats().forEach(c=>{if(c.area===q.area&&S.kinds&&S.kinds[c.kind]&&c.name===old.slice(0,20))c.name=q.title.slice(0,20);});
+      saveState();syncAreas();};
+    sh.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
+      if("qesave" in b.dataset){save();QARM=null;closeSheet();render();toast("Quest salva");return;}
+      if(b.dataset.qecat){save();catEdit(b.dataset.qecat);return;}
+      if(b.dataset.mgr2){save();closeSheet();render();goalsManager(q.id);return;}
+      if("qeaddcat" in b.dataset){const v=sh.querySelector("#qe-newcat").value.trim();if(!v){toast("Escreva o nome do botão");return;}save();const c=newCat(q.area,v.slice(0,20),areaIcon(q.area));addOpt(c,v);saveState();syncAreas();render();catEdit(c.id);toast("Botão criado. Adicione as opções do radial.");return;}
+      if("qearch" in b.dataset){if(QARM!==q.id){QARM=q.id;questEdit(q.id,true);return;}QARM=null;q.archived=true;ownCats().forEach(c=>{if(c.area===q.area)c.off=true;});saveState();syncAreas();closeSheet();render();toast("Quest arquivada. Os registros continuam no Diário.");return;}});},refresh);}
+let NEWQ=null;
+function newQuestSheet(){NEWQ={icon:"star",color:AREA_PAL[S.quests.filter(q=>q.type==="main").length%AREA_PAL.length]};
+  openSheet(`<h2>Nova quest</h2><form class="sec" style="gap:12px">
+    <div class="mgr-head" id="nq-head" style="--a:${NEWQ.color}">${icPick("newq:x",NEWQ.icon,"Escolher ícone")}<div class="field" style="flex:1;min-width:0"><label for="nq-name">Nome</label><input id="nq-name" required maxlength="40" placeholder="ex: Trabalho e Carreira"></div></div>
+    <div class="field"><label>Cor</label>${swatches(NEWQ.color)}</div>
+    <div class="field"><label for="nq-opts">O que você quer registrar?</label><input id="nq-opts" maxlength="120" placeholder="ex: Inglês, Leitura técnica, Curso"><small class="hint">Separe por vírgula. Cada item vira uma opção da bolha no Tracking (até 8).</small></div>
+    <div class="actions"><button type="button" class="btn ghost" data-cancel>Cancelar</button><button class="btn gold" type="submit">Criar quest</button></div></form>`,sh=>{
+    bindSw(sh,v=>{NEWQ.color=v;sh.querySelector("#nq-head").style.setProperty("--a",v);});
+    sh.addEventListener("submit",e=>{e.preventDefault();const t=sh.querySelector("#nq-name").value.trim().slice(0,40);if(!t)return;
+      const area="a"+uid(),q={id:uid(),title:t,desc:"",area,type:"main",status:"active",xp:0,goals:[],color:NEWQ.color};
+      S.quests.push(q);S.areaIcons=Object.assign({},S.areaIcons,{[area]:NEWQ.icon});S.areaOrder=areaKeys().concat([area]);
+      const ops=sh.querySelector("#nq-opts").value.split(/[,;\n]/).map(x=>x.trim()).filter(Boolean).slice(0,8);
+      const c=newCat(area,t.slice(0,20),NEWQ.icon);ops.forEach(o=>addOpt(c,o));
+      saveState();syncAreas();QOPEN.add(q.id);NEWQ=null;closeSheet();QVIEW="q";tab="quests";render();
+      toast(ops.length?"Quest criada com a bolha no Tracking":"Quest criada. Crie uma task para a bolha aparecer.");setTimeout(()=>goalSheet(q.id),350);});});}
+/* organizar o Tracking */
+function orgSheet(refresh){const ks=areaKeys();
+  openSheet(`<h2>Organizar o Tracking</h2><p class="hint">As setas mudam a ordem das quests e das bolhas. O olho mostra ou esconde a bolha.</p>
+    ${ks.map((k,i)=>{const a=AREAS[k],q=mainOf(k),cs=cats().filter(c=>c.area===k);
+      return `<div class="org" style="--a:${a.color}"><div class="org-h"><span class="qicon">${IC[areaIcon(k)]}</span><b>${esc(a.name)}</b><span class="org-b"><button class="btn sm ghost" data-oa="${k}|-1" aria-label="Subir quest" ${i?"":"disabled"}>↑</button><button class="btn sm ghost" data-oa="${k}|1" aria-label="Descer quest" ${i<ks.length-1?"":"disabled"}>↓</button><button class="btn sm ghost" data-oq="${q?q.id:""}" aria-label="Editar quest">✎</button></span></div>
+        ${cs.map((c,j)=>`<div class="org-r${c.off?" off":""}"><span class="org-i">${IC[c.icon]||IC.star}</span><span class="org-n">${esc(c.name)}${c.opts.length?"":" <small>sem opções</small>"}</span><span class="org-b"><button class="btn sm ghost" data-oc="${esc(c.id)}|-1" aria-label="Subir bolha" ${j?"":"disabled"}>↑</button><button class="btn sm ghost" data-oc="${esc(c.id)}|1" aria-label="Descer bolha" ${j<cs.length-1?"":"disabled"}>↓</button><button class="btn sm ghost" data-ov="${esc(c.id)}" aria-label="${c.off?"Mostrar":"Esconder"} bolha">${c.off?"○":"●"}</button><button class="btn sm ghost" data-oe="${esc(c.id)}" aria-label="Editar bolha">✎</button></span></div>`).join("")}</div>`;}).join("")}
+    <div class="actions" style="justify-content:space-between"><button class="btn ghost" data-onq>+ Nova quest</button><button class="btn gold" data-cancel>Pronto</button></div>`,sh=>{
+    sh.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const d=b.dataset;
+      if(d.oa){const [k,dir]=d.oa.split("|");const o=areaKeys(),i=o.indexOf(k),j=i+(+dir);if(j<0||j>=o.length)return;[o[i],o[j]]=[o[j],o[i]];S.areaOrder=o.concat((S.areaOrder||[]).filter(x=>!o.includes(x)));saveState();render();orgSheet(true);return;}
+      if(d.oc){const [id,dir]=d.oc.split("|");const all=ownCats(),c=all.find(x=>x.id===id);if(!c)return;const sib=all.filter(x=>x.area===c.area),i=sib.indexOf(c),o=sib[i+(+dir)];if(!o)return;const ai=all.indexOf(c),bi=all.indexOf(o);[all[ai],all[bi]]=[all[bi],all[ai]];saveState();render();orgSheet(true);return;}
+      if(d.ov){const c=ownCats().find(x=>x.id===d.ov);if(c){c.off=!c.off;saveState();syncAreas();render();orgSheet(true);}return;}
+      if(d.oe){catEdit(d.oe);return;}
+      if(d.oq){questEdit(d.oq);return;}
+      if("onq" in d){newQuestSheet();return;}});},refresh);}
 
 /* ---------- Backup ---------- */
 let BKTEXT="",pendingImport=null;
@@ -2716,6 +2827,7 @@ document.addEventListener("click",e=>{
   const sel=e.target.closest(".icpick [data-icsel]");if(sel){const pop=sel.parentElement.querySelector(".icpop");pop.hidden=!pop.hidden;sel.setAttribute("aria-expanded",String(!pop.hidden));e.stopPropagation();return;}
   const p=e.target.closest("[data-icp]");if(!p||!S)return;e.stopPropagation();const [key,ic]=p.dataset.icp.split("|"),[type,id]=key.split(":");
   if(type==="area"){S.areaIcons=Object.assign({},S.areaIcons,{[id]:ic});}
+  else if(type==="newq"){if(NEWQ)NEWQ.icon=ic;}
   else if(type==="stat"){const st=S.stats.find(x=>x.id===id);if(st)st.icon=ic;}
   else if(type==="cat"){const c=ownCats().find(x=>x.id===id);if(c)c.icon=ic;}
   else if(type==="opt"){const [cid,oid]=id.split(":").length>1?id.split(":"):[id,key.split(":")[2]];const c=ownCats().find(x=>x.id===cid);const o=c&&c.opts.find(x=>x.id===(oid||key.split(":")[2]));if(o)o.ic=ic;}
@@ -2813,7 +2925,9 @@ app.addEventListener("click",e=>{
   if(d.complete){completeQuest(d.complete);return;}
   if(d.addgoal){goalSheet(d.addgoal);return;}
   if(d.mgr){goalsManager(d.mgr);return;}
-  if("newquest" in d){questSheet();return;}
+  if("newquest" in d||"newq2" in d){newQuestSheet();return;}
+  if(d.qedit){questEdit(d.qedit);return;}
+  if("torg" in d){orgSheet();return;}
   if("newstat" in d){statSheet();return;}
   if(d.editstat){statSheet(d.editstat);return;}
   if("export" in d){exportFile();return;}

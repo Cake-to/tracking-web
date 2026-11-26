@@ -1,12 +1,12 @@
 {
-  "build": 10,
+  "build": 11,
   "minNative": 6,
-  "label": "versão 10",
-  "date": "2026-11-26T17:50:00.559Z",
+  "label": "versão 11",
+  "date": "2026-11-26T19:56:21.893Z",
   "files": [
     {
       "p": "index.html",
-      "h": "f98ecfac60d05ef9826cf74ae283a3a1029c80614bd0b3c1544ddb9638e609d3"
+      "h": "ad7a939d3e701e2e7daeb23189ad0dc7936afd26b20b55926068e7bf09806153"
     },
     {
       "p": "manifest.webmanifest",
