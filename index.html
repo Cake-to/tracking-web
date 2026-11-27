@@ -539,6 +539,12 @@ body{letter-spacing:-.005em}
 .track-h .track-a .link{padding:3px 0 3px 8px}
 .kinds .kind[aria-pressed="true"]{background:var(--sel)!important;color:var(--sel-ink)}
 .kinds .kind:disabled{opacity:.38}
+.xp-src{display:block;margin:2px 0 8px;font-size:13px;color:var(--muted);padding:4px 0}
+.xpds{display:flex;flex-direction:column;gap:6px}
+.xpd{display:grid;grid-template-columns:minmax(64px,auto) 1fr auto;align-items:center;gap:10px;font-size:13px}
+.xpd i{height:6px;border-radius:3px;background:var(--gold);min-width:2px}
+.xpd b{min-width:32px;text-align:right}
+.xp-got{font-weight:700;color:var(--gold);flex:none;margin-left:8px}
 .sheet.swap{animation:shswap .16s ease both!important}
 @keyframes shswap{from{opacity:.55}}
 .trigp{display:flex;flex-direction:column;gap:10px}
@@ -1104,7 +1110,7 @@ html[data-motion=sutil] .rw{transition-duration:.12s,.2s}
 
 <div id="layer"></div>
 
-<script>/* ota-guard: se uma versão nova não abrir em 12 s, volta para a anterior */window.WEB_BUILD=14;window.WEB_DATE="2026-11-26T21:48:00-03:00";(function(){try{var C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform())return;var pend=localStorage.getItem("ota.pending");if(pend!==String(window.WEB_BUILD))return;
+<script>/* ota-guard: se uma versão nova não abrir em 12 s, volta para a anterior */window.WEB_BUILD=15;window.WEB_DATE="2026-11-26T22:15:00-03:00";(function(){try{var C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform())return;var pend=localStorage.getItem("ota.pending");if(pend!==String(window.WEB_BUILD))return;
 setTimeout(function(){if(window.__appOk)return;try{localStorage.setItem("ota.bad",pend);localStorage.removeItem("ota.pending");var prev=localStorage.getItem("ota.prev")||"public",W=C.Plugins.WebView;if(prev==="public")W.setServerAssetPath({path:"public"});else W.setServerBasePath({path:prev});}catch(e){}},12000);}catch(e){}})();</script>
 <script>
 (function(){
@@ -1318,8 +1324,10 @@ function goalProgress(g){
 function xpTotals(fromT,toT,wf){
   const by={money:0,body:0,family:0};const tt=iso=>new Date(iso||(S&&S.createdAt)).getTime();const inR=iso=>{const t=tt(iso);return (!fromT||t>=fromT)&&(!toT||t<toT);};
   const add=(a,v,iso)=>{if(!inR(iso))return;by[a]=(by[a]||0)+(+v||0)*(wf?wf(tt(iso)):1);};
-  allLogs().forEach(l=>add(l.area,lxp(l),l.t));
-  (S?S.quests:[]).forEach(q=>{(q.goals||[]).forEach(g=>{if(g.kind==="dinheiro")return;(g.claims||[]).forEach(pk=>add(q.area,g.xp,(g.claimT||{})[pk]));});if(q.status==="done")add(q.area,q.xp,q.doneAt);});
+  const lim=dayKey(Date.now()-864e5),X=xpMap(),xd=(S&&S.xpd)||{};
+  Object.entries(xd).forEach(([dk,o])=>{if(dk<lim)Object.entries(o).forEach(([a,v])=>add(a,v,dk+"T12:00:00"));});
+  allLogs().forEach(l=>{const dk=dayKey(l.t);if(xd[dk]&&dk<lim)return;(X.cr[l.id]||[]).forEach(([a,v])=>add(a,v,l.t));});
+  (S?S.quests:[]).forEach(q=>{(q.goals||[]).forEach(g=>{if(g.src!=="steps"||!g.statId)return;(g.claims||[]).forEach(pk=>add(q.area,STEP_XP,(g.claimT||{})[pk]));});if(q.status==="done")add(q.area,q.xp,q.doneAt);});
   if(S&&S.conq)Object.keys(S.conq).forEach(k=>{const [id,i]=k.split(":"),c=CQ[id];if(c&&!c.noxp&&CQT[+i])add(c.a,CQT[+i].xp,S.conq[k]);});
   if(wf)Object.keys(by).forEach(k=>by[k]=Math.round(by[k]));
   return {by,total:Object.values(by).reduce((a,x)=>a+x,0)};
@@ -1524,6 +1532,7 @@ function pendingLinks(){const now=Date.now(),ls=allLogs(),out=[];activeLinks().f
   const f=ls.filter(l=>linkFrom(k,l)&&now-new Date(l.t).getTime()<=k.min*60000).sort((a,b)=>b.t<a.t?-1:1)[0];if(!f)return;
   if(ls.some(x=>linkTo(k,x)&&x.t>=f.t))return;out.push({k,f,until:new Date(f.t).getTime()+k.min*60000});});return out;}
 function linkOpt(k){const c=cats().find(x=>x.id===k.to.cat&&!x.off);const o=c&&c.opts.find(x=>x.id===k.to.opt);return [c,o];}
+const SUGS=true; // aviso de bônus das conexões: mantido (decisão do usuário, v15)
 function sugClose(w){if(!w)return;w.classList.remove("on");setTimeout(()=>w.remove(),220);}
 function showSug(k){document.querySelectorAll(".sug-w").forEach(x=>x.remove());const [c,o]=linkOpt(k);const a=AREAS[(c&&c.area)||"body"]||AREAS.body;
   const w=document.createElement("div");w.className="sug-w";w.style.setProperty("--a",a.color);document.body.appendChild(w);
@@ -1534,27 +1543,68 @@ function showSug(k){document.querySelectorAll(".sug-w").forEach(x=>x.remove());c
   w.addEventListener("click",e=>{if(e.target.closest("[data-sugok]")){clearTimeout(tm);sugClose(w);vib(18);const [c2,o2]=linkOpt(k);if(c2&&o2&&!o2.ask&&optKind(c2,o2)!=="stat")doOpt(c2,o2);else addLog({kind:k.to.kind,sub:k.to.sub,note:""});return;}
     if(e.target.closest("[data-sugno]")){clearTimeout(tm);sugClose(w);}});}
 function xpCat(l){const k=l.kind;if(KINDS[k]&&KINDS[k].custom)return k;if(k==="treino"||k==="mente"||k==="estudo"||k==="familia")return k;if(k==="agua"||(k==="ingestao"&&l.sub!=="porcaria"))return "ingestao";return null;}
-let XPC={key:"",m:{},d:{}};
-function xpMap(){const ls=allLogs();const key=ls.length+"|"+(ls[0]?ls[0].id:"")+"|"+(ls.length?ls[ls.length-1].id:"")+"|"+((S&&S.linksOff)||[]).join();if(XPC.key===key)return XPC;
-  const asc=ls.slice().reverse();const m={},byDay={},stDay={};
-  asc.forEach(l=>{const dk=dayKey(l.t);(byDay[dk]=byDay[dk]||[]).push(l);});
-  const days=Object.keys(byDay).sort();const has={};days.forEach(dk=>{has[dk]=new Set(byDay[dk].map(xpCat).filter(Boolean));});
-  const back=(dk,n)=>{const d=new Date(dk+"T12:00:00");d.setDate(d.getDate()-n);return dayKey(d);};
-  const info={};
-  days.forEach(dk=>{const tot={},mult={};let seen=new Set(),full=false;
-    has[dk].forEach(c=>{let n=0;for(let i=0;i<7;i++){const h=has[back(dk,i)];if(h&&h.has(c))n++;}mult[c]=1+XPR.step*Math.min(XPR.maxStep,n-1);});
-    byDay[dk].forEach(l=>{let x=0;const c=xpCat(l);
-      if(l.kind==="stat"){const k=dk+"|"+l.statId;if(!stDay[k]){stDay[k]=1;x=XPR.stat;}}
-      else if(c){const before=tot[c]||0;const raw=before?XPR.extra:XPR.first;const g=Math.max(0,Math.min(raw,XPR.cap-before));tot[c]=before+g;x=Math.round(g*mult[c]);
-        if(!seen.has(c)){seen.add(c);if(!full&&seen.size>=XPR.fullN){full=true;x+=XPR.full;}}}
-      m[l.id]=x;});
-    info[dk]={mult,full};});
-  const b={},used={};activeLinks().forEach(k=>{asc.forEach(l=>{if(!linkTo(k,l))return;const t=new Date(l.t).getTime();
-    const f=asc.find(x=>x!==l&&!used[k.id+"|"+x.id]&&linkFrom(k,x)&&x.t<=l.t&&t-new Date(x.t).getTime()<=k.min*60000);
-    if(f){used[k.id+"|"+f.id]=1;m[l.id]=(m[l.id]||0)+k.xp;b[l.id]=(b[l.id]||0)+k.xp;}});});
-  XPC={key,m,d:info,b};return XPC;}
+/* ---------- XP inquebrável ----------
+   Um dia perfeito vale sempre XP_DAY, dividido entre as tasks ativas pelo peso da dificuldade.
+   Cada task rende pelo ciclo (diária completa = 1 dia de fatia, semanal = 7, mensal = dias do mês), na proporção do que andou.
+   Passar da meta rende 1 XP (até 3 por dia). Dinheiro não dá XP. Edições valem do próximo ciclo (g.next → g.cfgs).
+   Dias encerrados ficam congelados em S.xpd. */
+const DIFF={facil:{n:"Fácil",w:.6},normal:{n:"Normal",w:1},dificil:{n:"Difícil",w:1.5}};
+const XP_K=(()=>{let k=0;for(let a=0;a<30;a++)k+=decayW(a*864e5+12*3600e3);return k;})();
+const XP_DAY=Math.ceil(xpToReach(MAXL)/XP_K),STEP_XP=40,BONUS_CAP=Math.round(XP_DAY*.05);
+function cycDays(per,t){if(per==="day")return 1;if(per==="week")return 7;if(per==="month"){const d=new Date(t);return new Date(d.getFullYear(),d.getMonth()+1,0).getDate();}if(per==="year")return 365;return 30;}
+function cycKey(per,t){const dk=dayKey(t);if(per==="day")return dk;if(per==="week")return weekKey(t);if(per==="month")return dk.slice(0,7);if(per==="year")return dk.slice(0,4);return "all";}
+function xpGoal(g){return (g.src==="count"||g.src==="sum")&&g.kind!=="dinheiro"&&g.unit!=="R$";}
+function cfgAt(g,t){const hs=g.cfgs||[];for(const h of hs){if(t<h.to)return Object.assign({},g,h);}return g;}
+function goalLive(q,g,dk){if(!xpGoal(g)||q.archived)return false;if(g.since&&dk<dayKey(g.since))return false;if(g.off&&(!g.offAt||dk>=dayKey(g.offAt)))return false;return true;}
+function dw(c){return (DIFF[c.diff||"normal"]||DIFF.normal).w;}
+function xpSig(){return S.quests.map(q=>q.area+(q.archived?1:0)+q.goals.map(g=>[g.id,g.target,g.period,g.trig&&g.trig.join(),g.diff,g.off?1:0,g.offAt,g.since,g.kind,g.sub,g.src,(g.cfgs||[]).length].join("~")).join("^")).join("|")+"|"+((S.linksOff)||[]).join();}
+let XPC={key:""};
+function xpLive(){const gs=[];S.quests.filter(q=>q.type==="main"&&q.status==="active").forEach(q=>q.goals.forEach(g=>{if(xpGoal(g))gs.push([q,g]);}));return gs;}
+function wOfDay(gs,dk){let w=0;const t=new Date(dk+"T12:00").getTime();gs.forEach(([q,g])=>{if(goalLive(q,g,dk))w+=dw(cfgAt(g,t));});return w;}
+function xpMap(){const ls=allLogs();if(!S)return {m:{},cr:{},gd:{},b:{}};const key=xpSig();if(XPC.ls===ls&&XPC.key===key)return XPC;
+  const asc=ls.slice().reverse(),gs=xpLive(),m={},cr={},gd={},b={},acc={},exN={},wD={},sp=new Map(),bonD={};
+  const W=dk=>wD[dk]!=null?wD[dk]:(wD[dk]=wOfDay(gs,dk));
+  asc.forEach(l=>{const t=new Date(l.t).getTime(),dk=dayKey(l.t);let x=0;const parts=[];
+    gs.forEach(([q,g])=>{if(!goalLive(q,g,dk))return;if(g.since&&t<new Date(g.since).getTime())return;const c=cfgAt(g,t);
+      const sk=g.id+"|"+(c===g?"":c.to);let s=sp.get(sk);if(!s){s=Array.isArray(c.trig)?trigSpecs(c):null;sp.set(sk,s);}
+      if(!trigMatch(c,l,s))return;const tg=+c.target||0;if(tg<=0)return;
+      const ck=g.id+"|"+cycKey(c.period||"all",t),prev=acc[ck]||0,now=prev+(c.src==="count"?1:(+l.value||0));acc[ck]=now;
+      const dp=Math.min(1,now/tg)-Math.min(1,prev/tg),Wd=W(dk);let v=Wd?XP_DAY*dw(c)/Wd*cycDays(c.period,t)*dp:0;
+      if(dp<=0){const ek=g.id+"|"+dk;if((exN[ek]||0)<3){exN[ek]=(exN[ek]||0)+1;v=1;}}
+      if(v>0){parts.push([q.area,v]);x+=v;gd[g.id+"|"+dk]=(gd[g.id+"|"+dk]||0)+v;}});
+    m[l.id]=x;cr[l.id]=parts;});
+  // bônus das conexões: pequeno e com teto por dia (não infla o nível)
+  const used={};activeLinks().forEach(k=>{asc.forEach(l=>{if(!linkTo(k,l))return;const t=new Date(l.t).getTime(),dk=dayKey(l.t);
+    const f=asc.find(x=>x!==l&&!used[k.id+"|"+x.id]&&linkFrom(k,x)&&x.t<=l.t&&t-new Date(x.t).getTime()<=k.min*60000);if(!f)return;used[k.id+"|"+f.id]=1;
+    const v=Math.min(k.xp,BONUS_CAP-(bonD[dk]||0));if(v<=0)return;bonD[dk]=(bonD[dk]||0)+v;m[l.id]=(m[l.id]||0)+v;b[l.id]=v;(cr[l.id]=cr[l.id]||[]).push([l.area,v]);});});
+  Object.keys(m).forEach(k=>m[k]=Math.round(m[k]));
+  XPC={ls,key,m,cr,gd,b};return XPC;}
 function lxp(l){const v=xpMap().m[l.id];return v==null?0:v;}
-function streakOf(c){const d=xpMap().d[dayKey(new Date())];return d&&d.mult[c]?Math.round((d.mult[c]-1)*10)+1:0;}
+function streakOf(){return 0;}
+// congela os dias que já acabaram (até anteontem; ontem ainda pode receber registro do widget)
+function freezeDays(){if(!S)return;const lim=dayKey(Date.now()-864e5),X=xpMap(),acc={};
+  allLogs().forEach(l=>{const dk=dayKey(l.t);if(dk>=lim||(S.xpd&&S.xpd[dk]))return;(X.cr[l.id]||[]).forEach(([a,v])=>{const o=acc[dk]=acc[dk]||{};o[a]=(o[a]||0)+v;});});
+  const ks=Object.keys(acc);if(!ks.length)return;S.xpd=Object.assign({},S.xpd);ks.forEach(dk=>{const o={};Object.entries(acc[dk]).forEach(([a,v])=>o[a]=Math.round(v*10)/10);S.xpd[dk]=o;});saveState();}
+function xpRecalc(){S.xpd={};XPC={key:""};freezeDays();saveState();}
+function applyNext(){if(!S)return;let ch=false;const now=Date.now();S.quests.forEach(q=>q.goals.forEach(g=>{if(!g.next||now<g.next.at)return;
+  g.cfgs=(g.cfgs||[]).concat([{to:g.next.at,target:g.target,period:g.period,trig:g.trig,diff:g.diff||"normal",kind:g.kind,sub:g.sub,src:g.src}]);
+  ["target","period","trig","diff","kind","sub"].forEach(k=>{if(k in g.next){if(g.next[k]===undefined)delete g[k];else g[k]=g.next[k];}});delete g.next;syncTitle(g);ch=true;}));if(ch){saveState();reconcileClaims();}}
+function goalCycXP(g){if(!xpGoal(g)||g.off)return 0;const gs=xpLive(),W=wOfDay(gs,dayKey(new Date()));return W?Math.round(XP_DAY*dw(g)/W*cycDays(g.period,Date.now())):0;}
+function xpWhen(per){return {day:"por dia",week:"por semana",month:"por mês",year:"por ano"}[per]||"no total";}
+function xpSheet(refresh){const X=xpMap(),gs=xpLive(),today=dayKey(new Date()),W=wOfDay(gs,today);SHREF=!!refresh;
+  const rows=gs.filter(([q,g])=>goalLive(q,g,today)).map(([q,g])=>{const a=AREAS[q.area]||AREAS.body,cap=goalCycXP(g),c0=dayKey(periodStart(g.period||"all",g.since)),got=Math.round(Object.entries(X.gd).reduce((a,[k,v])=>{const i=k.lastIndexOf("|");return k.slice(0,i)===g.id&&k.slice(i+1)>=c0?a+v:a;},0));
+    return `<div class="log" style="--a:${a.color}"><div class="d"><b>${esc(g.title)}</b><span>${esc((DIFF[g.diff||"normal"]||DIFF.normal).n)} · até ${cap} XP ${xpWhen(g.period)}</span></div><span class="num xp-got">${got?"+"+got:"0"}</span></div>`;}).join("");
+  const days=[];for(let i=0;i<7;i++){const dk=dayKey(Date.now()-i*864e5);const fz=S.xpd&&S.xpd[dk];let v=0;
+    if(fz)v=Object.values(fz).reduce((a,x)=>a+x,0);else allLogs().forEach(l=>{if(dayKey(l.t)===dk)v+=(X.cr[l.id]||[]).reduce((a,p)=>a+p[1],0);});
+    days.push(`<div class="xpd"><span>${i===0?"Hoje":i===1?"Ontem":esc(new Date(dk+"T12:00").toLocaleDateString("pt-BR",{weekday:"short",day:"2-digit"}).replace(".",""))}</span><i style="width:${Math.min(100,v/XP_DAY*100).toFixed(0)}%"></i><b class="num">${Math.round(v)}</b></div>`);}
+  openSheet(`<h2>De onde vem o XP</h2>
+    <p class="hint">Um dia perfeito vale <b>${XP_DAY} XP</b>, sempre. Esse valor é dividido entre as suas ${gs.filter(([q,g])=>goalLive(q,g,today)).length} tasks ativas: criar mais tasks ou aumentar a meta só divide o bolo. Semanais e mensais rendem proporcional ao ciclo. Passar da meta rende 1 XP. Dinheiro não dá XP. 30 dias perfeitos levam ao nível ${MAXL}.</p>
+    <div class="sec" style="gap:6px"><h2 class="sub">Últimos 7 dias</h2><div class="xpds">${days.join("")}</div></div>
+    <div class="sec" style="gap:6px"><h2 class="sub">Tasks no ciclo atual</h2>${rows||`<div class="hint">Nenhuma task ativa que dê XP.</div>`}</div>
+    <p class="hint">Mudar a meta, o ciclo, as opções ou a dificuldade de uma task vale a partir do próximo ciclo. Os dias que já passaram ficam com o XP que renderam.</p>
+    <div class="actions" style="justify-content:space-between"><button class="btn ghost" data-xprc>${armed==="xprc"?"Toque de novo para recalcular":"Recalcular XP"}</button><button class="btn gold" data-cancel>Fechar</button></div>`,sh=>{
+    sh.addEventListener("click",e=>{const b=e.target.closest("[data-xprc]");if(!b)return;if(armed!=="xprc"){armed="xprc";xpSheet(true);return;}armed=null;const L0=levelOf(xpWeek().total).L;xpRecalc();const L1=levelOf(xpWeek().total).L;prevLevel=L1;render();xpSheet(true);toast(`XP recalculado · nível ${L1}${L1!==L0?` (antes ${L0})`:""}`);});});}
+
 function xpForLog(l){
   const today=dayKey(l.t);
   switch(l.kind){
@@ -1588,19 +1638,19 @@ function addLog(l){
   const mk=monthKey(l.t);MONTHS[mk]=(MONTHS[mk]||[]).concat([l]);saveMonth(mk);
   if(l.kind==="stat"){const st=S.stats.find(s=>s.id===l.statId);if(st&&st.start==null){st.start=l.value;saveState();}}
   const got=autoClaim();checkConq();render();const bon=(xpMap().b||{})[l.id]||0;afterXp(lxp(l)+got.reduce((a,x)=>a+x.xp,0),l.area,bon?` · <b class="sug-xp">bônus +${bon}</b>`:"");
-  const nk=activeLinks().find(k=>linkFrom(k,l));if(nk&&pendingLinks().some(p=>p.k===nk))setTimeout(()=>showSug(nk),650);
+  const nk=activeLinks().find(k=>linkFrom(k,l));if(SUGS&&nk&&pendingLinks().some(p=>p.k===nk))setTimeout(()=>showSug(nk),650);
   if(got.length)setTimeout(()=>toast(`✓ <b>${esc(got[got.length-1].t)}</b>${got.length>1?` e mais ${got.length-1}`:""} ${got.reduce((a,x)=>a+x.xp,0)?` · +${got.reduce((a,x)=>a+x.xp,0)} XP`:""}`),1600);
 }
 function renewLabel(g){return {day:"renova amanhã",week:"renova segunda",month:"renova dia 1",year:"renova em janeiro"}[g.period]||"";}
 function autoClaim(){const got=[];if(!S)return got;S.quests.filter(q=>q.status==="active").forEach(q=>q.goals.filter(g=>!g.off&&(g.src==="count"||g.src==="sum"||g.src==="steps")).forEach(g=>{
-  for(let k=0;k<30;k++){const p=goalProgress(g);if(!p.done||p.claimed)break;g.claims=(g.claims||[]).concat([p.pk]);g.claimT=Object.assign({},g.claimT,{[p.pk]:new Date().toISOString()});got.push({q,g,t:g.src==="steps"?(g.statId?"−"+fmtNum(p.target)+" kg":"R$ "+fmtNum(p.target,0)+" guardados"):g.title,xp:+g.xp||0});}}));
+  for(let k=0;k<30;k++){const p=goalProgress(g);if(!p.done||p.claimed)break;g.claims=(g.claims||[]).concat([p.pk]);g.claimT=Object.assign({},g.claimT,{[p.pk]:new Date().toISOString()});got.push({q,g,t:g.src==="steps"?(g.statId?"−"+fmtNum(p.target)+" kg":"R$ "+fmtNum(p.target,0)+" guardados"):g.title,xp:g.src==="steps"&&g.statId?STEP_XP:0});}}));
   if(got.length)saveState();return got;}
 function reconcileClaims(){if(!S)return;let ch=false;S.quests.forEach(q=>q.goals.forEach(g=>{if(!(g.claims||[]).length)return;
   if(g.src==="steps"){const tot=stepTotal(g);const keep=g.claims.filter(k=>!(k[0]==="m"&&+k.slice(1)>tot));if(keep.length!==g.claims.length){g.claims=keep;ch=true;}}
   else if(g.src==="count"||g.src==="sum"){const p=goalProgress(g);if(p.claimed&&!p.done){g.claims=g.claims.filter(k=>k!==p.pk);if(g.claimT)delete g.claimT[p.pk];ch=true;}}}));if(ch)saveState();}
 function delLog(id){for(const mk in MONTHS){if(MONTHS[mk].some(x=>x.id===id)){MONTHS[mk]=MONTHS[mk].filter(x=>x.id!==id);saveMonth(mk);break;}}reconcileClaims();prevLevel=levelOf(xpWeek().total).L;render();}
 function findGoal(qid,gid){const q=S.quests.find(x=>x.id===qid);return [q,q&&q.goals.find(g=>g.id===gid)];}
-function claim(qid,gid){const [q,g]=findGoal(qid,gid);const p=goalProgress(g);if(!p.done||p.claimed)return;g.claims=(g.claims||[]).concat([p.pk]);g.claimT=Object.assign({},g.claimT,{[p.pk]:new Date().toISOString()});saveState();render();afterXp(+g.xp||0,q.area);}
+function claim(qid,gid){const [q,g]=findGoal(qid,gid);const p=goalProgress(g);if(!p.done||p.claimed)return;g.claims=(g.claims||[]).concat([p.pk]);g.claimT=Object.assign({},g.claimT,{[p.pk]:new Date().toISOString()});saveState();render();afterXp(g.src==="steps"&&g.statId?STEP_XP:0,q.area);}
 function completeQuest(qid){const q=S.quests.find(x=>x.id===qid);q.status="done";q.doneAt=new Date().toISOString();saveState();render();afterXp(+q.xp||0,q.area);}
 
 /* ---------- UI ---------- */
@@ -1639,7 +1689,7 @@ function migrate(){ // v2: só quests principais + tasks. Nada de registro é ap
   S.v=2;saveState();}
 function render(){
   applyBg();
-  if(S&&!(S.v>=15)){ // migrações em ordem; nenhum registro é apagado
+  if(S&&!(S.v>=16)){ // migrações em ordem; nenhum registro é apagado
   if(!(S.v>=2))migrate();
   if(S&&!(S.v>=3)){S.panelHidden=Object.assign({},S.panelHidden,{rings:true});if(!S.panelOrder||!S.panelOrder.length)S.panelOrder=["hero"];if(!S.panelOrder.includes("quick")){const i=S.panelOrder.indexOf("hero");S.panelOrder.splice(i<0?0:i+1,0,"quick");}S.v=3;saveState();}
   if(S&&!(S.v>=4)){S.panelOrder=(S.panelOrder||["hero"]).filter(k=>k!=="quick");const i=S.panelOrder.indexOf("hero");if(!S.panelOrder.includes("ladder"))S.panelOrder.splice(i<0?0:i+1,0,"ladder");S.v=4;saveState();}
@@ -1673,14 +1723,16 @@ function render(){
     S.v=13;saveState();reconcileClaims();autoClaim();}
   if(!(S.v>=14)){S.quests.forEach(q=>q.goals.forEach(g=>{if(!g.base&&canAuto(g)){g.base=baseOf(g);syncTitle(g);}}));S.v=14;saveState();}
   if(!(S.v>=15)){const q=S.quests.find(x=>x.type==="main"&&x.area==="family");if(q&&q.title==="Pai e Marido")q.title="Casa e Família";S.v=15;saveState();}
+  if(!(S.v>=16)){S.xpd={};S.xpMig=1;S.v=16;saveState();}
   }
-  syncAreas();ensureCats();ensureTrig();
+  syncAreas();ensureCats();ensureTrig();applyNext();freezeDays();
   const ti=document.getElementById("topinfo");if(ti&&mode!=="loading"){const th=topHTML();if(ti._h!==th){ti._h=th;ti.innerHTML=th;}}
   document.querySelectorAll(".nav .tab").forEach(b=>b.setAttribute("aria-current",b.dataset.tab===tab?"page":"false"));
   if(mode==="loading"){return;}
   if(!S){app.innerHTML=onboardHTML();return;}
   if(!FIRSTIN){FIRSTIN=true;requestAnimationFrame(()=>enterFx(0));}
   if(prevLevel==null){prevLevel=levelOf(xpWeek().total).L;weekRecapCheck();}
+  if(S.xpMig){delete S.xpMig;saveState();setTimeout(()=>toast(`<b>XP refeito com a regra nova</b> · você está no nível ${levelOf(xpWeek().total).L}. Veja em Nível → De onde vem o XP.`),1200);}
   if(S&&S.lastWeek&&S.lastWeek!==weekKey(Date.now())){prevLevel=levelOf(xpWeek().total).L;weekRecapCheck();}
   if(detail&&layer.querySelector(".sheet"))setTimeout(drawDetail,0);
   document.body.classList.toggle("on-track",tab==="track");setTimeout(()=>{try{if(!AC_DONE&&S&&allLogs().length){AC_DONE=true;if(autoClaim().length)render();checkConq();}maybeWeekly()}catch(e){}},0);
@@ -1709,7 +1761,7 @@ function heroHTML(){
     <div style="min-width:0"><h1 class="num">${t.total} XP</h1><div class="cls">XP ativo</div></div></div>
     <div class="xpbar" role="progressbar" aria-valuenow="${Math.round(lv.pct*100)}" aria-valuemin="0" aria-valuemax="100" aria-label="XP para o próximo nível"><i style="width:${(lv.pct*100).toFixed(1)}%"></i></div>
     <div class="xpmeta"><span class="num">${lv.max?t.total+" XP ativo":lv.into+" / "+lv.need+" XP"}</span><span>${lv.max?"<b>Nível máximo!</b>":`faltam <b class="num">${lv.need-lv.into}</b> para o nível ${lv.L+1}`}</span></div>
-    <div class="hud">${areaKeys().map(k=>[k,AREAS[k]]).map(([k,a])=>{const l=areaLevel(t.by[k]||0);return `<div class="hud-row" style="--a:${a.color}">${IC[areaIcon(k)]}<div class="hud-bar" role="progressbar" aria-label="${esc(a.name)}" aria-valuenow="${Math.round(l.pct*100)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${(l.pct*100).toFixed(0)}%"></i></div><span>${esc(a.short)} <b>Nv ${l.L}</b></span></div>`}).join("")}</div></div>`;
+    <button class="link xp-src" data-xpsheet>De onde vem o XP</button><div class="hud">${areaKeys().map(k=>[k,AREAS[k]]).map(([k,a])=>{const l=areaLevel(t.by[k]||0);return `<div class="hud-row" style="--a:${a.color}">${IC[areaIcon(k)]}<div class="hud-bar" role="progressbar" aria-label="${esc(a.name)}" aria-valuenow="${Math.round(l.pct*100)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${(l.pct*100).toFixed(0)}%"></i></div><span>${esc(a.short)} <b>Nv ${l.L}</b></span></div>`}).join("")}</div></div>`;
 }
 function ladderRow(L,cur,total){const st=L<cur?"done":L===cur?"cur":"next";const need=xpToReach(L);const when=S.lvHist&&S.lvHist[L];
   let right="";if(st==="cur"){const lv=levelOf(total);right=lv.max?`<b>máximo</b>`:`<span class="num">${total} / ${xpToReach(L+1)}</span>`;}
@@ -2163,7 +2215,8 @@ function drawMgr(){
 }
 function taskIdeas(q){const have=new Set(q.goals.map(g=>g.key).filter(Boolean).concat(S.dismissed||[]));const out=[];
   ideaPool().filter(x=>x.area===q.area).forEach(x=>x.goals.forEach((g,i)=>{const key=x.key+":"+i;if(!have.has(key))out.push(Object.assign(g,{key,desc:x.desc}));}));return out;}
-function ideasHTML(q){const ids=taskIdeas(q);IDEAS=ids;if(!ids.length)return "";
+function ideasHTML(q){IDEAS=[];return ""; // sugestões de task removidas (v15)
+  const ids=taskIdeas(q);if(!ids.length)return "";
   return `<div class="sec" style="gap:6px"><h2 class="sub">Ideias de tasks</h2>${ids.map(g=>`<div class="log"><div class="d"><b>${esc(g.title)}</b><span>${esc(g.desc||"")}</span></div><button class="btn sm gold" data-midea="${g.key}">Adicionar</button><button class="btn sm ghost" data-mdis="${g.key}" aria-label="Dispensar">✕</button></div>`).join("")}</div>`;}
 function goalDetail(qid,gid){detail={qid,gid};REMOPEN=false;drawDetail();}
 function drawDetail(){
@@ -2197,7 +2250,7 @@ function drawDetail0(){
   }
   const ls=goalLogs(g).slice(0,12);
   const list=g.src==="sum"||g.src==="count"||(g.src==="steps"&&!g.statId)?`<details class="dd"><summary><span>Registros ${esc(per)}</span><span class="dd-n num">${ls.length}</span></summary><div class="sec" style="gap:6px;margin-top:8px">${ls.length?ls.map(l=>{const [t,s2]=logDesc(l);return `<div class="log" style="--a:${a.color}"><div class="d"><b>${esc(t)}</b><span>${esc([s2,new Date(l.t).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})].filter(Boolean).join(" · "))}</span></div><button class="btn sm danger" data-drm="${l.id}" aria-label="Remover registro">−</button></div>`}).join(""):`<div class="hint">Nenhum registro ainda neste período.</div>`}</div></details>`:"";
-  const claimB=g.src==="steps"?`<span class="small muted">Próximo marco: ${g.statId?"−"+esc(fmtNum(p.target))+" kg":esc(fmtVal(p.target,"R$"))}${+g.xp?` · +${+g.xp} XP`:""}</span>`:p.claimed?`<span class="claimed">✓ Concluída${renewLabel(g)?" · "+renewLabel(g):""}</span>`:p.done?`<button class="btn gold" data-claim="${q.id}|${g.id}">Resgatar +${+g.xp||0} XP</button>`:`<span class="small muted">Recompensa ${+g.xp||0} XP ao completar</span>`;
+  const claimB=g.src==="steps"?`<span class="small muted">Próximo marco: ${g.statId?"−"+esc(fmtNum(p.target))+" kg":esc(fmtVal(p.target,"R$"))}${g.statId?` · +${STEP_XP} XP`:""}</span>`:p.claimed?`<span class="claimed">✓ Concluída${renewLabel(g)?" · "+renewLabel(g):""}</span>`:p.done?`<button class="btn gold" data-claim="${q.id}|${g.id}">Concluir</button>`:`<span class="small muted">${xpGoal(g)?`Vale até ${goalCycXP(g)} XP ${xpWhen(g.period)}`:"Dinheiro não dá XP"}</span>`;
   layer.innerHTML=`<div class="scrim${LST()}" data-close><div class="sheet${LST()}" role="dialog" aria-modal="true" style="--a:${a.color}">
     <div><div class="small muted">${esc(a.name)} · ${esc(per)}</div><h2>${esc(g.title)}</h2></div>
     <div class="bigprog ${p.done?"goal done":""}" style="padding:0;border:0"><div class="bigval">${big}</div><div class="pbar"><i style="width:${(p.pct*100).toFixed(1)}%"></i></div><div class="gfoot"><span>${Math.round(p.pct*100)}%</span>${claimB}</div></div>
@@ -2207,7 +2260,7 @@ function drawDetail0(){
       <div class="field"><label for="d-title">${canAuto(g)&&!g.fixName?"Nome (alvo e ciclo entram sozinhos)":"Nome da task"}</label><div class="icname"><button type="button" class="icsel" data-icsel aria-expanded="false" aria-controls="d-icpop" aria-label="Trocar ícone"><span class="icsel-i">${ringIcon(g)}</span><span class="icsel-p" aria-hidden="true">✎</span></button><input id="d-title" maxlength="80" value="${esc(canAuto(g)&&!g.fixName?(g.base||baseOf(g)):g.title)}"></div>
       ${canAuto(g)?`<label class="fixname"><input type="checkbox" id="d-fix" ${g.fixName?"checked":""}> Nome fixo (não atualizar com alvo e ciclo)</label>`:""}
       <div class="icpop" id="d-icpop" hidden><div class="icgrid">${ICON_LIST.map(k=>`<button type="button" class="icb" data-dicon="${k}" aria-pressed="${(g.icon||"")===k}" aria-label="${k}">${IC[k]}</button>`).join("")}</div></div></div>
-      <div class="row2">${g.src==="steps"?`<div class="field"><label for="d-steps">Marcos (${g.statId?"kg a perder":"R$"})</label><input id="d-steps" inputmode="decimal" value="${esc((g.steps||[200,500]).join(", "))}"></div><div class="field"><label for="d-every">Depois, a cada (${g.statId?"kg":"R$"})</label><input id="d-every" inputmode="decimal" value="${+g.every||250}"></div></div>${g.statId?`<div class="field"><label for="d-start">Peso inicial (kg)</label><input id="d-start" inputmode="decimal" value="${stepStart(g)==null?"":esc(String(stepStart(g)).replace(".",","))}"></div>`:""}<div class="row2">`:`<div class="field"><label for="d-tgt">Alvo</label><input id="d-tgt" inputmode="decimal" value="${esc(String(g.target).replace(".",","))}"></div>`}<div class="field"><label for="d-xp">Recompensa (XP)</label><input id="d-xp" inputmode="numeric" value="${+g.xp||0}"></div></div>
+      <div class="row2">${g.src==="steps"?`<div class="field"><label for="d-steps">Marcos (${g.statId?"kg a perder":"R$"})</label><input id="d-steps" inputmode="decimal" value="${esc((g.steps||[200,500]).join(", "))}"></div><div class="field"><label for="d-every">Depois, a cada (${g.statId?"kg":"R$"})</label><input id="d-every" inputmode="decimal" value="${+g.every||250}"></div></div>${g.statId?`<div class="field"><label for="d-start">Peso inicial (kg)</label><input id="d-start" inputmode="decimal" value="${stepStart(g)==null?"":esc(String(stepStart(g)).replace(".",","))}"></div>`:""}<div class="row2">`:`<div class="field"><label for="d-tgt">Alvo</label><input id="d-tgt" inputmode="decimal" value="${esc(String(g.target).replace(".",","))}"></div>`}${xpGoal(g)?`<div class="field"><label for="d-diff">Dificuldade</label><select id="d-diff">${Object.entries(DIFF).map(([k,d])=>`<option value="${k}" ${(g.diff||"normal")===k?"selected":""}>${d.n}</option>`).join("")}</select></div>`:""}</div>${g.next?`<p class="hint">Mudança agendada: vale a partir de ${esc(new Date(g.next.at).toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"short"}))}.</p>`:""}
       ${g.src==="count"||g.src==="sum"?`<div class="field"><label for="d-per">Ciclo</label><select id="d-per">${Object.entries({day:"Diário",week:"Semanal",month:"Mensal",year:"Anual",all:"Sem ciclo (acumula)"}).map(([k,l])=>`<option value="${k}" ${g.period===k?"selected":""}>${l}</option>`).join("")}</select></div>`:""}
       ${g.src==="count"||g.src==="sum"?`<div class="field"><label>Conta quando eu registrar</label>${trigPicker(g,g.trig||[])}<small class="hint">${g.src==="sum"?"Soma o valor dessas opções.":"Cada toque numa opção marcada conta 1."} A task aparece no anel das bolhas marcadas.</small></div>`:""}
       <div class="field"><label for="d-quest">Quest vinculada</label><select id="d-quest">${S.quests.filter(x=>x.status==="active").map(x=>`<option value="${x.id}" ${x.id===q.id?"selected":""}>${esc(x.title)}</option>`).join("")}</select></div>
@@ -2227,7 +2280,7 @@ function ringHTML(q,g){
   if(n===1){arcs=`<circle cx="50" cy="50" r="${R}" fill="none" stroke="${filled?fillCol:"var(--panel2)"}" stroke-width="9"/>`;}
   else if(n<=14){const step=2*Math.PI/n,gp=n>1?0.22:0;for(let i=0;i<n;i++){const a0=i*step+gp/2,a1=(i+1)*step-gp/2-(n===1?0.0001:0);arcs+=arc(a0,a1,i<filled?fillCol:"var(--panel2)");}}
   else{arcs=`<circle cx="50" cy="50" r="${R}" fill="none" stroke="var(--panel2)" stroke-width="9"/>`;if(p.pct>0)arcs+=p.pct>=1?`<circle cx="50" cy="50" r="${R}" fill="none" stroke="${fillCol}" stroke-width="9"/>`:arc(0,2*Math.PI*p.pct,fillCol);}
-  const act=p.claimed?`<span class="claimed">✓ ${renewLabel(g)||"Concluída"}</span>`:p.done?`<button class="btn gold sm" data-claim="${q.id}|${g.id}">+${+g.xp||0} XP</button>`:`<span class="ring-foot"><span class="small muted num">${g.src==="sum"?esc(fmtVal(p.cur,g.unit))+" / "+esc(fmtVal(p.target,g.unit)):fmtNum(p.cur,0)+"/"+fmtNum(p.target,0)}</span>${plusBtn(q,g)}</span>`;
+  const act=p.claimed?`<span class="claimed">✓ ${renewLabel(g)||"Concluída"}</span>`:p.done?`<button class="btn gold sm" data-claim="${q.id}|${g.id}">Concluir</button>`:`<span class="ring-foot"><span class="small muted num">${g.src==="sum"?esc(fmtVal(p.cur,g.unit))+" / "+esc(fmtVal(p.target,g.unit)):fmtNum(p.cur,0)+"/"+fmtNum(p.target,0)}</span>${plusBtn(q,g)}</span>`;
   return `<div class="ring ${p.done?"done":""}" style="--a:${a.color}" ${ORG?"":`data-open="${q.id}|${g.id}"`} role="button" tabindex="0" aria-label="Abrir task ${esc(g.title)}"><div class="ring-g"><svg viewBox="0 0 100 100" role="img" aria-label="${esc(g.title)}: ${fmtNum(p.cur,0)} de ${fmtNum(p.target,0)}"><g transform="rotate(-90 50 50)">${arcs}</g></svg><span class="ring-i">${ringIcon(g)}</span></div>
     <div class="ring-t">${esc(g.title)}</div>${ORG?`<span class="ring-foot"><button class="btn sm" data-mv="${g.id}|-1" aria-label="Mover para trás">◀</button><button class="btn sm" data-mv="${g.id}|1" aria-label="Mover para frente">▶</button></span>`:act}</div>`;
 }
@@ -2256,7 +2309,7 @@ function goalHTML(q,g,compact){
   const val=g.src==="steps"&&g.statId?`−${fmtNum(p.cur)} / −${fmtNum(p.target)} kg`:g.src==="stat"?`${fmtNum(p.cur)} → ${fmtNum(p.target)} ${esc(g.unit)}`:`${esc(fmtVal(p.cur,g.unit))} / ${esc(fmtVal(p.target,g.unit))}`;
   let act="";
   if(p.claimed)act=`<span class="claimed">✓ Concluída${renewLabel(g)?" · "+renewLabel(g):""}</span>`;
-  else if(p.done)act=`<button class="btn gold sm" data-claim="${q.id}|${g.id}">Resgatar +${+g.xp||0} XP</button>`;
+  else if(p.done)act=`<button class="btn gold sm" data-claim="${q.id}|${g.id}">Concluir</button>`;
   else act="";
   const plus=q.status==="active"?plusBtn(q,g):"";
   const open=q.status==="active"?` data-open="${q.id}|${g.id}" role="button" tabindex="0" aria-label="Abrir task ${esc(g.title)}"`:"";
@@ -2337,11 +2390,12 @@ function moreHTML(){
   <div class="setg"><h2 class="setg-h">Sobre</h2><div class="setg-l">
   <details class="dd acc" ${OTAMSG?"open":""}><summary><span>Versão do app</span><span class="dd-n">${WEB_BUILD}</span></summary><section class="sec">${verHTML()}<p class="hint">${IS_NATIVE()?"O app procura atualização sozinho ao abrir e aplica quando você sai dele. Seus registros não mudam.":"Na versão web, a atualização chega sozinha ao recarregar."}</p></section></details>
   <details class="dd acc"><summary><span>Como o XP funciona</span></summary><section class="sec"><div class="stat small" style="gap:4px">
-    <div><b>Constância vale mais que volume.</b> Em cada categoria (Treino, Ingestão, Mente, Estudo, Família), o 1º registro do dia dá 8 XP e cada extra dá 3, até 14 XP por dia.</div>
-    <div>Sequência: cada dia que a categoria apareceu nos últimos 7 dias soma 10%, até +50%.</div>
-    <div>Dia completo: registrar 4 categorias no mesmo dia dá +10 XP. Peso: 5 XP, 1 vez por dia.</div>
-    <div>Tasks dão a recompensa sozinhas ao bater a meta e ficam concluídas até o próximo ciclo. Dinheiro não dá XP: o Guardar mostra só o total e os marcos.</div>
-    <div><b>Seu nível mede o seu ritmo recente.</b> Cada XP vale 100% por 7 dias e perde valor aos poucos até zerar no dia 30, então o nível sobe quando você mantém o ritmo e desce devagar se parar. Cada nível pede um pouco mais que o anterior: nível 2 com ${fmtNum(xpToReach(2),0)} XP, 5 com ${fmtNum(xpToReach(5),0)}, 10 com ${fmtNum(xpToReach(10),0)}, 15 com ${fmtNum(xpToReach(15),0)} e 20 (máximo) com ${fmtNum(xpToReach(20),0)}. Um mês perfeito (todas as categorias todo dia e as tasks batidas) chega no 20 por volta do dia 27.</div>
+    <div><b>Um dia perfeito vale sempre ${XP_DAY} XP.</b> Esse valor é dividido entre as suas tasks ativas. Criar mais tasks ou aumentar a meta só divide o bolo, então o nível não infla.</div>
+    <div>Cada task rende pelo ciclo: uma diária completa vale 1 dia da fatia dela, uma semanal completa vale 7. Cada registro rende a parte que andou. Passar da meta rende 1 XP, no máximo 3 por dia.</div>
+    <div>Dificuldade (Fácil, Normal, Difícil) muda só a fatia de cada task, nunca o total. Mudar meta, ciclo, opções ou dificuldade vale a partir do próximo ciclo, e os dias que já passaram guardam o XP que renderam.</div>
+    <div>Marcos de peso dão ${STEP_XP} XP cada. Dinheiro não dá XP: o Guardar mostra só o total e os marcos.</div>
+    <div><b>Seu nível mede o seu ritmo recente.</b> Cada XP vale 100% por 7 dias e perde valor aos poucos até zerar no dia 30. 30 dias perfeitos levam ao nível ${MAXL}.</div>
+    <button class="btn sm" data-xpsheet style="align-self:flex-start">De onde vem o XP · Recalcular</button>
     <div class="muted">Registros, totais e troféus nunca zeram. O histórico de cada semana fica no Diário.</div></div></section></details>
   </div></div>
   <p class="setg-v">Tracking · seus registros ficam guardados e nunca zeram.</p>`;
@@ -2353,7 +2407,7 @@ function onboardHTML(){
     <div class="field"><label for="o-name">Nome do personagem</label><input id="o-name" placeholder="Seu nome" maxlength="40" required></div>
     <div class="row2"><div class="field"><label for="o-peso">Peso atual (kg)</label><input id="o-peso" inputmode="decimal" placeholder="ex: 88,5"></div>
     <div class="field"><label for="o-alvo">Peso alvo (kg)</label><input id="o-alvo" inputmode="decimal" placeholder="ex: 80"></div></div>
-    <p class="hint">Começa com as 3 quests principais (Dinheiro e Estudo, Mente e Corpo, Casa e Família), com tasks de exemplo que você pode editar, desativar ou trocar. Em cada quest, Editar tasks traz ideias extras.</p>
+    <p class="hint">Começa com as 3 quests principais (Dinheiro e Estudo, Mente e Corpo, Casa e Família), com tasks de exemplo que você pode editar, desativar ou trocar.</p>
     <button class="btn gold" type="submit" style="padding:13px;font-size:16px">Começar a jornada</button></form>`;
 }
 const num=v=>{if(v==null)return NaN;v=String(v).trim().replace(/\s/g,"");if(v.includes(","))v=v.replace(/\./g,"").replace(",",".");return parseFloat(v);};
@@ -2427,13 +2481,13 @@ function goalSheet(qid){
     <div class="row2"><div class="field"><label for="g-target">Alvo</label><input id="g-target" inputmode="decimal" required placeholder="ex: 5000"></div>
     <div class="field"><label for="g-period">Ciclo</label><select id="g-period"><option value="day">Diário</option><option value="week" selected>Semanal</option><option value="month">Mensal</option><option value="year">Anual</option><option value="all">Sem ciclo (acumula)</option></select></div></div>
     <div class="row2"><div class="field"><label for="g-unit">Unidade (manual)</label><input id="g-unit" placeholder="ex: livros" maxlength="12"></div>
-    <div class="field"><label for="g-xp">Recompensa (XP)</label><input id="g-xp" inputmode="numeric" value="50"></div></div>
+    <div class="field"><label for="g-diff">Dificuldade</label><select id="g-diff">${Object.entries(DIFF).map(([k,d])=>`<option value="${k}" ${k==="normal"?"selected":""}>${d.n}</option>`).join("")}</select></div></div>
     <p class="hint">Em "Registro novo", o nome da task vira uma opção da bolha no Tracking. Escreva só o nome: o alvo e o ciclo entram sozinhos (ex: Beber água · 8x por dia). Tasks de estudo usam minutos (10h = 600).</p>
     <div class="actions"><button type="button" class="btn ghost" data-cancel>Cancelar</button><button class="btn gold" type="submit">Criar task</button></div></form>`,sh=>{
     sh.addEventListener("submit",e=>{e.preventDefault();const v=id=>sh.querySelector("#"+id).value;
       let [src,kind,sub]=v("g-src").split(":");const target=num(v("g-target"));if(!isFinite(target)){toast("Informe o alvo em número");return;}
       let newc=null;if(src==="new"){const c=kind==="+"?newCat(q.area,q.title.slice(0,20),areaIcon(q.area)):ownCats().find(x=>x.id===kind);if(!c)return;const o=addOpt(c,v("g-title").trim()||"Registro");if(!o){toast("Essa bolha já tem 8 opções");return;}src="count";kind=c.kind;sub=o.sub;newc=c;syncAreas();}
-      const g={id:uid(),title:v("g-title").trim(),src,since:new Date().toISOString(),claims:[],xp:Math.max(0,Math.round(num(v("g-xp"))||0)),target,period:v("g-period")};
+      const g={id:uid(),title:v("g-title").trim(),src,since:new Date().toISOString(),claims:[],xp:0,diff:v("g-diff"),target,period:v("g-period")};
       if(src==="sum"||src==="count"){g.kind=kind;if(sub)g.sub=sub;g.unit=src==="count"?"x":kind==="dinheiro"?"R$":"min";}
       else if(src==="stat"){const st=S.stats.find(s=>s.id===kind);g.statId=kind;g.unit=st.unit;g.period="all";const cur=latestStat(kind);g.start=cur!=null?cur:(st.start??target);}
       else{g.current=0;g.unit=v("g-unit").trim();}
@@ -2576,7 +2630,7 @@ function trackHTML(){setTimeout(fitTrack,0);const by={};cats().filter(c=>!c.off&
   const sec=k=>{const a=AREAS[k];return `<section class="tg" style="--a:${a.color}"><h3 class="tg-h"><button class="tg-b" data-qsum="${esc(k)}" aria-label="Resumo de ${esc(a.name)}">${esc(a.name)}</button>${k==="money"?`<span class="tg-r num">${esc(rs)}</span>`:""}</h3><div class="tg-l n${by[k].length}">${by[k].map(catHTML).join("")}</div></section>`;};
   const rows=packs.map(r=>`<div class="tg-row" data-n="${r.n}">${r.ks.map(sec).join("")}</div>`).join("");
   return `<div class="track ts-${ts}">
-    <div class="track-h"><div><div class="track-d">${esc(new Date().toLocaleDateString("pt-BR",{weekday:"short",day:"2-digit",month:"short"}).replace(/\./g,""))}</div><div class="track-s"><b class="num">${tl.length}</b> ${tl.length===1?"registro":"registros"} · <b class="num">+${xp}</b> XP hoje</div>${(()=>{const pl=pendingLinks();return pl.length?`<button class="track-bn" data-sugopen="${esc(pl[0].k.id)}">${IC.zap}<span>Bônus: ${pl.map(p=>`${esc(p.k.to.l)} <b>+${p.k.xp}</b>`).join(" · ")}</span></button>`:"";})()}</div>
+    <div class="track-h"><div><div class="track-d">${esc(new Date().toLocaleDateString("pt-BR",{weekday:"short",day:"2-digit",month:"short"}).replace(/\./g,""))}</div><div class="track-s"><b class="num">${tl.length}</b> ${tl.length===1?"registro":"registros"} · <b class="num">+${xp}</b> XP hoje</div>${(()=>{const pl=SUGS?pendingLinks():[];return pl.length?`<button class="track-bn" data-sugopen="${esc(pl[0].k.id)}">${IC.zap}<span>Bônus: ${pl.map(p=>`${esc(p.k.to.l)} <b>+${p.k.xp}</b>`).join(" · ")}</span></button>`:"";})()}</div>
 <div class="track-a"><button class="link" data-full>+ Registro</button><button class="link" data-torg>Organizar</button></div></div>
     <div class="track-rows">${rows}</div>
   </div>`;}
@@ -2658,7 +2712,6 @@ function catSheet(c,refresh){SHREF=!!refresh;CATOPEN=c.id;const a=AREAS[c.area]|
   const ls=catLogs(c).slice(0,6);
   openSheet(`<div class="mgr-head" style="--a:${a.color}"><span class="qicon" style="width:52px;height:52px;border-radius:16px">${IC[c.icon]||IC.star}</span><div style="min-width:0"><div class="small muted">${esc(a.name)}</div><h2>${esc(c.name)}</h2></div></div>
     <div class="kinds" style="--a:${a.color}">${c.opts.map(o=>`<button class="kind" data-copt="${esc(o.id)}">${IC[o.ic]||IC.star}<span>${esc(o.l)}</span></button>`).join("")}</div>
-    <p class="hint">Dica: segure a bolha no Tracking e solte na direção da opção para registrar mais rápido.</p>
     ${goals.length?`<div class="sec" style="gap:0"><h2 class="sub">Tasks desta bolha</h2><div class="quest" style="--a:${a.color}">${goals.map(([q,g])=>goalHTML(q,g,false)).join("")}</div></div>`:""}
     <details class="dd"><summary><span>Últimos registros</span><span class="dd-n num">${ls.length}</span></summary><div class="day-l">${ls.map(logRow).join("")||`<div class="hint">Nada registrado ainda.</div>`}</div></details>
     <div class="actions" style="justify-content:space-between"><button class="btn ghost" data-cedit="${esc(c.id)}">Editar bolha</button><button class="btn ghost" data-cancel>Fechar</button></div>`,sh=>{
@@ -3010,10 +3063,14 @@ layer.addEventListener("click",e=>{if(e.target.matches("[data-close]")||e.target
   if(d.rmode){g.remind=readRemind(sh,Object.assign({},g.remind,{mode:d.rmode}));drawDetail();return;}
   if("rsave" in d){g.remind=readRemind(sh,g.remind||{});g.remind.on=true;saveState();render();drawDetail();askNotify();nativeSchedule(true);toast("Lembrete salvo");return;}
   if("roff" in d){g.remind=Object.assign({},g.remind,{on:false});saveState();render();drawDetail();toast("Lembrete desligado");return;}
-  if("dsave" in d){if(sh.querySelector(".trigp")){const t=readTrig(sh);if(!t.length&&g.src==="count"){toast("Marque pelo menos uma opção");return;}g.trig=t;}const nq=sh.querySelector("#d-quest");if(nq&&nq.value!==q.id){const to=S.quests.find(x=>x.id===nq.value);if(to){q.goals=q.goals.filter(x=>x.id!==g.id);to.goals.push(g);detail.qid=to.id;}}
+  if("dsave" in d){const old={target:g.target,period:g.period,trig:g.trig?g.trig.slice():g.trig,diff:g.diff||"normal"};const dd=sh.querySelector("#d-diff");if(dd)g.diff=dd.value;
+    if(sh.querySelector(".trigp")){const t=readTrig(sh);if(!t.length&&g.src==="count"){toast("Marque pelo menos uma opção");return;}g.trig=t;}const nq=sh.querySelector("#d-quest");if(nq&&nq.value!==q.id){const to=S.quests.find(x=>x.id===nq.value);if(to){q.goals=q.goals.filter(x=>x.id!==g.id);to.goals.push(g);detail.qid=to.id;}}
     const ds=sh.querySelector("#d-steps");if(ds){const arr=ds.value.split(/[;\s]+|,\s+/).map(v=>num(v)).filter(v=>isFinite(v)&&v>0);if(arr.length)g.steps=[...new Set(arr)].sort((a,b)=>a-b);const ev=num(sh.querySelector("#d-every").value);if(isFinite(ev)&&ev>0)g.every=ev;const st0=sh.querySelector("#d-start");if(st0){const v=num(st0.value);if(isFinite(v)&&v>0)g.start=v;}reconcileClaims();}
-    const t=sh.querySelector("#d-tgt")?num(sh.querySelector("#d-tgt").value):NaN,x=num(sh.querySelector("#d-xp").value),ti=sh.querySelector("#d-title").value.trim(),pe=sh.querySelector("#d-per");if(isFinite(t)&&t>0)g.target=t;if(isFinite(x)&&x>=0)g.xp=Math.round(x);if(pe)g.period=pe.value;const fx=sh.querySelector("#d-fix");
-    if(fx&&fx.checked){g.fixName=true;if(ti)g.title=ti;}else if(canAuto(g)){delete g.fixName;g.base=ti||g.base||baseOf(g);syncTitle(g);}else if(ti)g.title=ti;saveState();autoClaim();render();toast("Task salva");return;}
+    const t=sh.querySelector("#d-tgt")?num(sh.querySelector("#d-tgt").value):NaN,ti=sh.querySelector("#d-title").value.trim(),pe=sh.querySelector("#d-per");if(isFinite(t)&&t>0)g.target=t;if(pe)g.period=pe.value;
+    let sched="";const nw={target:g.target,period:g.period,trig:g.trig,diff:g.diff||"normal"};
+    if((g.src==="count"||g.src==="sum")&&old.period&&old.period!=="all"&&JSON.stringify(nw)!==JSON.stringify(old)&&new Date(g.since||0).getTime()<periodStart(old.period)){
+      g.next=Object.assign({at:cycleEnd(old.period)},nw);g.target=old.target;g.period=old.period;g.trig=old.trig;g.diff=old.diff;sched=renewLabel({period:old.period}).replace("renova ","");}const fx=sh.querySelector("#d-fix");
+    if(fx&&fx.checked){g.fixName=true;if(ti)g.title=ti;}else if(canAuto(g)){delete g.fixName;g.base=ti||g.base||baseOf(g);syncTitle(g);}else if(ti)g.title=ti;saveState();autoClaim();render();toast(sched?`Task salva · a mudança vale a partir de ${sched}`:"Task salva");return;}
   if("ddeact" in d){g.off=true;g.offAt=new Date().toISOString();saveState();const m=mgr;render();if(m)goalsManager(m);else closeSheet();toast("Task desativada · está em Editar tasks");return;}
   if("ddel" in d){if(armed==="g"+g.id){armed=null;q.goals=q.goals.filter(x=>x.id!==g.id);saveState();closeSheet();render();toast("Task apagada");}else{armed="g"+g.id;drawDetail();}return;}
 });
@@ -3059,6 +3116,7 @@ app.addEventListener("click",e=>{
   if("newquest" in d||"newq2" in d){newQuestSheet();return;}
   if(d.qedit){questEdit(d.qedit);return;}
   if("torg" in d){orgSheet();return;}
+  if("xpsheet" in d){xpSheet();return;}
   if(d.qsum){questSum(d.qsum);return;}
   if(d.smart){S.smart=Object.assign({},S.smart,d.smart==="off"?{on:false}:{on:true,lvl:d.smart});saveState();render();if(S.smart.on){askNotify();if(IS_NATIVE())nativeSchedule(true);}toast(S.smart.on?"Lembretes inteligentes ligados":"Lembretes inteligentes desligados");return;}
   if(d.wcat){let l=widgetCats().map(c=>c.id);l=l.includes(d.wcat)?l.filter(x=>x!==d.wcat):l.concat([d.wcat]).slice(0,4);S.widget=l;saveState();render();wPush(true);return;}
