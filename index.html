@@ -20,7 +20,7 @@
   --sel:#f3f4f6; --sel-ink:#0c0e12;
   --sun1:#5a4a1e; --sun2:#a8842c; --sun3:#f0c24b;
   --gold:#f0c24b; --gold-ink:#1d1503;
-  --money:#4cc77a; --body:#e8566f; --family:#9a78ff;
+  --money:#22c55e; --body:#f0465a; --family:#8b5cf6;
   --good:#4ff0ad; --warn:#ffb454; --bad:#ff5d6c;
   --f-display:"Saira", "Arial Narrow", system-ui, sans-serif;
   --f-poster:"Saira", Impact, "Arial Narrow", sans-serif;
@@ -264,7 +264,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 /* Folha inferior */
 .scrim{position:fixed;inset:0;background:#05071299;z-index:30;display:flex;align-items:flex-end;justify-content:center}
-.sheet{width:100%;max-width:560px;max-height:88vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-bottom:0;border-radius:20px 20px 0 0;
+.sheet{width:100%;max-width:560px;max-height:calc(88vh / var(--z,1));overflow:auto;background:var(--panel);border:1px solid var(--line);border-bottom:0;border-radius:20px 20px 0 0;
   padding:18px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px;animation:up .22s ease}
 @keyframes up{from{transform:translateY(30px);opacity:.4}to{transform:none;opacity:1}}
 .sheet h2{font-family:var(--f-poster);font-size:24px;color:var(--fg);letter-spacing:.02em;font-weight:400}
@@ -539,6 +539,48 @@ body{letter-spacing:-.005em}
 .track-h .track-a .link{padding:3px 0 3px 8px}
 .kinds .kind[aria-pressed="true"]{background:var(--sel)!important;color:var(--sel-ink)}
 .kinds .kind:disabled{opacity:.38}
+.ed-tag{display:inline-flex;align-items:center;gap:7px;font-family:var(--f-display);font-stretch:semi-condensed;font-weight:800;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--a,var(--gold));margin-bottom:2px;max-width:100%}
+.ed-tag svg{width:15px;height:15px;flex:none}.ed-tag span{overflow-wrap:anywhere}
+.ed-cover{padding:18px 16px;border-radius:22px;background:linear-gradient(135deg,color-mix(in srgb,var(--a) 34%,transparent),color-mix(in srgb,var(--a) 6%,transparent) 70%)}
+.ed-cover{flex-direction:column;align-items:flex-start;gap:12px}.ed-cover>div{width:100%}
+.ed-cover .icsel{width:64px;height:64px;border-radius:18px}.ed-cover .icsel-i svg{width:30px;height:30px}
+.ce-prev{display:flex;justify-content:center;padding:2px 0 4px}
+.ce-orb{position:relative;width:150px;height:150px}
+.ce-dot{position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;transform:rotate(var(--r)) translate(58px) rotate(calc(-1 * var(--r)))}
+.ce-dot i{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:#1e222b;border:1px solid #ffffff1a;color:var(--fg)}
+.ce-dot svg{width:17px;height:17px}
+.ce-core{position:absolute;left:50%;top:50%;width:62px;height:62px;margin:-31px 0 0 -31px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--a) 22%,#14171d);box-shadow:0 0 0 2px var(--a);color:var(--fg)}
+.ce-core svg{width:28px;height:28px}
+.ce-opt{display:flex;flex-direction:column;gap:8px;padding:10px;border-radius:16px;background:#ffffff08}
+.ce-m{display:grid;grid-template-columns:minmax(0,1fr) 68px 60px;gap:6px}
+.ce-m[data-m=one]{grid-template-columns:minmax(0,1fr)}.ce-m[data-m=one] input{display:none}
+.ce-m[data-m=ask]{grid-template-columns:minmax(0,1fr) 60px}.ce-m[data-m=ask] [data-ov]{display:none}
+.ce-m select,.ce-m input{min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;color:var(--fg);font:inherit;font-size:14px}
+.icq{width:100%;margin:0 0 8px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;color:var(--fg);font:inherit;font-size:14px}
+.icgs{display:flex;flex-direction:column;gap:8px}.icgh{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:2px 0 6px}
+.icpop{max-height:320px!important}
+.ce-free{font-size:12px;color:var(--warn,#f5a524)}
+.ce-ms{display:block;font-size:13px;color:var(--muted);padding-left:2px}
+.ce-danger{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding-top:4px;border-top:1px solid var(--line)}
+.ce-danger .btn{margin-top:10px}
+.ts-form{display:flex;flex-direction:column;gap:14px}
+.ts-sent{font-size:18px;line-height:1.35;padding:2px 0 2px 14px;border-left:3px solid var(--a);color:var(--fg)}
+.ts-sent b{font-family:var(--f-display);font-stretch:semi-condensed;font-weight:800}
+.ts-k{color:var(--a);font-weight:700}
+.ts-w{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+.ts-sec{display:flex;flex-direction:column;gap:10px}
+.ts-h{font-family:var(--f-display);font-stretch:semi-condensed;font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.ts-new{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px}
+.ts-new select{grid-column:1/-1}
+.ts-new input,.ts-new select{min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 10px;color:var(--fg);font:inherit;font-size:14px}
+.seg2{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:4px}
+.seg2 button{border:0;background:none;color:var(--muted);font:inherit;font-weight:700;padding:9px 6px;border-radius:9px;min-width:0}
+.seg2 button[aria-pressed=true]{background:var(--sel);color:var(--sel-ink)}
+.ts-stat{display:none}.ts-form.is-stat .ts-stat{display:flex}
+.ts-form.is-stat .ts-trig,.ts-form.is-stat .ts-per,.ts-form.is-stat .ts-unit{display:none}
+.st-big{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.st-big b{font-size:40px;font-family:var(--f-display);font-weight:800;line-height:1}
+.st-big small{font-size:16px;color:var(--muted)}
 .xp-src{display:block;margin:2px 0 8px;font-size:13px;color:var(--muted);padding:4px 0}
 .xpds{display:flex;flex-direction:column;gap:6px}
 .xpd{display:grid;grid-template-columns:minmax(64px,auto) 1fr auto;align-items:center;gap:10px;font-size:13px}
@@ -587,7 +629,7 @@ html[data-glass=on] .ts-orb .cat-l,html[data-glass=on] .ts-orb .cat-n,html[data-
 .bgopt{height:92px}
 .icpick{position:relative;display:flex;flex-direction:column}
 .icpick .icsel{height:48px}
-.icpick .icpop{position:absolute;top:56px;left:0;z-index:5;width:min(320px,calc(100vw - 48px))}
+.icpick .icpop{position:absolute;top:56px;left:0;z-index:5;width:min(320px,calc(100vw / var(--z,1) - 48px))}
 .mgr-head{display:flex;align-items:center;gap:14px}
 .mgr-head .icsel{width:52px;height:52px;border-radius:16px}
 .stat-n{display:flex;align-items:center;gap:6px}
@@ -611,7 +653,7 @@ body{background:transparent!important}
 .fontseg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .fontseg button{padding:10px 4px}
 .fontseg.motseg{grid-template-columns:repeat(2,1fr)}
-.icpick .icpop{width:min(330px,calc(100vw - 40px))}
+.icpick .icpop{width:min(330px,calc(100vw / var(--z,1) - 40px))}
 /* contraste */
 :root{--faint:#8d94a0;--muted:#b3b9c3}
 .sunset .badge{width:74px;height:74px;gap:0;align-content:center}
@@ -879,6 +921,7 @@ html[data-motion=sutil] .sh-ghost .scrim.out .sheet{opacity:0}
 @keyframes roll{from{transform:translateY(75%);opacity:0}to{transform:none;opacity:1}}
 .ts-orb .cat.bump .cat-r::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;background:conic-gradient(transparent 0 64%,color-mix(in srgb,var(--a) 45%,#fff) 82%,transparent 94%);-webkit-mask:radial-gradient(circle closest-side,transparent 80%,#000 84%,#000 93%,transparent 97%);mask:radial-gradient(circle closest-side,transparent 80%,#000 84%,#000 93%,transparent 97%);animation:sweep .85s var(--e-out) forwards}
 @keyframes sweep{from{transform:rotate(-120deg);opacity:1}70%{opacity:.9}to{transform:rotate(240deg);opacity:0}}
+.top-rs{margin-left:8px;padding-left:8px;border-left:1px solid var(--line);color:var(--money);letter-spacing:.04em}
 .top-sub.glow{animation:lvglow 2.6s ease-out}
 @keyframes lvglow{0%,25%{color:var(--gold);text-shadow:0 0 14px color-mix(in srgb,var(--gold) 65%,transparent)}100%{color:var(--muted);text-shadow:none}}
 .toast.out{animation:toastOut .22s ease forwards}
@@ -1001,7 +1044,7 @@ html[data-motion=expr] .ts-orb .cr-fg{transition-duration:.8s;transition-timing-
 .cpop.below::after{bottom:auto;top:-5px}
 .cpop-i{width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--a) 20%,transparent);color:var(--a)}.cpop-i svg{width:18px;height:18px}
 .cpop-t{display:flex;flex-direction:column;min-width:0;line-height:1.15;padding-right:4px}
-.cpop-t small{font-size:11px;color:var(--muted)}.cpop-t b{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46vw}
+.cpop-t small{font-size:11px;color:var(--muted)}.cpop-t b{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(46vw / var(--z,1))}
 .cpop-x,.cpop-ok{width:42px;height:42px;flex:none;border-radius:50%;border:0;display:grid;place-items:center;transition:transform .1s}
 .cpop-x{background:rgba(255,255,255,.08);color:var(--muted)}
 .cpop-ok{background:var(--a);color:#0c0e12}
@@ -1110,7 +1153,7 @@ html[data-motion=sutil] .rw{transition-duration:.12s,.2s}
 
 <div id="layer"></div>
 
-<script>/* ota-guard: se uma versão nova não abrir em 12 s, volta para a anterior */window.WEB_BUILD=15;window.WEB_DATE="2026-11-26T22:15:00-03:00";(function(){try{var C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform())return;var pend=localStorage.getItem("ota.pending");if(pend!==String(window.WEB_BUILD))return;
+<script>/* ota-guard: se uma versão nova não abrir em 12 s, volta para a anterior */window.WEB_BUILD=16;window.WEB_DATE="2026-11-26T23:06:00-03:00";(function(){try{var C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform())return;var pend=localStorage.getItem("ota.pending");if(pend!==String(window.WEB_BUILD))return;
 setTimeout(function(){if(window.__appOk)return;try{localStorage.setItem("ota.bad",pend);localStorage.removeItem("ota.pending");var prev=localStorage.getItem("ota.prev")||"public",W=C.Plugins.WebView;if(prev==="public")W.setServerAssetPath({path:"public"});else W.setServerBasePath({path:prev});}catch(e){}},12000);}catch(e){}})();</script>
 <script>
 (function(){
@@ -1587,8 +1630,8 @@ function freezeDays(){if(!S)return;const lim=dayKey(Date.now()-864e5),X=xpMap(),
   const ks=Object.keys(acc);if(!ks.length)return;S.xpd=Object.assign({},S.xpd);ks.forEach(dk=>{const o={};Object.entries(acc[dk]).forEach(([a,v])=>o[a]=Math.round(v*10)/10);S.xpd[dk]=o;});saveState();}
 function xpRecalc(){S.xpd={};XPC={key:""};freezeDays();saveState();}
 function applyNext(){if(!S)return;let ch=false;const now=Date.now();S.quests.forEach(q=>q.goals.forEach(g=>{if(!g.next||now<g.next.at)return;
-  g.cfgs=(g.cfgs||[]).concat([{to:g.next.at,target:g.target,period:g.period,trig:g.trig,diff:g.diff||"normal",kind:g.kind,sub:g.sub,src:g.src}]);
-  ["target","period","trig","diff","kind","sub"].forEach(k=>{if(k in g.next){if(g.next[k]===undefined)delete g[k];else g[k]=g.next[k];}});delete g.next;syncTitle(g);ch=true;}));if(ch){saveState();reconcileClaims();}}
+  g.cfgs=(g.cfgs||[]).concat([{to:g.next.at,target:g.target,period:g.period,trig:g.trig,diff:g.diff||"normal",kind:g.kind,sub:g.sub,src:g.src,unit:g.unit}]);
+  ["target","period","trig","diff","kind","sub","src","unit"].forEach(k=>{if(k in g.next){if(g.next[k]===undefined)delete g[k];else g[k]=g.next[k];}});delete g.next;syncTitle(g);ch=true;}));if(ch){saveState();reconcileClaims();}}
 function goalCycXP(g){if(!xpGoal(g)||g.off)return 0;const gs=xpLive(),W=wOfDay(gs,dayKey(new Date()));return W?Math.round(XP_DAY*dw(g)/W*cycDays(g.period,Date.now())):0;}
 function xpWhen(per){return {day:"por dia",week:"por semana",month:"por mês",year:"por ano"}[per]||"no total";}
 function xpSheet(refresh){const X=xpMap(),gs=xpLive(),today=dayKey(new Date()),W=wOfDay(gs,today);SHREF=!!refresh;
@@ -1671,14 +1714,14 @@ function levelUp(L,fromIso){detail=null;
 const AREA_IC={money:"coin",body:"brain",family:"home"};
 function areaIcon(k){const c=((S&&S.areaIcons)||{})[k];return IC[c]?c:AREA_IC[k]||"star";}
 function statIcon(st){return st&&IC[st.icon]?st.icon:"scale";}
-function icPick(key,cur,label){return `<div class="icpick"><button type="button" class="icsel" data-icsel aria-expanded="false" aria-label="${esc(label||"Trocar ícone")}"><span class="icsel-i">${IC[cur]}</span><span class="icsel-p" aria-hidden="true">✎</span></button><div class="icpop" hidden><div class="icgrid">${ICON_LIST.map(k=>`<button type="button" class="icb" data-icp="${key}|${k}" aria-pressed="${cur===k}" aria-label="${k}">${IC[k]}</button>`).join("")}</div></div></div>`;}
+function icPick(key,cur,label){return `<div class="icpick"><button type="button" class="icsel" data-icsel aria-expanded="false" aria-label="${esc(label||"Trocar ícone")}"><span class="icsel-i">${IC[cur]}</span><span class="icsel-p" aria-hidden="true">✎</span></button><div class="icpop" hidden>${icGrid(k=>`<button type="button" class="icb" data-icp="${key}|${k}" aria-pressed="${cur===k}" aria-label="${k}">${IC[k]}</button>`)}</div></div>`;}
 function avatarHTML(){if(S&&S.avatar)return `<img src="${esc(S.avatar)}" alt="">`;const n=((S&&S.name)||"?").trim().split(/\s+/);return `<span>${esc(((n[0]||"?")[0]+(n.length>1?n[n.length-1][0]:"")).toUpperCase())}</span>`;}
 function setAvatar(file){if(!file||!S)return;const img=new Image();const url=URL.createObjectURL(file);img.onload=()=>{const z=192,c=document.createElement("canvas");c.width=c.height=z;const k=Math.min(img.width,img.height),cx=c.getContext("2d");cx.drawImage(img,(img.width-k)/2,(img.height-k)/2,k,k,0,0,z,z);URL.revokeObjectURL(url);S.avatar=c.toDataURL("image/jpeg",.82);saveState();render();toast("Foto atualizada");};img.onerror=()=>{URL.revokeObjectURL(url);toast("Não consegui abrir essa imagem");};img.src=url;}
 function topHTML(){
   if(!S)return `<div><div class="top-name">Tracking</div><div class="top-sub">Criar personagem</div></div>`;
   const t=xpWeek(),lv=levelOf(t.total),T=totals();const n=new Date();
   const wd=n.toLocaleDateString("pt-BR",{weekday:"short"}).replace(".",""),dm=n.toLocaleDateString("pt-BR",{day:"2-digit",month:"short"}).replace(".","");
-  return `<div class="top-who"><button class="avatar${needBk()?" bkdot":""}" data-avatar aria-label="Perfil">${avatarHTML()}</button><div style="min-width:0"><div class="top-name">${esc(S.name)}</div><div class="top-sub${Date.now()<LVGLOW?" glow":""}">Nível ${lv.L}</div></div></div>
+  return `<div class="top-who"><button class="avatar${needBk()?" bkdot":""}" data-avatar aria-label="Perfil">${avatarHTML()}</button><div style="min-width:0"><div class="top-name">${esc(S.name)}</div><div class="top-sub${Date.now()<LVGLOW?" glow":""}">Nível ${lv.L}${S.quests.some(q=>q.area==="money"&&!q.archived)?`<span class="top-rs num" aria-label="Dinheiro guardado">${esc(brl(allLogs().filter(l=>l.kind==="dinheiro").reduce((x,l)=>x+(+l.value||0),0)))}</span>`:""}</div></div></div>
 `;}
 function migrate(){ // v2: só quests principais + tasks. Nada de registro é apagado.
   if(!S||S.v>=2)return;let main=a=>S.quests.find(q=>q.type==="main"&&q.area===a);
@@ -1689,7 +1732,7 @@ function migrate(){ // v2: só quests principais + tasks. Nada de registro é ap
   S.v=2;saveState();}
 function render(){
   applyBg();
-  if(S&&!(S.v>=16)){ // migrações em ordem; nenhum registro é apagado
+  if(S&&!(S.v>=17)){ // migrações em ordem; nenhum registro é apagado
   if(!(S.v>=2))migrate();
   if(S&&!(S.v>=3)){S.panelHidden=Object.assign({},S.panelHidden,{rings:true});if(!S.panelOrder||!S.panelOrder.length)S.panelOrder=["hero"];if(!S.panelOrder.includes("quick")){const i=S.panelOrder.indexOf("hero");S.panelOrder.splice(i<0?0:i+1,0,"quick");}S.v=3;saveState();}
   if(S&&!(S.v>=4)){S.panelOrder=(S.panelOrder||["hero"]).filter(k=>k!=="quick");const i=S.panelOrder.indexOf("hero");if(!S.panelOrder.includes("ladder"))S.panelOrder.splice(i<0?0:i+1,0,"ladder");S.v=4;saveState();}
@@ -1724,8 +1767,10 @@ function render(){
   if(!(S.v>=14)){S.quests.forEach(q=>q.goals.forEach(g=>{if(!g.base&&canAuto(g)){g.base=baseOf(g);syncTitle(g);}}));S.v=14;saveState();}
   if(!(S.v>=15)){const q=S.quests.find(x=>x.type==="main"&&x.area==="family");if(q&&q.title==="Pai e Marido")q.title="Casa e Família";S.v=15;saveState();}
   if(!(S.v>=16)){S.xpd={};S.xpMig=1;S.v=16;saveState();}
+  if(!(S.v>=17)){S.quests.forEach(q=>{const i=AREA_PAL0.indexOf(q.color);if(i>=0)q.color=AREA_PAL[i];});(S.cats||[]).forEach(c=>c.opts.forEach(o=>{const k=o.kind||c.kind;if(k==="dinheiro"){if(o.sub==="retirei")o.neg=1;if(o.ask||o.value!=null)o.vu=o.vu||"R$";}if(k==="estudo"&&(o.ask||o.value!=null))o.vu=o.vu||"min";}));
+    tidy17();S.v=17;saveState();}
   }
-  syncAreas();ensureCats();ensureTrig();applyNext();freezeDays();
+  syncAreas();ensureCats();ensureTrig();applyNext();tagLogs();freezeDays();
   const ti=document.getElementById("topinfo");if(ti&&mode!=="loading"){const th=topHTML();if(ti._h!==th){ti._h=th;ti.innerHTML=th;}}
   document.querySelectorAll(".nav .tab").forEach(b=>b.setAttribute("aria-current",b.dataset.tab===tab?"page":"false"));
   if(mode==="loading"){return;}
@@ -2104,7 +2149,7 @@ const MOTION={off:"Desligada",sutil:"Sutil",padrao:"Padrão",expr:"Expressiva"};
 function motionKey(){if(S&&S.motion&&MOTION[S.motion])return S.motion;return "padrao";}
 function applyMotion(){const m=motionKey();if(document.documentElement.dataset.motion===m)return;document.documentElement.dataset.motion=m;if(SKY.on){clearTimeout(SKY.tm);cancelAnimationFrame(SKY.raf);SKY.tm=SKY.raf=0;skyKick();}}
 function motionHTML(){const cur=motionKey();return `<section class="sec"><div class="seg fontseg motseg">${Object.entries(MOTION).map(([k,n])=>`<button type="button" data-motion="${k}" aria-pressed="${cur===k}">${n}</button>`).join("")}</div><p class="hint">Intensidade das animações de menus, janelas e do menu radial.</p></section>`;}
-function applyFont(){applyMotion();const gl=S&&S.orbGlass===false?"off":"on";if(document.documentElement.dataset.glass!==gl)document.documentElement.dataset.glass=gl;const f=FONTS[(S&&S.font)||"m"]||FONTS.m;document.documentElement.style.zoom=f.z;const nv=document.querySelector(".nav");if(nv)nv.style.zoom=Math.min(1,1.06/f.z);}
+function applyFont(){applyMotion();const gl=S&&S.orbGlass===false?"off":"on";if(document.documentElement.dataset.glass!==gl)document.documentElement.dataset.glass=gl;const f=FONTS[(S&&S.font)||"m"]||FONTS.m;document.documentElement.style.zoom=f.z;document.documentElement.style.setProperty("--z",f.z);const nv=document.querySelector(".nav");if(nv)nv.style.zoom=Math.min(1,1.06/f.z);}
 function fontHTML(){const cur=(S&&S.font)||"m";return `<section class="sec"><div class="seg fontseg">${Object.entries(FONTS).map(([k,f])=>`<button type="button" data-font="${k}" aria-pressed="${cur===k}" style="font-size:${Math.round(13*f.z)}px">${f.n}</button>`).join("")}</div><p class="hint">Aumenta ou diminui o app inteiro, não só as letras.</p></section>`;}
 function bgPhoto(){try{return localStorage.getItem("rpg.bgimg")||"";}catch(e){return "";}}
 function setBgPhoto(file){if(!file||!S)return;const img=new Image(),url=URL.createObjectURL(file);img.onload=()=>{const W=900,k=Math.min(1,W/img.width),c=document.createElement("canvas");c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext("2d").drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);
@@ -2252,17 +2297,17 @@ function drawDetail0(){
   const list=g.src==="sum"||g.src==="count"||(g.src==="steps"&&!g.statId)?`<details class="dd"><summary><span>Registros ${esc(per)}</span><span class="dd-n num">${ls.length}</span></summary><div class="sec" style="gap:6px;margin-top:8px">${ls.length?ls.map(l=>{const [t,s2]=logDesc(l);return `<div class="log" style="--a:${a.color}"><div class="d"><b>${esc(t)}</b><span>${esc([s2,new Date(l.t).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})].filter(Boolean).join(" · "))}</span></div><button class="btn sm danger" data-drm="${l.id}" aria-label="Remover registro">−</button></div>`}).join(""):`<div class="hint">Nenhum registro ainda neste período.</div>`}</div></details>`:"";
   const claimB=g.src==="steps"?`<span class="small muted">Próximo marco: ${g.statId?"−"+esc(fmtNum(p.target))+" kg":esc(fmtVal(p.target,"R$"))}${g.statId?` · +${STEP_XP} XP`:""}</span>`:p.claimed?`<span class="claimed">✓ Concluída${renewLabel(g)?" · "+renewLabel(g):""}</span>`:p.done?`<button class="btn gold" data-claim="${q.id}|${g.id}">Concluir</button>`:`<span class="small muted">${xpGoal(g)?`Vale até ${goalCycXP(g)} XP ${xpWhen(g.period)}`:"Dinheiro não dá XP"}</span>`;
   layer.innerHTML=`<div class="scrim${LST()}" data-close><div class="sheet${LST()}" role="dialog" aria-modal="true" style="--a:${a.color}">
-    <div><div class="small muted">${esc(a.name)} · ${esc(per)}</div><h2>${esc(g.title)}</h2></div>
+    <div><div class="ed-tag" style="--a:${a.color}">${ringIcon(g)}<span>Task · ${esc(a.name)}</span></div><h2>${esc(g.title)}</h2><div class="small muted">${esc(per)}</div></div>
     <div class="bigprog ${p.done?"goal done":""}" style="padding:0;border:0"><div class="bigval">${big}</div><div class="pbar"><i style="width:${(p.pct*100).toFixed(1)}%"></i></div><div class="gfoot"><span>${Math.round(p.pct*100)}%</span>${claimB}</div></div>
     ${add}${list}
     ${remindHTML(q,g)}
     <details class="edit"><summary class="small muted" style="cursor:pointer">Editar task</summary><div class="sec" style="gap:10px;margin-top:10px">
       <div class="field"><label for="d-title">${canAuto(g)&&!g.fixName?"Nome (alvo e ciclo entram sozinhos)":"Nome da task"}</label><div class="icname"><button type="button" class="icsel" data-icsel aria-expanded="false" aria-controls="d-icpop" aria-label="Trocar ícone"><span class="icsel-i">${ringIcon(g)}</span><span class="icsel-p" aria-hidden="true">✎</span></button><input id="d-title" maxlength="80" value="${esc(canAuto(g)&&!g.fixName?(g.base||baseOf(g)):g.title)}"></div>
       ${canAuto(g)?`<label class="fixname"><input type="checkbox" id="d-fix" ${g.fixName?"checked":""}> Nome fixo (não atualizar com alvo e ciclo)</label>`:""}
-      <div class="icpop" id="d-icpop" hidden><div class="icgrid">${ICON_LIST.map(k=>`<button type="button" class="icb" data-dicon="${k}" aria-pressed="${(g.icon||"")===k}" aria-label="${k}">${IC[k]}</button>`).join("")}</div></div></div>
-      <div class="row2">${g.src==="steps"?`<div class="field"><label for="d-steps">Marcos (${g.statId?"kg a perder":"R$"})</label><input id="d-steps" inputmode="decimal" value="${esc((g.steps||[200,500]).join(", "))}"></div><div class="field"><label for="d-every">Depois, a cada (${g.statId?"kg":"R$"})</label><input id="d-every" inputmode="decimal" value="${+g.every||250}"></div></div>${g.statId?`<div class="field"><label for="d-start">Peso inicial (kg)</label><input id="d-start" inputmode="decimal" value="${stepStart(g)==null?"":esc(String(stepStart(g)).replace(".",","))}"></div>`:""}<div class="row2">`:`<div class="field"><label for="d-tgt">Alvo</label><input id="d-tgt" inputmode="decimal" value="${esc(String(g.target).replace(".",","))}"></div>`}${xpGoal(g)?`<div class="field"><label for="d-diff">Dificuldade</label><select id="d-diff">${Object.entries(DIFF).map(([k,d])=>`<option value="${k}" ${(g.diff||"normal")===k?"selected":""}>${d.n}</option>`).join("")}</select></div>`:""}</div>${g.next?`<p class="hint">Mudança agendada: vale a partir de ${esc(new Date(g.next.at).toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"short"}))}.</p>`:""}
+      <div class="icpop" id="d-icpop" hidden>${icGrid(k=>`<button type="button" class="icb" data-dicon="${k}" aria-pressed="${(g.icon||"")===k}" aria-label="${k}">${IC[k]}</button>`)}</div></div>
+      ${(g.src==="count"||g.src==="sum")?`${g.next?`<p class="hint">Mudança agendada: vale a partir de ${esc(new Date(g.next.at).toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"short"}))}.</p>`:""}${taskFields(g,q,DIDS,false)}`:`<div class="row2">${g.src==="steps"?`<div class="field"><label for="d-steps">Marcos (${g.statId?"kg a perder":"R$"})</label><input id="d-steps" inputmode="decimal" value="${esc((g.steps||[200,500]).join(", "))}"></div><div class="field"><label for="d-every">Depois, a cada (${g.statId?"kg":"R$"})</label><input id="d-every" inputmode="decimal" value="${+g.every||250}"></div></div>${g.statId?`<div class="field"><label for="d-start">Peso inicial (kg)</label><input id="d-start" inputmode="decimal" value="${stepStart(g)==null?"":esc(String(stepStart(g)).replace(".",","))}"></div>`:""}<div class="row2">`:`<div class="field"><label for="d-tgt">Alvo</label><input id="d-tgt" inputmode="decimal" value="${esc(String(g.target).replace(".",","))}"></div>`}${xpGoal(g)?`<div class="field"><label for="d-diff">Dificuldade</label><select id="d-diff">${Object.entries(DIFF).map(([k,d])=>`<option value="${k}" ${(g.diff||"normal")===k?"selected":""}>${d.n}</option>`).join("")}</select></div>`:""}</div>${g.next?`<p class="hint">Mudança agendada: vale a partir de ${esc(new Date(g.next.at).toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"short"}))}.</p>`:""}
       ${g.src==="count"||g.src==="sum"?`<div class="field"><label for="d-per">Ciclo</label><select id="d-per">${Object.entries({day:"Diário",week:"Semanal",month:"Mensal",year:"Anual",all:"Sem ciclo (acumula)"}).map(([k,l])=>`<option value="${k}" ${g.period===k?"selected":""}>${l}</option>`).join("")}</select></div>`:""}
-      ${g.src==="count"||g.src==="sum"?`<div class="field"><label>Conta quando eu registrar</label>${trigPicker(g,g.trig||[])}<small class="hint">${g.src==="sum"?"Soma o valor dessas opções.":"Cada toque numa opção marcada conta 1."} A task aparece no anel das bolhas marcadas.</small></div>`:""}
+      ${g.src==="count"||g.src==="sum"?`<div class="field"><label>Conta quando eu registrar</label>${trigPicker(g,g.trig||[])}<small class="hint">${g.src==="sum"?"Soma o valor dessas opções.":"Cada toque numa opção marcada conta 1."} A task aparece no anel das bolhas marcadas.</small></div>`:""}`}
       <div class="field"><label for="d-quest">Quest vinculada</label><select id="d-quest">${S.quests.filter(x=>x.status==="active").map(x=>`<option value="${x.id}" ${x.id===q.id?"selected":""}>${esc(x.title)}</option>`).join("")}</select></div>
       <p class="hint">Desativar tira a task da tela, mas guarda ela em Editar tasks para reativar quando quiser. Seus registros não são apagados.</p>
       <div class="actions" style="justify-content:space-between"><button class="btn ghost" data-ddeact>Desativar</button><button class="btn gold" data-dsave>Salvar</button></div></div></details>
@@ -2462,41 +2507,97 @@ function syncTitle(g){if(g.base&&!g.fixName&&canAuto(g))g.title=autoTitle(g);}
 function baseOf(g){let t=String(g.title||"").trim().replace(/\s*·.*$/,"").replace(/\s+(na|por|no|ao|em|toda|todo|a|o)\s+(semana|dia|mês|mes|ano)$/i,"").replace(/\s+(hoje|diári[oa]s?|semana(l|is)?|mensa(l|is)|anua(l|is))$/i,"").trim();
   if(!t||/^\d/.test(t)||/\d+\s*(x|vezes|h|min)\b/i.test(t))return BASEN[g.kind+":"+(g.sub||"")]||BASEN[g.kind]||t.replace(/^[\d.,]+\s*(x\s*)?/,"")||"Task";
   return t[0].toUpperCase()+t.slice(1);}
-function gsOpts(q,first){const cu=!!(AREAS[q.area]||{}).custom;if(cu!==first)return "";const cs=cats().filter(c=>c.area===q.area&&!NOPT_KINDS.has(c.kind));let h="";
-  cs.forEach(c=>{if(c.opts.length<8)h+=`<option value="new:${esc(c.id)}">Registro novo na bolha ${esc(c.name)} (vira opção)</option>`;
-    if(S.kinds&&S.kinds[c.kind]){h+=`<option value="count:${esc(c.kind)}">Registros na bolha ${esc(c.name)}</option>`;c.opts.forEach(o=>{if(o.sub)h+=`<option value="count:${esc(c.kind)}:${esc(o.sub)}">Quantidade de ${esc(o.l)}</option>`;});}});
-  if(!cs.length)h+=`<option value="new:+">Registro novo (cria a bolha no Tracking)</option>`;return h;}
+/* ---------- Modelo único (v16): bolha = botões; botão = conta 1, valor fixo ou pergunta o valor; task = botões que contam + vezes/soma + alvo + unidade ---------- */
+// v16: tasks apontam para o botão (kind/sub/cat iguais ao 1º botão); bolha escondida duplicada sai; Perder peso volta se sumiu; botão de escovar os dentes ganha task
+function tidy17(){const now=new Date().toISOString();
+  S.quests.forEach(q=>q.goals.forEach(g=>{if(!Array.isArray(g.trig)||!g.trig.length)return;const [c0,o0]=findOpt(g.trig[0]);if(!c0||!o0)return;
+    g.cat=c0.id;g.kind=optKind(c0,o0);if(g.trig.length===1&&o0.sub)g.sub=o0.sub;else delete g.sub;if(!g.icon&&o0.ic)g.icon=o0.ic;}));
+  const used=new Set();S.quests.forEach(q=>q.goals.forEach(g=>(g.trig||[]).forEach(k=>used.add(k))));
+  if(Array.isArray(S.cats)){const titles=S.quests.filter(q=>q.type==="main").map(q=>q.title.slice(0,20));
+    S.cats=S.cats.filter(c=>{if(!c.off||!(S.kinds&&S.kinds[c.kind])||!titles.includes(c.name))return true;if(c.opts.some(o=>used.has(c.id+":"+o.id)))return true;
+      return !c.opts.every(o=>S.cats.some(x=>x!==c&&!x.off&&x.opts.some(y=>y.l.toLowerCase()===o.l.toLowerCase())));});}
+  const st=S.stats.find(x=>x.id==="peso");const body=S.quests.find(q=>q.type==="main"&&q.area===((st&&st.area)||"body")&&!q.archived);
+  if(st&&st.dir==="down"&&body&&!S.quests.some(q=>q.goals.some(g=>g.src==="steps"&&g.statId==="peso")))body.goals.unshift({id:uid(),title:"Perder peso",src:"steps",statId:"peso",kind:"stat",steps:[1],every:1,unit:"kg",icon:"scale",period:"all",since:now,claims:[],xp:0});
+  cats().forEach(c=>{if(c.off)return;c.opts.forEach(o=>{if(!/escovar/i.test(o.l)||used.has(optKey(c,o)))return;const q=S.quests.find(x=>x.type==="main"&&x.area===c.area&&!x.archived);if(!q)return;
+    const g={id:uid(),title:"",base:o.l,src:"count",kind:optKind(c,o),trig:[optKey(c,o)],cat:c.id,icon:o.ic,target:3,period:"day",unit:"x",diff:"normal",since:now,claims:[],xp:0};if(o.sub)g.sub=o.sub;syncTitle(g);q.goals.push(g);used.add(optKey(c,o));});});}
+// registros antigos ganham bolha e botão (cat/opt): todo registro conta do mesmo jeito
+const TAGSEEN=new WeakSet();
+function tagLogs(){if(!S)return;const cs=cats();for(const mk in MONTHS){const a=MONTHS[mk];if(!Array.isArray(a)||TAGSEEN.has(a))continue;TAGSEEN.add(a);let ch=false;
+  a.forEach(l=>{if(l.cat||l.kind==="stat"||!l.kind)return;let best=null;cs.forEach(c=>c.opts.forEach(o=>{const k=optKind(c,o);if(k!==l.kind||k==="stat")return;let sc=0;
+    if(o.sub){if(o.sub!==l.sub)return;sc+=4;}else if(l.sub)return;if(o.value!=null&&+o.value===Math.abs(+l.value))sc+=2;if(o.ask)sc+=1;if(!c.off)sc+=1;if(!best||sc>best.sc)best={c,o,sc};}));
+    if(!best&&l.sub){const lab=String(((KINDS[l.kind]||{}).subs||{})[l.sub]||l.label||l.sub).toLowerCase();cs.forEach(c=>{if(c.off)return;c.opts.forEach(o=>{const ol=String(o.l||"").toLowerCase();if(!best&&optKind(c,o)!=="stat"&&ol.length>=3&&(lab.includes(ol)||ol.includes(lab)))best={c,o};});});}
+    if(best){l.cat=best.c.id;l.opt=best.o.id;ch=true;}});if(ch)saveMonth(mk);}}
+function optMode(o){return o.kind==="stat"?"stat":o.ask?"ask":(o.value!=null&&o.value!==""&&isFinite(+o.value)?"fix":"one");}
+function optUnit(c,o){return o.vu||(optKind(c,o)==="dinheiro"?"R$":optKind(c,o)==="estudo"?"min":"");}
+function optNeg(c,o){return !!(o.neg||(optKind(c,o)==="dinheiro"&&o.sub==="retirei"));}
+// tira botões das tasks; task sem nenhum botão fica desativada (registros ficam)
+function dropTrig(keys){const hit=[],now=new Date().toISOString();S.quests.forEach(q=>q.goals.forEach(g=>{if(!Array.isArray(g.trig))return;const n=g.trig.filter(k=>!keys.includes(k));if(n.length===g.trig.length)return;
+  g.trig=n;if(g.next&&Array.isArray(g.next.trig))g.next.trig=g.next.trig.filter(k=>!keys.includes(k));if(!n.length&&!g.off){g.off=true;g.offAt=now;}hit.push(g.title+(n.length?"":" (desativada)"));}));return hit;}
+function catPrev(c,a){const os=c.opts.slice(0,8),n=Math.max(os.length,1);
+  return `<div class="ce-prev" aria-hidden="true" style="--a:${a.color}"><div class="ce-orb">${os.map((o,i)=>`<span class="ce-dot" style="--r:${(i*360/n-90).toFixed(1)}deg"><i>${IC[o.ic]||IC.star}</i></span>`).join("")}<span class="ce-core">${IC[c.icon]||IC.star}</span></div></div>`;}
+function optRowE(c,o){const m=optMode(o);const st=m==="stat"?(S.stats.find(s=>s.id===o.statId)||{name:"stat"}):null;
+  return `<div class="ce-opt"><div class="ce-o">${icPick("opt:"+c.id+":"+o.id,o.ic,"Trocar ícone do botão")}<input data-ol="${esc(o.id)}" maxlength="20" value="${esc(o.l)}" aria-label="Nome do botão"><button class="btn sm danger" data-odel="${esc(o.id)}" aria-label="Tirar botão ${esc(o.l)}" ${c.opts.length<=1?"disabled":""}>−</button></div>
+    ${m!=="stat"&&!S.quests.some(q=>!q.archived&&q.goals.some(g=>!g.off&&(g.trig||[]).includes(optKey(c,o))))?`<div class="ce-free">Nenhuma task conta este botão</div>`:""}
+    ${m==="stat"?`<div class="ce-m ce-ms">Registra ${esc(st.name)} (stat)</div>`:`<div class="ce-m" data-m="${m}"><select data-om="${esc(o.id)}" aria-label="O que o botão ${esc(o.l)} registra">${[["one","Conta 1"],["fix","Valor fixo"],["ask","Pergunta o valor"]].map(([k,l])=>`<option value="${k}" ${m===k?"selected":""}>${l}</option>`).join("")}</select><input data-ov="${esc(o.id)}" inputmode="decimal" aria-label="Valor fixo" placeholder="valor" value="${m==="fix"?esc(String(o.value).replace(".",",")):""}"><input data-ou="${esc(o.id)}" maxlength="8" aria-label="Unidade do valor" placeholder="unid." value="${esc(m==="one"?"":optUnit(c,o))}"></div>`}</div>`;}
+document.addEventListener("change",e=>{const s=e.target.closest&&e.target.closest("[data-om]");if(!s)return;const r=s.parentElement;r.dataset.m=s.value;const u=r.querySelector("[data-ou]");if(s.value!=="one"&&u&&!u.value){const c=ownCats().find(x=>x.id===CATED),o=c&&c.opts.find(x=>x.id===s.dataset.om);if(c&&o)u.value=optUnit(c,o);}});
+/* texto da task montado ao vivo */
+function taskSentence(src,n,unit,per,labels){const u=String(unit||"").trim();
+  const q=src==="sum"?(u==="R$"?brl(n||0):fmtNum(n||0)+(u?" "+u:"")):(u&&u!=="x"?fmtNum(n||0,0)+"x ("+u+")":fmtNum(n||0,0)+"x");
+  const pp={day:"por dia",week:"por semana",month:"por mês",year:"por ano",all:"no total"}[per]||"";
+  const l=labels.length?labels.slice(0,3).join(", ")+(labels.length>3?` e mais ${labels.length-3}`:""):"(marque os botões abaixo)";
+  return `<span class="ts-k">${src==="sum"?"Soma":"Conta"}</span> <b>${esc(q)}</b> ${pp}<span class="ts-w">quando você registrar ${esc(l)}</span>`;}
+function trigNewRow(q){const cs=cats().filter(c=>!c.off&&c.opts.length<8&&!(c.opts.length===1&&c.opts[0].kind==="stat")).sort((a,b)=>(b.area===q.area)-(a.area===q.area));
+  return `<div class="ts-new"><input data-tnn maxlength="20" placeholder="Botão novo, ex: Inglês" aria-label="Nome do botão novo"><button type="button" class="btn sm" data-tnadd>Criar</button><select data-tnc aria-label="Bolha do botão novo">${cs.map(c=>`<option value="${esc(c.id)}">na bolha ${esc(c.name)}</option>`).join("")}<option value="+">numa bolha nova (${esc(q.title.slice(0,20))})</option></select></div>`;}
+const PERL={day:"Diário",week:"Semanal",month:"Mensal",year:"Anual",all:"Sem ciclo (acumula)"};
+function taskFields(g,q,ids,allowStat){const src=g&&g.src==="sum"?"sum":"count";const unit=g?(g.unit==="x"?"":g.unit||""):"";const per=g?g.period||"all":"week",tg=g?+g.target||0:0;
+  const labels=(g&&g.trig||[]).map(k=>{const o=findOpt(k)[1];return o?o.l:"";}).filter(Boolean);
+  const segs=[["count","Vezes"],["sum","Soma de valores"]].concat(allowStat&&S.stats.length?[["stat","Stat"]]:[]);
+  return `<div class="ts-form" data-qid="${esc(q.id)}" data-ids='${JSON.stringify(ids)}' style="--a:${(AREAS[q.area]||AREAS.body).color}">
+    <div class="ts-sent" data-tsent aria-live="polite">${taskSentence(src,tg,unit,per,labels)}</div>
+    <div class="ts-sec ts-trig"><div class="ts-h">O que conta</div>${trigPicker(g,g?g.trig||[]:[])}${trigNewRow(q)}</div>
+    <div class="ts-sec"><div class="ts-h">Meta</div>
+      <div class="seg2" role="radiogroup" aria-label="Como conta">${segs.map(([k,l])=>`<button type="button" role="radio" data-tsrc="${k}" aria-pressed="${src===k}" aria-checked="${src===k}">${l}</button>`).join("")}</div>
+      <div class="ts-stat field"><label for="${ids.s}">Stat</label><select id="${ids.s}">${S.stats.map(s=>`<option value="${esc(s.id)}">${esc(s.name)} (${esc(s.unit)})</option>`).join("")}</select></div>
+      <div class="row2"><div class="field"><label for="${ids.t}">Alvo</label><input id="${ids.t}" inputmode="decimal" value="${g?esc(String(g.target).replace(".",",")):""}" placeholder="ex: 8"></div>
+      <div class="field ts-unit"><label for="${ids.u}">Unidade</label><input id="${ids.u}" maxlength="12" value="${esc(unit)}" placeholder="ex: copos"></div></div>
+      <div class="row2"><div class="field ts-per"><label for="${ids.p}">Ciclo</label><select id="${ids.p}">${Object.entries(PERL).map(([k,l])=>`<option value="${k}" ${per===k?"selected":""}>${l}</option>`).join("")}</select></div>
+      <div class="field"><label for="${ids.d}">Dificuldade</label><select id="${ids.d}">${Object.entries(DIFF).map(([k,d])=>`<option value="${k}" ${((g&&g.diff)||"normal")===k?"selected":""}>${d.n}</option>`).join("")}</select></div></div></div></div>`;}
+function tsRead(r){const ids=JSON.parse(r.dataset.ids);const v=id=>{const e=r.querySelector("#"+id);return e?e.value:"";};const sb=r.querySelector("[data-tsrc][aria-pressed=true]");
+  return {src:sb?sb.dataset.tsrc:"count",trig:readTrig(r),target:num(v(ids.t)),unit:v(ids.u).trim(),period:v(ids.p),diff:v(ids.d)||"normal",stat:v(ids.s)};}
+function tsUpdate(r){const f=tsRead(r);r.classList.toggle("is-stat",f.src==="stat");const el=r.querySelector("[data-tsent]");if(!el)return;
+  if(f.src==="stat"){const st=S.stats.find(s=>s.id===f.stat);el.innerHTML=`<span class="ts-k">Chegar a</span> <b>${esc(isFinite(f.target)?fmtNum(f.target):"…")} ${esc(st?st.unit:"")}</b><span class="ts-w">acompanha ${esc(st?st.name:"a stat")}, sem ciclo</span>`;return;}
+  el.innerHTML=taskSentence(f.src,isFinite(f.target)?f.target:0,f.unit,f.period,f.trig.map(k=>{const o=findOpt(k)[1];return o?o.l:"";}).filter(Boolean));}
+document.addEventListener("click",e=>{const r=e.target.closest&&e.target.closest(".ts-form");if(!r)return;
+  const b=e.target.closest("[data-tsrc]");if(b){r.querySelectorAll("[data-tsrc]").forEach(x=>{x.setAttribute("aria-pressed",String(x===b));x.setAttribute("aria-checked",String(x===b));});tsUpdate(r);return;}
+  if(e.target.closest("[data-tnadd]")){const inp=r.querySelector("[data-tnn]"),name=inp.value.trim();if(!name){toast("Escreva o nome do botão");inp.focus();return;}
+    const q=S.quests.find(x=>x.id===r.dataset.qid);if(!q)return;const cid=r.querySelector("[data-tnc]").value;
+    const c=cid==="+"?newCat(q.area,q.title.slice(0,20),areaIcon(q.area)):ownCats().find(x=>x.id===cid);if(!c)return;
+    const o=addOpt(c,name);if(!o){toast("Essa bolha já tem 8 botões");return;}saveState();syncAreas();
+    const sel=readTrig(r).concat([optKey(c,o)]);r.querySelector(".trigp").outerHTML=trigPicker(null,sel);r.querySelector(".ts-new").outerHTML=trigNewRow(q);tsUpdate(r);
+    toast(`Botão <b>${esc(name)}</b> criado na bolha ${esc(c.name)}`);}});
+document.addEventListener("trig",e=>{const r=e.target.closest(".ts-form");if(r)tsUpdate(r);});
+["input","change"].forEach(t=>document.addEventListener(t,e=>{const r=e.target.closest&&e.target.closest(".ts-form");if(r&&!e.target.matches("[data-tnn]"))tsUpdate(r);}));
+const GIDS={t:"g-target",u:"g-unit",p:"g-period",d:"g-diff",s:"g-stat"},DIDS={t:"d-tgt",u:"d-unit",p:"d-per",d:"d-diff",s:"d-stat"};
 function goalSheet(qid){
-  const q=S.quests.find(x=>x.id===qid);
-  openSheet(`<h2>Nova task · ${esc(q.title)}</h2><form id="gf" class="sec" style="gap:12px">
+  const q=S.quests.find(x=>x.id===qid);const a=AREAS[q.area]||AREAS.body;
+  openSheet(`<div class="ed-tag" style="--a:${a.color}">${IC.target||IC.star}<span>Task nova · ${esc(q.title)}</span></div><form id="gf" class="sec" style="gap:14px">
     <div class="field"><label for="g-title">Nome</label><input id="g-title" placeholder="ex: Beber água" required maxlength="80"></div>
-    <div class="field"><label for="g-src">Como medir</label><select id="g-src">${gsOpts(q,true)}
-      <option value="sum:dinheiro">Soma de dinheiro guardado (R$)</option><option value="sum:estudo">Soma de minutos de estudo</option><option value="sum:mente">Soma de minutos de mente</option>
-      <option value="count:treino">Quantidade de treinos</option><option value="count:treino:cardio">Quantidade de cardios</option><option value="count:treino:forca">Quantidade de treinos de força</option>
-      <option value="count:mente">Quantidade de sessões de mente</option><option value="count:mente:meditacao">Quantidade de meditações</option><option value="count:mente:leitura">Quantidade de leituras</option><option value="count:mente:livro">Livros terminados</option><option value="count:mente:reflexao">Quantidade de diários</option><option value="count:dinheiro:guardei">Quantidade de aportes</option><option value="count:familia">Quantidade de momentos em família</option><option value="count:familia:casal">Quantidade de programas a dois</option><option value="count:familia:filho">Quantidade de momentos com filho(s)</option>
-      ${S.stats.map(s=>`<option value="stat:${esc(s.id)}">Stat: ${esc(s.name)} até um alvo</option>`).join("")}
-      <option value="count:agua">Copos de água</option><option value="count:ingestao:fruta">Porções de vitaminas</option><option value="count:mente:sol">Banhos de sol</option><option value="count:ingestao:refeicao">Refeições boas</option><option value="count:ingestao:proteina">Doses de proteína</option><option value="count:treino:alongamento">Alongamentos</option><option value="count:familia:todos">Momentos com a família toda</option>
-      ${gsOpts(q,false)}<option value="manual">Manual (eu atualizo com + e −)</option></select></div>
-    <div class="field" id="g-trigf"><label>Conta quando eu registrar</label>${trigPicker(null,[])}<small class="hint">Marque as opções das bolhas que contam para esta task. Se não marcar nenhuma, vale o "Como medir" acima.</small></div>
-    <div class="row2"><div class="field"><label for="g-target">Alvo</label><input id="g-target" inputmode="decimal" required placeholder="ex: 5000"></div>
-    <div class="field"><label for="g-period">Ciclo</label><select id="g-period"><option value="day">Diário</option><option value="week" selected>Semanal</option><option value="month">Mensal</option><option value="year">Anual</option><option value="all">Sem ciclo (acumula)</option></select></div></div>
-    <div class="row2"><div class="field"><label for="g-unit">Unidade (manual)</label><input id="g-unit" placeholder="ex: livros" maxlength="12"></div>
-    <div class="field"><label for="g-diff">Dificuldade</label><select id="g-diff">${Object.entries(DIFF).map(([k,d])=>`<option value="${k}" ${k==="normal"?"selected":""}>${d.n}</option>`).join("")}</select></div></div>
-    <p class="hint">Em "Registro novo", o nome da task vira uma opção da bolha no Tracking. Escreva só o nome: o alvo e o ciclo entram sozinhos (ex: Beber água · 8x por dia). Tasks de estudo usam minutos (10h = 600).</p>
+    ${taskFields(null,q,GIDS,true)}
+    <p class="hint">Escreva só o nome: o alvo e o ciclo entram sozinhos (ex: Beber água · 8 copos por dia). Em Soma, cada registro soma o valor do botão (ex.: minutos, páginas, R$).</p>
     <div class="actions"><button type="button" class="btn ghost" data-cancel>Cancelar</button><button class="btn gold" type="submit">Criar task</button></div></form>`,sh=>{
-    sh.addEventListener("submit",e=>{e.preventDefault();const v=id=>sh.querySelector("#"+id).value;
-      let [src,kind,sub]=v("g-src").split(":");const target=num(v("g-target"));if(!isFinite(target)){toast("Informe o alvo em número");return;}
-      let newc=null;if(src==="new"){const c=kind==="+"?newCat(q.area,q.title.slice(0,20),areaIcon(q.area)):ownCats().find(x=>x.id===kind);if(!c)return;const o=addOpt(c,v("g-title").trim()||"Registro");if(!o){toast("Essa bolha já tem 8 opções");return;}src="count";kind=c.kind;sub=o.sub;newc=c;syncAreas();}
-      const g={id:uid(),title:v("g-title").trim(),src,since:new Date().toISOString(),claims:[],xp:0,diff:v("g-diff"),target,period:v("g-period")};
-      if(src==="sum"||src==="count"){g.kind=kind;if(sub)g.sub=sub;g.unit=src==="count"?"x":kind==="dinheiro"?"R$":"min";}
-      else if(src==="stat"){const st=S.stats.find(s=>s.id===kind);g.statId=kind;g.unit=st.unit;g.period="all";const cur=latestStat(kind);g.start=cur!=null?cur:(st.start??target);}
-      else{g.current=0;g.unit=v("g-unit").trim();}
-      if(canAuto(g)){g.base=g.title;syncTitle(g);}
-      if(newc)g.cat=newc.id;else if(g.kind){const ac=autoCat(g,q);g.cat=ac?ac.id:null;}
-      if(src==="count"||src==="sum"){const t=readTrig(sh);if(newc)g.trig=[newc.id+":"+sub].concat(t.filter(k=>k!==newc.id+":"+sub));else if(t.length&&src==="count"){g.trig=t;const [c0,o0]=findOpt(t[0]);g.kind=optKind(c0,o0);delete g.sub;}else if(t.length)g.trig=t;else g.trig=autoTrig(g,q);}
+    sh.addEventListener("submit",e=>{e.preventDefault();const r=sh.querySelector(".ts-form"),f=tsRead(r),title=sh.querySelector("#g-title").value.trim();
+      if(!isFinite(f.target)||f.target<=0){toast("Informe o alvo em número");return;}
+      const g={id:uid(),title,since:new Date().toISOString(),claims:[],xp:0,diff:f.diff,target:f.target};
+      if(f.src==="stat"){const st=S.stats.find(s=>s.id===f.stat);if(!st)return;Object.assign(g,{src:"stat",statId:st.id,unit:st.unit,period:"all"});const cur=latestStat(st.id);g.start=cur!=null?cur:(st.start??f.target);}
+      else{if(!f.trig.length){toast("Marque pelo menos um botão que conta");return;}const [c0,o0]=findOpt(f.trig[0]);
+        Object.assign(g,{src:f.src,period:f.period,trig:f.trig,kind:optKind(c0,o0),unit:f.unit||(f.src==="count"?"x":""),cat:c0.id});
+        if(canAuto(g)){g.base=title;syncTitle(g);}}
       q.goals.push(g);saveState();const m=mgr;render();if(m)goalsManager(m);else closeSheet();toast("Task criada");});
   });
 }
+function statTop(st){const se=statSeries(st.id),cur=se.length?se[se.length-1].value:null;
+  return `<div class="st-big"><b class="num">${cur==null?"–":fmtNum(cur)}</b><small>${esc(st.unit)}</small>${st.target!=null?`<span class="small muted">alvo ${fmtNum(st.target)} ${esc(st.unit)}</span>`:""}</div>${spark(se,st)}`;}
+
 function questSheet(){
   openSheet(`<h2>Nova quest</h2><form class="sec" style="gap:12px">
     <div class="field"><label for="q-title">Nome</label><input id="q-title" required maxlength="60" placeholder="ex: Quitar o carro"></div>
@@ -2512,7 +2613,7 @@ function questSheet(){
 }
 function statSheet(id){
   const st=id?S.stats.find(s=>s.id===id):{name:"",unit:"",area:"body",dir:"down",target:null};
-  openSheet(`<h2>${id?"Editar stat":"Nova stat"}</h2><form class="sec" style="gap:12px">
+  openSheet(`<div class="ed-tag" style="--a:${(AREAS[st.area]||AREAS.body).color}">${IC[statIcon(st)]}<span>Stat</span></div><h2>${id?esc(st.name):"Nova stat"}</h2>${id?statTop(st):""}<form class="sec" style="gap:12px">
     <div class="row2"><div class="field"><label for="s-name">Nome</label><div class="icname">${id?icPick("stat:"+id,statIcon(st),"Trocar ícone da stat"):""}<input id="s-name" required maxlength="30" value="${esc(st.name)}" placeholder="ex: Cintura"></div></div>
     <div class="field"><label for="s-unit">Unidade</label><input id="s-unit" maxlength="10" value="${esc(st.unit)}" placeholder="ex: cm"></div></div>
     <div class="row2"><div class="field"><label for="s-dir">Objetivo</label><select id="s-dir"><option value="down" ${st.dir==="down"?"selected":""}>Diminuir</option><option value="up" ${st.dir==="up"?"selected":""}>Aumentar</option></select></div>
@@ -2529,6 +2630,70 @@ function statSheet(id){
 /* ---------- Botões rápidos + menu radial ---------- */
 IC.burger=`<svg ${P}><path d="M4 11a8 6 0 0 1 16 0z"/><path d="M3 14.5h18"/><path d="M4.5 17.5h15a.5.5 0 0 1 .5.5 2 2 0 0 1-2 2H6a2 2 0 0 1-2-2 .5.5 0 0 1 .5-.5z"/></svg>`;
 if(!ICON_LIST.includes("burger"))ICON_LIST.splice(ICON_LIST.indexOf("utensils")+1,0,"burger");
+/* ---------- Ícones extras (v16) + seletor com busca e grupos ---------- */
+Object.assign(IC,{
+  bed:`<svg ${P}><path d="M3 18V7"/><path d="M21 18v-5a3 3 0 0 0-3-3h-8v8"/><path d="M3 14h18"/><circle cx="6.5" cy="11" r="1.5"/></svg>`,
+  shower:`<svg ${P}><path d="M5 21V7a3 3 0 0 1 6 0"/><path d="M8 10h8l-1 3H9z"/><path d="M10 16v1M12.5 16v2M15 16v1"/></svg>`,
+  eye:`<svg ${P}><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>`,
+  medkit:`<svg ${P}><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/><path d="M12 11v5M9.5 13.5h5"/></svg>`,
+  mountain:`<svg ${P}><path d="M3 20l6-11 4 6 3-4 5 9z"/></svg>`,
+  carrot:`<svg ${P}><path d="M4 20c4-1 10-5 13-9a3 3 0 0 0-4-4c-4 3-8 9-9 13z"/><path d="M15 6l3-3M18 9l3-3"/></svg>`,
+  bottle:`<svg ${P}><path d="M10 2h4v3l2 3v12a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V8l2-3z"/><path d="M8 12h8"/></svg>`,
+  wine:`<svg ${P}><path d="M8 3h8l-1 6a3 3 0 0 1-6 0z"/><path d="M12 12v8M8 21h8"/></svg>`,
+  beer:`<svg ${P}><path d="M6 9h9v10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/><path d="M15 11h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2"/><path d="M6 9a3 3 0 0 1 3-4c1 0 1.5.5 2 1 .5-.5 1-1 2-1a2.5 2.5 0 0 1 2 4"/></svg>`,
+  pot:`<svg ${P}><path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M2 10h20"/><path d="M9 6.5c0-1 1-1 1-2.5M14 6.5c0-1 1-1 1-2.5"/></svg>`,
+  tree:`<svg ${P}><path d="M12 22v-5"/><path d="M12 2l6 8h-3l4 7H5l4-7H6z"/></svg>`,
+  sprout:`<svg ${P}><path d="M12 21v-9"/><path d="M12 12c0-4-3-6-7-6 0 4 3 6 7 6z"/><path d="M12 10c0-3 2-5 6-5 0 3-2 5-6 5z"/><path d="M7 21h10"/></svg>`,
+  candle:`<svg ${P}><path d="M9 10h6v11H9z"/><path d="M12 10V8"/><path d="M12 2.5c1.5 2 2 3 0 4.5-2-1.5-1.5-2.5 0-4.5z"/></svg>`,
+  sparkle:`<svg ${P}><path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/><path d="M19 3v3M17.5 4.5h3"/></svg>`,
+  bookopen:`<svg ${P}><path d="M2 5h7a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H2z"/><path d="M22 5h-7a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h8z"/></svg>`,
+  cloud:`<svg ${P}><path d="M7 18a4 4 0 0 1-.5-8 6 6 0 0 1 11.5 1.5A3.5 3.5 0 0 1 17.5 18z"/></svg>`,
+  sofa:`<svg ${P}><path d="M4 11V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3"/><path d="M2 13a2 2 0 0 1 4 0v2h12v-2a2 2 0 0 1 4 0v5H2z"/><path d="M5 18v2M19 18v2"/></svg>`,
+  washer:`<svg ${P}><rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="13" r="4"/><path d="M8 6.5h.01M11 6.5h2"/></svg>`,
+  trash:`<svg ${P}><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/><path d="M10 11v6M14 11v6"/></svg>`,
+  wrench:`<svg ${P}><path d="M14.5 6.5a4 4 0 0 0-5.3 5.3L3 18l3 3 6.2-6.2a4 4 0 0 0 5.3-5.3l-2.5 2.5-2.5-.5-.5-2.5z"/></svg>`,
+  key:`<svg ${P}><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14.5 8.5l2 2"/></svg>`,
+  cart:`<svg ${P}><circle cx="9" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/><path d="M3 4h2l2.5 11h11l2-8H6.5"/></svg>`,
+  bag:`<svg ${P}><path d="M5 8h14l-1 13H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>`,
+  bulb:`<svg ${P}><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"/></svg>`,
+  paw:`<svg ${P}><circle cx="6.5" cy="10" r="1.8"/><circle cx="10" cy="6" r="1.8"/><circle cx="14.5" cy="6" r="1.8"/><circle cx="18" cy="10" r="1.8"/><path d="M8 17c0-3 2-5 4.3-5s4.2 2 4.2 5c0 2-1.5 3-3 2.5-1-.3-1.5-.3-2.5 0C9.5 20 8 19 8 17z"/></svg>`,
+  fish:`<svg ${P}><path d="M3 12c3-4 7-6 11-6 3 0 5 3 7 6-2 3-4 6-7 6-4 0-8-2-11-6z"/><path d="M3 12L1.5 9M3 12l-1.5 3"/><circle cx="16" cy="11" r=".8"/></svg>`,
+  cake:`<svg ${P}><path d="M4 21v-8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8z"/><path d="M4 16c2 1.5 4 1.5 5.3 0s4-1.5 5.4 0 4 1.5 5.3 0"/><path d="M12 11V8"/><path d="M12 4c.9 1.1.9 2.2 0 3-.9-.8-.9-1.9 0-3z"/></svg>`,
+  chat:`<svg ${P}><path d="M21 12a8 8 0 0 1-11.6 7.1L4 21l1.9-5.4A8 8 0 1 1 21 12z"/></svg>`,
+  phone:`<svg ${P}><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>`,
+  camera:`<svg ${P}><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/></svg>`,
+  plane:`<svg ${P}><path d="M2 11l20-8-7 18-3-7z"/><path d="M12 14l3.5-3.5"/></svg>`,
+  pin:`<svg ${P}><path d="M12 21s-7-6-7-12a7 7 0 0 1 14 0c0 6-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>`,
+  tv:`<svg ${P}><rect x="3" y="5" width="18" height="13" rx="2"/><path d="M8 21h8M12 18v3"/></svg>`,
+  headphones:`<svg ${P}><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4" height="7" rx="1.5"/><rect x="17" y="14" width="4" height="7" rx="1.5"/></svg>`,
+  mic:`<svg ${P}><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>`,
+  dice:`<svg ${P}><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r=".8"/><circle cx="15" cy="15" r=".8"/><circle cx="15" cy="9" r=".8"/><circle cx="9" cy="15" r=".8"/></svg>`,
+  palette:`<svg ${P}><path d="M12 3a9 9 0 1 0 0 18c1.5 0 2-1 2-2s-1-1.5-1-2.5 1-1.5 2-1.5h2a4 4 0 0 0 4-4c0-4.5-4-8-9-8z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/></svg>`,
+  mail:`<svg ${P}><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>`,
+  folder:`<svg ${P}><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>`,
+  list:`<svg ${P}><path d="M10 6h10M10 12h10M10 18h10"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>`,
+  calc:`<svg ${P}><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"/></svg>`,
+  rocket:`<svg ${P}><path d="M12 3c3 2 5 6 4 11l-2 3h-4l-2-3c-1-5 1-9 4-11z"/><circle cx="12" cy="10" r="1.5"/><path d="M8 14l-3 3 3 1M16 14l3 3-3 1M11 20.5h2"/></svg>`,
+  flag:`<svg ${P}><path d="M5 21V4"/><path d="M5 4h12l-2 4 2 4H5"/></svg>`,
+  hourglass:`<svg ${P}><path d="M6 3h12M6 21h12"/><path d="M7 3c0 5 10 5 10 9s-10 4-10 9"/><path d="M17 3c0 5-10 5-10 9s10 4 10 9"/></svg>`,
+  wallet:`<svg ${P}><path d="M4 7a2 2 0 0 1 2-2h11v3"/><rect x="3" y="8" width="18" height="12" rx="2"/><circle cx="16" cy="14" r="1.3"/></svg>`,
+  bank:`<svg ${P}><path d="M3 10l9-6 9 6"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8"/><path d="M3 21h18"/></svg>`,
+  receipt:`<svg ${P}><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg>`,
+  trend:`<svg ${P}><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>`});
+const ICON_GROUPS=[["Corpo e saúde",["dumbbell","run","walk","bike","swim","yoga","ball","mountain","flame","zap","heart","pulse","scale","bed","eye","medkit","pill","tooth","shower","brain","smile"]],
+  ["Comida e bebida",["drop","bottle","glass","coffee","beer","wine","apple","carrot","egg","utensils","burger","pot","cig"]],
+  ["Mente e espírito",["moon","sun","cloud","leaf","sprout","tree","candle","sparkle","bookopen","book"]],
+  ["Casa",["home","broom","trash","washer","sofa","wrench","key","cart","bag","bulb","car","paw","fish"]],
+  ["Família e social",["baby","users","ring","gift","cake","chat","phone","phoneoff","camera","plane","pin"]],
+  ["Trabalho e estudo",["grad","lang","pen","code","laptop","briefcase","mail","folder","list","calc","rocket","flag","hourglass","clock","cal","bell","check","target","trophy","star"]],
+  ["Dinheiro",["coin","piggy","card","wallet","bank","receipt","trend","chart"]],
+  ["Lazer",["music","headphones","mic","game","dice","tv","palette"]]];
+const ICON_PT={dumbbell:"academia treino força peso musculação",run:"corrida correr cardio",walk:"caminhada andar passos",bike:"bicicleta pedalar ciclismo",swim:"natação nadar piscina",yoga:"yoga alongamento",ball:"futebol esporte bola",mountain:"trilha montanha escalada",flame:"fogo caloria foco",zap:"energia raio",heart:"amor coração casal saúde",pulse:"saúde batimento",scale:"peso balança",bed:"sono dormir cama descanso",eye:"olhos visão tela",medkit:"remédio saúde médico",pill:"remédio vitamina suplemento",tooth:"dente escovar dentista higiene",shower:"banho higiene ducha",brain:"mente cérebro",smile:"humor feliz",drop:"água beber",bottle:"garrafa água",glass:"copo",coffee:"café",beer:"cerveja álcool bebida",wine:"vinho bebida",apple:"fruta vitamina",carrot:"verdura legume cenoura",egg:"ovo proteína",utensils:"comida refeição",burger:"lanche comida proteína",pot:"cozinhar panela receita",cig:"cigarro fumar vício",moon:"noite sono lua",sun:"sol dia banho de sol",cloud:"nuvem tempo",leaf:"meditação natureza folha",sprout:"planta crescer jardim",tree:"árvore natureza",candle:"vela oração espiritual fé",sparkle:"brilho espiritual gratidão",bookopen:"leitura bíblia livro estudo",book:"livro leitura",home:"casa lar",broom:"limpar faxina vassoura",trash:"lixo",washer:"roupa lavar máquina",sofa:"sala descanso sofá",wrench:"conserto ferramenta manutenção",key:"chave",cart:"mercado compras",bag:"compras sacola",bulb:"ideia lâmpada",car:"carro dirigir",paw:"pet cachorro gato animal",fish:"peixe pet aquário",baby:"filho bebê criança",users:"família amigos pessoas",ring:"casamento aliança casal",gift:"presente",cake:"aniversário bolo festa",chat:"conversa mensagem",phone:"ligar telefone",phoneoff:"sem celular desligar tela",camera:"foto câmera",plane:"viagem avião",pin:"lugar local passeio",grad:"estudo formatura curso",lang:"idioma inglês língua",pen:"escrever diário",code:"programar código",laptop:"computador trabalho",briefcase:"trabalho emprego",mail:"email",folder:"pasta arquivo",list:"lista tarefas",calc:"conta calculadora",rocket:"projeto lançar",flag:"meta objetivo",hourglass:"tempo foco",clock:"hora tempo",cal:"agenda calendário",bell:"lembrete",check:"feito ok",target:"meta alvo",trophy:"conquista troféu",star:"estrela favorito",coin:"dinheiro moeda",piggy:"guardar poupança cofrinho",card:"cartão gasto",wallet:"carteira",bank:"banco investimento",receipt:"conta boleto",trend:"investimento crescer",chart:"gráfico",music:"música",headphones:"podcast música ouvir",mic:"cantar falar podcast",game:"jogo videogame",dice:"jogo tabuleiro",tv:"série filme tv",palette:"arte pintura desenho"};
+function icGrid(btn){const seen=new Set();const gs=ICON_GROUPS.map(([n,ks])=>[n,ks.filter(k=>IC[k]&&!seen.has(k)&&seen.add(k))]);const rest=ICON_LIST.filter(k=>IC[k]&&!seen.has(k));if(rest.length)gs.push(["Outros",rest]);
+  return `<input class="icq" type="search" placeholder="Buscar: casa, pet, estudo…" aria-label="Buscar ícone"><div class="icgs">${gs.map(([n,ks])=>`<div class="icgsec"><div class="icgh">${esc(n)}</div><div class="icgrid">${ks.map(k=>btn(k).replace("<button ",`<button data-k="${esc(k+" "+(ICON_PT[k]||"")+" "+n.toLowerCase())}" `)).join("")}</div></div>`).join("")}<div class="hint icnone" hidden>Nenhum ícone com esse nome.</div></div>`;}
+document.addEventListener("input",e=>{if(!e.target.matches||!e.target.matches(".icq"))return;const pop=e.target.closest(".icpop");const q=e.target.value.trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");let n=0;
+  pop.querySelectorAll(".icgsec").forEach(s=>{let v=0;s.querySelectorAll("[data-k]").forEach(b=>{const ok=!q||b.dataset.k.normalize("NFD").replace(/[̀-ͯ]/g,"").includes(q);b.hidden=!ok;if(ok)v++;});s.hidden=!v;n+=v;});
+  const none=pop.querySelector(".icnone");if(none)none.hidden=!!n;});
 const DEFAULT_CATS=[
   {id:"treino",area:"body",name:"Treino",icon:"dumbbell",kind:"treino",opts:[
     {id:"forca",l:"Força",ic:"dumbbell",sub:"forca"},{id:"cardio",l:"Cardio",ic:"run",sub:"cardio"},{id:"along",l:"Alongamento",ic:"yoga",sub:"alongamento"},{id:"peso",l:"Peso",ic:"scale",kind:"stat",statId:"peso",ask:1}]},
@@ -2577,9 +2742,9 @@ function autoTrig(g,q){if(!g.kind||g.kind==="stat"||!(g.src==="count"||g.src==="
   let cs=cats().filter(c=>c.opts.some(o=>fit(c,o)));if(g.cat&&cs.some(c=>c.id===g.cat))cs=cs.filter(c=>c.id===g.cat);
   const ks=[];cs.forEach(c=>c.opts.forEach(o=>{if(fit(c,o))ks.push(optKey(c,o));}));return ks.length?ks:null;}
 function ensureTrig(){if(!S)return;let ch=false;S.quests.forEach(q=>q.goals.forEach(g=>{if(g.trig!==undefined||!(g.src==="count"||g.src==="sum"))return;g.trig=autoTrig(g,q);ch=true;}));if(ch)saveState();}
-function trigPicker(g,sel){const sum=g&&g.src==="sum";const cs=cats().filter(c=>c.opts.some(o=>optKind(c,o)!=="stat"&&(!sum||optKind(c,o)===g.kind)));
-  return `<div class="trigp">${cs.map(c=>{const a=AREAS[c.area]||AREAS.body;return `<div class="trig-c" style="--a:${a.color}"><div class="trig-h">${IC[c.icon]||IC.star}<span>${esc(c.name)}</span></div><div class="trig-l">${c.opts.filter(o=>optKind(c,o)!=="stat"&&(!sum||optKind(c,o)===g.kind)).map(o=>`<button type="button" class="trig" data-trig="${esc(optKey(c,o))}" aria-pressed="${sel.includes(optKey(c,o))}">${IC[o.ic]||IC.star}<span>${esc(o.l)}</span></button>`).join("")}</div></div>`;}).join("")}</div>`;}
-document.addEventListener("click",e=>{const b=e.target.closest("[data-trig]");if(!b)return;e.stopPropagation();b.setAttribute("aria-pressed",String(b.getAttribute("aria-pressed")!=="true"));},true);
+function trigPicker(g,sel){const cs=cats().filter(c=>c.opts.some(o=>optKind(c,o)!=="stat")&&(!c.off||c.opts.some(o=>sel.includes(optKey(c,o)))));
+  return `<div class="trigp">${cs.map(c=>{const a=AREAS[c.area]||AREAS.body;return `<div class="trig-c" style="--a:${a.color}"><div class="trig-h">${IC[c.icon]||IC.star}<span>${esc(c.name)}</span></div><div class="trig-l">${c.opts.filter(o=>optKind(c,o)!=="stat").map(o=>`<button type="button" class="trig" data-trig="${esc(optKey(c,o))}" aria-pressed="${sel.includes(optKey(c,o))}">${IC[o.ic]||IC.star}<span>${esc(o.l)}</span></button>`).join("")}</div></div>`;}).join("")}</div>`;}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-trig]");if(!b)return;e.stopPropagation();b.setAttribute("aria-pressed",String(b.getAttribute("aria-pressed")!=="true"));b.dispatchEvent(new Event("trig",{bubbles:true}));},true);
 function readTrig(root){return [...root.querySelectorAll("[data-trig][aria-pressed=true]")].map(b=>b.dataset.trig);}
 /* Task → Bolha: cada task aponta para uma bolha (g.cat); o anel mostra só as tasks dela, num ciclo só */
 function catFits(c,g){if(!c||!g||!g.kind||g.kind==="stat")return false;return c.opts.some(o=>{const k=optKind(c,o);return k===g.kind&&(!g.sub||!o.sub||o.sub===g.sub);});}
@@ -2627,7 +2792,7 @@ function trackHTML(){setTimeout(fitTrack,0);const by={};cats().filter(c=>!c.off&
   const ts="orb",rs=brl(allLogs().filter(l=>l.kind==="dinheiro").reduce((x,l)=>x+(+l.value||0),0));
   // com mais de 3 quests, quests de poucas bolhas dividem a mesma linha (até 3 bolhas por linha)
   const packs=[];order.forEach(k=>{const n=by[k].length,L=packs[packs.length-1];if(order.length>3&&L&&L.n+n<=3){L.ks.push(k);L.n+=n;}else packs.push({ks:[k],n});});
-  const sec=k=>{const a=AREAS[k];return `<section class="tg" style="--a:${a.color}"><h3 class="tg-h"><button class="tg-b" data-qsum="${esc(k)}" aria-label="Resumo de ${esc(a.name)}">${esc(a.name)}</button>${k==="money"?`<span class="tg-r num">${esc(rs)}</span>`:""}</h3><div class="tg-l n${by[k].length}">${by[k].map(catHTML).join("")}</div></section>`;};
+  const sec=k=>{const a=AREAS[k];return `<section class="tg" style="--a:${a.color}"><h3 class="tg-h"><button class="tg-b" data-qsum="${esc(k)}" aria-label="Resumo de ${esc(a.name)}">${esc(a.name)}</button></h3><div class="tg-l n${by[k].length}">${by[k].map(catHTML).join("")}</div></section>`;};
   const rows=packs.map(r=>`<div class="tg-row" data-n="${r.n}">${r.ks.map(sec).join("")}</div>`).join("");
   return `<div class="track ts-${ts}">
     <div class="track-h"><div><div class="track-d">${esc(new Date().toLocaleDateString("pt-BR",{weekday:"short",day:"2-digit",month:"short"}).replace(/\./g,""))}</div><div class="track-s"><b class="num">${tl.length}</b> ${tl.length===1?"registro":"registros"} · <b class="num">+${xp}</b> XP hoje</div>${(()=>{const pl=SUGS?pendingLinks():[];return pl.length?`<button class="track-bn" data-sugopen="${esc(pl[0].k.id)}">${IC.zap}<span>Bônus: ${pl.map(p=>`${esc(p.k.to.l)} <b>+${p.k.xp}</b>`).join(" · ")}</span></button>`:"";})()}</div>
@@ -2648,14 +2813,15 @@ function doOpt(c,o){if(!o)return;BUMP=c.id;S.catLast=Object.assign({},S.catLast,
 let LASTLOG=null;
 function undoToast(c,o){return;const ls=allLogs();LASTLOG=ls.length?ls.reduce((m,l)=>!m||l.t>m.t?l:m,null):null;setTimeout(()=>{const t=document.querySelector(".toast .tx");if(t&&LASTLOG&&!t.querySelector("[data-undo]"))t.insertAdjacentHTML("beforeend",`<div class="tundo"><span>${esc(c.name)} · ${esc(o.l)}</span><button class="link" data-undo="${LASTLOG.id}">Desfazer</button></div>`);},30);}
 document.addEventListener("click",e=>{const u=e.target.closest("[data-undo]");if(!u)return;delLog(u.dataset.undo);document.querySelectorAll(".toast").forEach(x=>x.style.display="none");toast("Registro desfeito");});
-function askValue(c,o){const kind=optKind(c,o);const money=kind==="dinheiro";const a=AREAS[c.area]||AREAS.body;
+function askValue(c,o){const u=optUnit(c,o),money=u==="R$",mins=u==="min";const a=AREAS[c.area]||AREAS.body;
+  const chips=money?[20,50,100,200,500].map(v=>`<button type="button" data-fill="${v}">R$ ${v}</button>`):mins?[10,20,45,90,120].map(v=>`<button type="button" data-fill="${v}">${v} min</button>`):[];
   openSheet(`<div><div class="small muted">${esc(c.name)}</div><h2>${esc(o.l)}</h2></div><form class="sec" style="gap:12px">
-    <div class="field"><label for="av-v">${money?"Valor (R$)":"Minutos"}</label>${money?`<div class="chipsel" style="--a:${a.color}">${[20,50,100,200,500].map(v=>`<button type="button" data-fill="${v}">R$ ${v}</button>`).join("")}</div>`:`<div class="chipsel" style="--a:${a.color}">${[10,20,45,90,120].map(v=>`<button type="button" data-fill="${v}">${v} min</button>`).join("")}</div>`}
+    <div class="field"><label for="av-v">${u?`Valor (${esc(u)})`:"Valor"}${optNeg(c,o)?" · subtrai":""}</label>${chips.length?`<div class="chipsel" style="--a:${a.color}">${chips.join("")}</div>`:""}
     <input id="av-v" inputmode="decimal" required placeholder="${money?"ex: 137,50":"ex: 40"}"></div>
     <div class="actions"><button type="button" class="btn ghost" data-cancel>Cancelar</button><button class="btn gold" type="submit">Registrar</button></div></form>`,sh=>{
     sh.addEventListener("click",e=>{const f=e.target.closest("[data-fill]");if(f)sh.querySelector("#av-v").value=f.dataset.fill;});
     sh.addEventListener("submit",e=>{e.preventDefault();const v=num(sh.querySelector("#av-v").value);if(!isFinite(v)||v<=0){toast("Informe um valor maior que zero");return;}
-      const l=optLog(c,o);l.value=money&&o.sub==="retirei"?-v:v;closeSheet();const r0=rwSnap(c);RWQ=rwOn();addLog(l);RWQ=false;reward(c,o,l,r0);});});}
+      const l=optLog(c,o);l.value=optNeg(c,o)?-v:v;closeSheet();const r0=rwSnap(c);RWQ=rwOn();addLog(l);RWQ=false;reward(c,o,l,r0);});});}
 /* menu radial: segurar, deslizar e soltar */
 let RAD=null;
 function radOpen(c,x,y){const el=document.createElement("div");el.className="radial";document.body.appendChild(el);
@@ -2722,27 +2888,39 @@ function catSheet(c,refresh){SHREF=!!refresh;CATOPEN=c.id;const a=AREAS[c.area]|
     if(b.dataset.plus){e.stopPropagation();const [qi,gi]=b.dataset.plus.split("|");closeSheet();quickPlus(qi,gi);return;}});
   sh.addEventListener("click",e=>{const g=e.target.closest("[data-open]");if(g&&!e.target.closest("button")){const [qi,gi]=g.dataset.open.split("|");goalDetail(qi,gi);}});});}
 /* editar botões e opções */
-function optMin(c){return S.kinds&&S.kinds[c.kind]?1:2;}
-function catEdit(id,refresh){const c=ownCats().find(k=>k.id===id);if(!c)return;const a=AREAS[c.area]||AREAS.body;
-  openSheet(`<div class="mgr-head">${icPick("cat:"+c.id,c.icon,"Trocar ícone da bolha")}<div style="flex:1;min-width:0"><div class="small muted">Bolha de ${esc(a.name)}</div><input id="ce-name" class="ce-name" maxlength="20" value="${esc(c.name)}" aria-label="Nome da bolha"></div></div>
+function optMin(c){return 1;}
+let CDEL=null,CATED=null;
+function catEdit(id,refresh){const c=ownCats().find(k=>k.id===id);if(!c)return;const a=AREAS[c.area]||AREAS.body;CATED=c.id;if(CDEL!==c.id)CDEL=null;
+  openSheet(`<div class="ed-tag" style="--a:${a.color}">${IC[c.icon]||IC.star}<span>Bolha · ${esc(a.name)}</span></div>
+    ${catPrev(c,a)}
+    <div class="mgr-head ce-head">${icPick("cat:"+c.id,c.icon,"Trocar ícone da bolha")}<div style="flex:1;min-width:0"><input id="ce-name" class="ce-name" maxlength="20" value="${esc(c.name)}" aria-label="Nome da bolha"></div></div>
     ${(()=>{const cy=ringCycles(c);return cy.length>1?`<div class="field"><label for="ce-ring">O anel mostra</label><select id="ce-ring"><option value="">Automático</option>${cy.map(k=>`<option value="${k}" ${c.ring===k?"selected":""}>${k==="all"?"Metas longas":"Tasks "+esc(CYCN[k].toLowerCase())}</option>`).join("")}</select><small class="hint">No automático, o anel usa o ciclo mais curto. As outras tasks aparecem ao tocar na bolha.</small></div>`:"";})()}
-    <div class="sec" style="gap:8px"><h2 class="sub">Opções do radial (${c.opts.length})</h2>
-    ${c.opts.map(o=>`<div class="ce-o">${icPick("opt:"+c.id+":"+o.id,o.ic,"Trocar ícone da opção")}<input data-ol="${esc(o.id)}" maxlength="20" value="${esc(o.l)}" aria-label="Nome da opção"><button class="btn sm danger" data-odel="${esc(o.id)}" aria-label="Tirar opção" ${c.opts.length<=optMin(c)?"disabled":""}>−</button></div>`).join("")}
-    ${c.opts.length<8?`<div class="ce-o ce-new"><span class="ce-plus">＋</span><input id="ce-new" maxlength="20" placeholder="Nova opção, ex: Natação"><button class="btn sm gold" data-oadd>Adicionar</button></div>`:""}
-    <p class="hint">Opções novas contam como ${esc((KINDS[c.kind]||{label:c.name}).label.toLowerCase())} nas tasks e no XP. O radial aceita de ${optMin(c)} a 8 opções.</p></div>
+    <div class="sec" style="gap:12px"><h2 class="sub">Botões do radial (${c.opts.length})</h2>
+    ${c.opts.map(o=>optRowE(c,o)).join("")}
+    ${c.opts.length<8?`<div class="ce-o ce-new"><span class="ce-plus">＋</span><input id="ce-new" maxlength="20" placeholder="Botão novo, ex: Natação"><button class="btn sm gold" data-oadd>Adicionar</button></div>`:""}
+    <p class="hint">Cada botão conta 1, registra um valor fixo (ex.: 30 min) ou pergunta o valor na hora (ex.: R$). Cada task escolhe quais botões contam para ela.</p></div>
+    <div class="ce-danger"><button class="btn sm danger" data-cdel>${CDEL===c.id?"Toque de novo para excluir":"Excluir bolha"}</button><small class="hint">Os registros ficam no Diário. Tasks que só contavam esta bolha ficam desativadas.</small></div>
     <div class="actions" style="justify-content:space-between"><button class="btn ghost" data-coff>${c.off?"Mostrar bolha":"Esconder bolha"}</button><button class="btn gold" data-csave>Salvar</button></div>`,sh=>{if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
-    const saveNames=()=>{c.name=sh.querySelector("#ce-name").value.trim()||c.name;const rg=sh.querySelector("#ce-ring");if(rg){if(rg.value)c.ring=rg.value;else delete c.ring;}sh.querySelectorAll("[data-ol]").forEach(i=>{const o=c.opts.find(x=>x.id===i.dataset.ol);if(o)o.l=i.value.trim()||o.l;});};
+    const saveNames=()=>{c.name=sh.querySelector("#ce-name").value.trim()||c.name;const rg=sh.querySelector("#ce-ring");if(rg){if(rg.value)c.ring=rg.value;else delete c.ring;}
+      sh.querySelectorAll("[data-ol]").forEach(i=>{const o=c.opts.find(x=>x.id===i.dataset.ol);if(o)o.l=i.value.trim()||o.l;});
+      sh.querySelectorAll("[data-om]").forEach(se=>{const o=c.opts.find(x=>x.id===se.dataset.om);if(!o)return;const m=se.value,vi=sh.querySelector(`[data-ov="${o.id}"]`),ui=sh.querySelector(`[data-ou="${o.id}"]`);
+        if(m==="one"){delete o.ask;delete o.value;delete o.vu;return;}
+        if(m==="ask"){o.ask=1;delete o.value;}else{const v=num(vi.value);if(isFinite(v)&&v>0){o.value=v;delete o.ask;}else if(optMode(o)!=="fix"){o.value=1;delete o.ask;}}
+        const u=(ui.value||"").trim().slice(0,8);if(u)o.vu=u;else delete o.vu;});};
     sh.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
-      if(b.dataset.odel){saveNames();if(c.opts.length<=optMin(c))return;c.opts=c.opts.filter(o=>o.id!==b.dataset.odel);saveState();render();catEdit(c.id,true);toast("Opção removida");return;}
-      if("oadd" in b.dataset){saveNames();const v=sh.querySelector("#ce-new").value.trim();if(!v){toast("Escreva o nome da opção");return;}const nid="c"+uid(),all=c.opts.filter(o=>optKind(c,o)!=="stat").map(o=>optKey(c,o));c.opts.push({id:nid,l:v,ic:c.icon,sub:nid,value:c.kind==="estudo"?30:undefined,ask:c.kind==="dinheiro"||c.kind==="estudo"?1:undefined});
-        let nT=0;S.quests.forEach(q=>q.goals.forEach(g=>{if(Array.isArray(g.trig)&&all.length&&all.every(k=>g.trig.includes(k))){g.trig.push(c.id+":"+nid);nT++;}}));if(nT)toast(`A opção nova já conta em ${nT} ${nT===1?"task":"tasks"} desta bolha`);saveState();syncAreas();render();catEdit(c.id,true);return;}
+      if(b.dataset.odel){saveNames();if(c.opts.length<=1)return;const o=c.opts.find(x=>x.id===b.dataset.odel);c.opts=c.opts.filter(x=>x!==o);const hit=dropTrig([optKey(c,o)]);saveState();render();catEdit(c.id,true);
+        toast(`Botão ${esc(o.l)} removido${hit.length?` · saiu de: ${esc(hit.join(", "))}`:""}`);return;}
+      if("oadd" in b.dataset){saveNames();const v=sh.querySelector("#ce-new").value.trim();if(!v){toast("Escreva o nome do botão");return;}const nid="c"+uid(),all=c.opts.filter(o=>optKind(c,o)!=="stat").map(o=>optKey(c,o));c.opts.push(Object.assign({id:nid,l:v,ic:c.icon,sub:nid},optLike(c)));
+        let nT=0;S.quests.forEach(q=>q.goals.forEach(g=>{if(Array.isArray(g.trig)&&all.length&&all.every(k=>g.trig.includes(k))){g.trig.push(c.id+":"+nid);nT++;}}));if(nT)toast(`O botão novo já conta em ${nT} ${nT===1?"task":"tasks"} desta bolha`);saveState();syncAreas();render();catEdit(c.id,true);return;}
+      if("cdel" in b.dataset){if(CDEL!==c.id){saveNames();CDEL=c.id;catEdit(c.id,true);return;}CDEL=null;const hit=dropTrig(c.opts.map(o=>optKey(c,o)));S.cats=ownCats().filter(x=>x!==c);saveState();syncAreas();closeSheet();render();
+        toast(`Bolha <b>${esc(c.name)}</b> excluída. Os registros ficam no Diário.${hit.length?` Tasks afetadas: ${esc(hit.join(", "))}.`:""}`);return;}
       if("coff" in b.dataset){saveNames();c.off=!c.off;saveState();closeSheet();render();toast(c.off?"Bolha escondida. Para mostrar de novo, use Organizar no Tracking.":"Bolha visível");return;}
       if("csave" in b.dataset){saveNames();saveState();syncAreas();closeSheet();render();toast("Bolha salva");return;}});},refresh);}
 
 
 /* ---------- Quests editáveis: nome, ícone, cor, quests novas e ordem do Tracking ---------- */
 const AREA_C0={money:"var(--money)",body:"var(--body)",family:"var(--family)"};
-const AREA_PAL=["#e0a85a","#4fb3c9","#d77fb0","#8fb45a","#7d8ce0","#c98a5e","#5fc2a4","#d4c25a"];
+const AREA_PAL=["#ff6a1a","#2f8cff","#ff3d8b","#22c55e","#8b5cf6","#ef3b3b","#06b6d4","#facc15"],AREA_PAL0=["#e0a85a","#4fb3c9","#d77fb0","#8fb45a","#7d8ce0","#c98a5e","#5fc2a4","#d4c25a"];
 const NOPT_KINDS=new Set(["dinheiro","estudo","agua","stat"]);
 function shortOf(t){return String(t||"").replace(/\s+e\s+/gi," & ");}
 function mainOf(k){return S.quests.find(q=>q.type==="main"&&q.area===k&&!q.archived)||S.quests.find(q=>q.type==="main"&&q.area===k);}
@@ -2758,13 +2936,15 @@ function areaKeys(all){const live=k=>AREAS[k]&&(all||!AREAS[k].off)&&S.quests.so
   const ks=(S.areaOrder||["family","money","body"]).filter(live);Object.keys(AREAS).forEach(k=>{if(!ks.includes(k)&&live(k))ks.push(k);});return ks;}
 function newCat(area,name,icon){const kid="k"+uid();S.kinds=Object.assign({},S.kinds,{[kid]:{label:name,area,icon}});
   const c={id:"c"+uid(),area,name,icon,kind:kid,agg:1,opts:[]};ownCats().push(c);return c;}
-function addOpt(c,l){if(c.opts.length>=8)return null;const nid="o"+uid();const o={id:nid,l:String(l).trim().slice(0,20)||"Registro",ic:c.icon,sub:nid};c.opts.push(o);return o;}
+function addOpt(c,l){if(c.opts.length>=8)return null;const nid="o"+uid();const o=Object.assign({id:nid,l:String(l).trim().slice(0,20)||"Registro",ic:c.icon,sub:nid},optLike(c));c.opts.push(o);return o;}
+// botão novo segue a bolha: se os botões dela registram valor, o novo pergunta o valor na mesma unidade
+function optLike(c){const v=c.opts.find(o=>optMode(o)==="ask"||optMode(o)==="fix");if(!v)return {};const u=optUnit(c,v);return u?{ask:1,vu:u}:{ask:1};}
 function swatches(cur,def){return `<div class="swl" role="radiogroup" aria-label="Cor">${(def?[def]:[]).concat(AREA_PAL).map(col=>`<button type="button" class="sw" data-sw="${esc(col)}" style="--c:${esc(col)}" aria-pressed="${col===cur}" aria-label="${col===def?"Cor original":"Cor"}"></button>`).join("")}</div>`;}
 function bindSw(sh,set){sh.addEventListener("click",e=>{const b=e.target.closest("[data-sw]");if(!b)return;sh.querySelectorAll("[data-sw]").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));set(b.dataset.sw);});}
 let QARM=null;
 function questEdit(qid,refresh){const q=S.quests.find(x=>x.id===qid);if(!q)return;const a=AREAS[q.area]||AREAS.body,def=AREA_C0[q.area];let col=q.color||def||a.color;
   const cs=cats().filter(c=>c.area===q.area);
-  openSheet(`<div class="mgr-head" style="--a:${a.color}">${icPick("area:"+q.area,areaIcon(q.area),"Trocar ícone da quest")}<div style="flex:1;min-width:0"><div class="small muted">Toque no ícone para trocar</div><input id="qe-name" class="ce-name" maxlength="40" value="${esc(q.title)}" aria-label="Nome da quest"></div></div>
+  openSheet(`<div class="ed-tag" style="--a:${a.color}">${IC[areaIcon(q.area)]||IC.star}<span>Quest</span></div><div class="mgr-head ed-cover" id="qe-cover" style="--a:${col}">${icPick("area:"+q.area,areaIcon(q.area),"Trocar ícone da quest")}<div style="flex:1;min-width:0"><div class="small muted">Toque no ícone para trocar</div><input id="qe-name" class="ce-name" maxlength="40" value="${esc(q.title)}" aria-label="Nome da quest"></div></div>
     <div class="field"><label for="qe-desc">Descrição</label><input id="qe-desc" maxlength="140" value="${esc(q.desc||"")}" placeholder="opcional"></div>
     <div class="field"><label>Cor</label>${swatches(col,def)}</div>
     <div class="sec" style="gap:8px"><h2 class="sub">Bolhas no Tracking</h2>
@@ -2773,7 +2953,7 @@ function questEdit(qid,refresh){const q=S.quests.find(x=>x.id===qid);if(!q)retur
     <p class="hint">O nome muda em todo o app: Tracking, Nível, avisos e tasks. Os registros continuam os mesmos.</p>
     ${a.custom?`<button class="btn sm danger" data-qearch style="align-self:flex-start">${QARM===q.id?"Toque de novo para arquivar":"Arquivar quest"}</button>`:""}
     <div class="actions" style="justify-content:space-between"><button class="btn ghost" data-mgr2="${q.id}">Editar tasks</button><button class="btn gold" data-qesave>Salvar</button></div>`,sh=>{
-    bindSw(sh,v=>{col=v;});
+    bindSw(sh,v=>{col=v;const cv=sh.querySelector("#qe-cover");if(cv)cv.style.setProperty("--a",v);});
     const save=()=>{const old=q.title,nt=sh.querySelector("#qe-name").value.trim().slice(0,40);if(nt)q.title=nt;q.desc=sh.querySelector("#qe-desc").value.trim();
       if(col&&col!==def)q.color=col;else delete q.color;
       if(old!==q.title)ownCats().forEach(c=>{if(c.area===q.area&&S.kinds&&S.kinds[c.kind]&&c.name===old.slice(0,20))c.name=q.title.slice(0,20);});
@@ -2929,8 +3109,7 @@ function widgetCats(){const vis=wVis();let ids;
   return ids.slice(0,4).map(id=>vis.find(c=>c.id===id)).filter(Boolean);}
 function quickOpt(c){const ok=o=>o&&!o.ask&&optKind(c,o)!=="stat";const l=catLast(c);return ok(l)?l:(c.opts.find(ok)||null);}
 function optLog(c,o){const kind=optKind(c,o);const l={kind,sub:o.sub||undefined,note:"",cat:c.id,opt:o.id};if(o.sub&&KINDS[kind]&&(KINDS[kind].custom||!(KINDS[kind].subs||{})[o.sub]))l.label=o.l;
-  if(kind==="dinheiro"){l.value=o.sub==="retirei"?-Math.abs(+o.value||0):Math.abs(+o.value||0);}
-  if(kind==="estudo")l.value=+o.value||0;return l;}
+  if(optMode(o)==="fix"){const v=Math.abs(+o.value);l.value=optNeg(c,o)?-v:v;}else if(kind==="dinheiro"||kind==="estudo")l.value=0;return l;}
 function wFmt(u,v){return u==="R$"?(v>=1000?String(+(v/1000).toFixed(1)).replace(".",",")+"k":String(Math.round(v))):u==="min"?(v>=60?String(+(v/60).toFixed(1)).replace(".",",")+"h":Math.round(v)+"m"):fmtNum(v,0);}
 async function widgetData(){const t=xpWeek(),lv=levelOf(t.total),today=dayKey(new Date()),tl=allLogs().filter(l=>dayKey(l.t)===today);
   const cs=await Promise.all(widgetCats().map(async c=>{const a=AREAS[c.area]||AREAS.body,col=cssCol(a.color),cg=aggGoal(c),o=quickOpt(c);let cur=0,target=0,per="",n=0,v=0,done=false,u="";
@@ -3051,7 +3230,7 @@ layer.addEventListener("click",e=>{if(e.target.matches("[data-close]")||e.target
   if(d.ddir){sh.querySelectorAll("[data-ddir]").forEach(x=>x.setAttribute("aria-pressed",x===b));return;}
   const addAmt=v=>{if(!isFinite(v)||v<=0){toast("Informe um valor maior que zero");return;}
     if(g.unit==="R$"){const out=sh.querySelector('[data-ddir="out"][aria-pressed="true"]');addLog({kind:"dinheiro",sub:out?"retirei":"guardei",value:out?-v:v,note:""});}
-    else addLog({kind:g.kind,value:g.kind==="estudo"?v:undefined,minutes:g.kind!=="estudo"?v:undefined,sub:g.sub,note:""});};
+    else{const sp=trigSpecs(g),x=sp.find(y=>y.o.ask)||sp.find(y=>optMode(y.o)!=="stat");if(x){const l=optLog(x.c,x.o);l.value=optNeg(x.c,x.o)?-v:v;BUMP=x.c.id;addLog(l);}else addLog({kind:g.kind,value:g.kind==="estudo"?v:undefined,minutes:g.kind!=="estudo"?v:undefined,sub:g.sub,note:""});}};
   if(d.damt){addAmt(+d.damt);return;}
   if("damtc" in d){addAmt(num(sh.querySelector("#d-amt").value));return;}
   if(d.drm){delLog(d.drm);toast("Registro removido");return;}
@@ -3063,13 +3242,14 @@ layer.addEventListener("click",e=>{if(e.target.matches("[data-close]")||e.target
   if(d.rmode){g.remind=readRemind(sh,Object.assign({},g.remind,{mode:d.rmode}));drawDetail();return;}
   if("rsave" in d){g.remind=readRemind(sh,g.remind||{});g.remind.on=true;saveState();render();drawDetail();askNotify();nativeSchedule(true);toast("Lembrete salvo");return;}
   if("roff" in d){g.remind=Object.assign({},g.remind,{on:false});saveState();render();drawDetail();toast("Lembrete desligado");return;}
-  if("dsave" in d){const old={target:g.target,period:g.period,trig:g.trig?g.trig.slice():g.trig,diff:g.diff||"normal"};const dd=sh.querySelector("#d-diff");if(dd)g.diff=dd.value;
-    if(sh.querySelector(".trigp")){const t=readTrig(sh);if(!t.length&&g.src==="count"){toast("Marque pelo menos uma opção");return;}g.trig=t;}const nq=sh.querySelector("#d-quest");if(nq&&nq.value!==q.id){const to=S.quests.find(x=>x.id===nq.value);if(to){q.goals=q.goals.filter(x=>x.id!==g.id);to.goals.push(g);detail.qid=to.id;}}
+  if("dsave" in d){const old={target:g.target,period:g.period,trig:g.trig?g.trig.slice():g.trig,diff:g.diff||"normal",src:g.src,unit:g.unit,kind:g.kind};const dd=sh.querySelector("#d-diff");
+    const tf=sh.querySelector(".ts-form");if(tf){const f=tsRead(tf);if(!f.trig.length){toast("Marque pelo menos um botão que conta");return;}g.trig=f.trig;g.src=f.src==="sum"?"sum":"count";g.unit=f.unit||(g.src==="count"?"x":"");const [c0,o0]=findOpt(f.trig[0]);if(c0&&o0){g.kind=optKind(c0,o0);g.cat=c0.id;}}
+    if(dd)g.diff=dd.value;const nq=sh.querySelector("#d-quest");if(nq&&nq.value!==q.id){const to=S.quests.find(x=>x.id===nq.value);if(to){q.goals=q.goals.filter(x=>x.id!==g.id);to.goals.push(g);detail.qid=to.id;}}
     const ds=sh.querySelector("#d-steps");if(ds){const arr=ds.value.split(/[;\s]+|,\s+/).map(v=>num(v)).filter(v=>isFinite(v)&&v>0);if(arr.length)g.steps=[...new Set(arr)].sort((a,b)=>a-b);const ev=num(sh.querySelector("#d-every").value);if(isFinite(ev)&&ev>0)g.every=ev;const st0=sh.querySelector("#d-start");if(st0){const v=num(st0.value);if(isFinite(v)&&v>0)g.start=v;}reconcileClaims();}
     const t=sh.querySelector("#d-tgt")?num(sh.querySelector("#d-tgt").value):NaN,ti=sh.querySelector("#d-title").value.trim(),pe=sh.querySelector("#d-per");if(isFinite(t)&&t>0)g.target=t;if(pe)g.period=pe.value;
-    let sched="";const nw={target:g.target,period:g.period,trig:g.trig,diff:g.diff||"normal"};
+    let sched="";const nw={target:g.target,period:g.period,trig:g.trig,diff:g.diff||"normal",src:g.src,unit:g.unit,kind:g.kind};
     if((g.src==="count"||g.src==="sum")&&old.period&&old.period!=="all"&&JSON.stringify(nw)!==JSON.stringify(old)&&new Date(g.since||0).getTime()<periodStart(old.period)){
-      g.next=Object.assign({at:cycleEnd(old.period)},nw);g.target=old.target;g.period=old.period;g.trig=old.trig;g.diff=old.diff;sched=renewLabel({period:old.period}).replace("renova ","");}const fx=sh.querySelector("#d-fix");
+      g.next=Object.assign({at:cycleEnd(old.period)},nw);Object.assign(g,old);sched=renewLabel({period:old.period}).replace("renova ","");}const fx=sh.querySelector("#d-fix");
     if(fx&&fx.checked){g.fixName=true;if(ti)g.title=ti;}else if(canAuto(g)){delete g.fixName;g.base=ti||g.base||baseOf(g);syncTitle(g);}else if(ti)g.title=ti;saveState();autoClaim();render();toast(sched?`Task salva · a mudança vale a partir de ${sched}`:"Task salva");return;}
   if("ddeact" in d){g.off=true;g.offAt=new Date().toISOString();saveState();const m=mgr;render();if(m)goalsManager(m);else closeSheet();toast("Task desativada · está em Editar tasks");return;}
   if("ddel" in d){if(armed==="g"+g.id){armed=null;q.goals=q.goals.filter(x=>x.id!==g.id);saveState();closeSheet();render();toast("Task apagada");}else{armed="g"+g.id;drawDetail();}return;}
