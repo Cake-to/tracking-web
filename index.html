@@ -1186,6 +1186,7 @@ html[data-motion=off] #bg{transition:none}
 .track.tight .cat-c{font-size:11px}.track.tight .cat-c em{font-size:9px;margin-right:4px}
 /* v20: stats genéricos, conexões */
 .nrow{display:flex;flex-direction:column;gap:6px}.nt{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:0 4px 4px;color:var(--muted);font-size:14px}.nt input[type=time],.nt select{width:auto;min-width:0;flex:0 1 auto;padding:8px 10px;background:#0000003d;border:1px solid var(--gline,#ffffff1f);border-radius:10px;color:inherit;font:inherit;font-size:15px;color-scheme:dark}.nt input[type=time]{color:var(--ink,#fff);font-variant-numeric:tabular-nums}.nrow.on{background:#ffffff08;border:1px solid #ffffff0d;border-radius:var(--r)}.nrow.on>.log{background:none!important;border:0!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}.nrow.on>.nt{padding:0 12px 12px}.nt select{flex:1 1 140px}.nx{cursor:pointer}.nx-t{min-width:4.2em;font-weight:700;color:var(--ink,#fff);font-size:14px;white-space:nowrap}.nx-go{color:var(--muted);font-size:20px;line-height:1}.nnext .nx .d span,.nnext .nx .d b{overflow-wrap:anywhere}.warnc{color:var(--warn)}
+.drv-box{display:flex;flex-direction:column;gap:10px}.drv-box .link{align-self:flex-start}
 .zero-tip{color:var(--muted);text-align:center;font-size:14px;line-height:1.5;margin:24px 8px 4px}.zero-track{margin:auto;max-width:300px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center;padding:16px;font-size:15px;line-height:1.5}.zero-track p{margin:0}.zero-track .btn{margin-top:10px}
 .st-form .st-h-sum{display:none}.st-form.is-sum .st-h-sum{display:block}.st-form.is-sum .st-h-med{display:none}
 .chk{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--fg);cursor:pointer}.chk input{width:20px;height:20px;accent-color:var(--gold);flex:none}
@@ -1210,7 +1211,7 @@ html[data-motion=off] #bg{transition:none}
 
 <div id="layer"></div>
 
-<script>/* ota-guard: se uma versão nova não abrir em 12 s, volta para a anterior */window.WEB_BUILD=21;window.WEB_DATE="2026-11-27T13:24:00-03:00";(function(){try{var C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform())return;var pend=localStorage.getItem("ota.pending");if(pend!==String(window.WEB_BUILD))return;
+<script>/* ota-guard: se uma versão nova não abrir em 12 s, volta para a anterior */window.WEB_BUILD=22;window.WEB_DATE="2026-11-27T13:38:00-03:00";(function(){try{var C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform())return;var pend=localStorage.getItem("ota.pending");if(pend!==String(window.WEB_BUILD))return;
 setTimeout(function(){if(window.__appOk)return;try{localStorage.setItem("ota.bad",pend);localStorage.removeItem("ota.pending");var prev=localStorage.getItem("ota.prev")||"public",W=C.Plugins.WebView;if(prev==="public")W.setServerAssetPath({path:"public"});else W.setServerBasePath({path:prev});}catch(e){}},12000);}catch(e){}})();</script>
 <script>
 (function(){
@@ -2490,7 +2491,8 @@ function moreHTML(){
   </div></div>
   ${notifHTML()}
   <div class="setg"><h2 class="setg-h">Dados</h2><div class="setg-l">
-  <details class="dd acc"><summary><span>Backup</span><span class="dd-n">${esc(bkAge())}</span></summary><section class="sec bk">
+  <details class="dd acc"><summary><span>Backup</span><span class="dd-n" data-bksum>${esc(bkSum())}</span></summary><section class="sec bk">
+    ${driveHTML()}<div class="ts-h" style="margin-top:6px">Arquivo</div>
     <p class="small muted">${mode==="db"?"Seus dados ficam na sua conta do Claude. Para levar ao app do celular, exporte aqui e restaure lá.":"Seus dados ficam só neste aparelho. Exporte toda semana e guarde no Drive."}</p>
     <div class="bk-row"><button class="btn gold" data-export>Exportar backup</button><label class="btn" for="imp">Restaurar de arquivo</label><input type="file" id="imp" accept="application/json,.json,text/plain" hidden></div>
     ${BKTEXT?`<textarea class="bk-txt" readonly aria-label="Texto do backup">${esc(BKTEXT)}</textarea><p class="hint">Este aparelho não deixou baixar o arquivo. Copie todo o texto acima e salve como tracking-backup.json (ou cole numa nota). Para restaurar, use esse arquivo.</p>`:""}
@@ -3098,7 +3100,7 @@ function orgSheet(refresh){const ks=areaKeys();
 /* ---------- Backup ---------- */
 let BKTEXT="",pendingImport=null;
 function snapshot(){return {app:"tracking",version:1,exportedAt:new Date().toISOString(),state:S,months:MONTHS};}
-function bkDays(){return S&&S.lastExport?Math.floor((Date.now()-new Date(S.lastExport).getTime())/864e5):null;}
+function bkDays(){const t=Math.max(S&&S.lastExport?new Date(S.lastExport).getTime():0,DRV&&DRV.lastOk?+DRV.lastOk:0);return t?Math.floor((Date.now()-t)/864e5):null;}
 function bkAge(){const d=bkDays();return d==null?"nunca":d===0?"hoje":d===1?"ontem":`há ${d} dias`;}
 function needBk(){const d=bkDays();return allLogs().length>0&&(d==null||d>=7);}
 async function exportFile(){const txt=JSON.stringify(snapshot(),null,1),fn="tracking-backup-"+dayKey(new Date())+".json";
@@ -3244,7 +3246,7 @@ function nWhen(at){const d=new Date(at),dd=Math.round((new Date(dayKey(at)+"T12:
 function rmDesc(g){const r=g.remind,t=remindTimes(r),ds=r.days||[0,1,2,3,4,5,6];
   return (r.mode==="interval"?`a cada ${fmtNum(+r.every||2)} h, das ${hm(r.from||"08:00")} às ${hm(r.to||"22:00")}`:t.join(", "))+" · "+(ds.length>=7?"todo dia":ds.length===5&&!ds.includes(0)&&!ds.includes(6)?"dias úteis":[1,2,3,4,5,6,0].filter(v=>ds.includes(v)).map(v=>DOWN[v].slice(0,3)).join(", "));}
 function nRow(k){const c=ncfg(k);
-  return `<div class="nrow${c.on?" on":""}"><div class="log"><div class="d"><b>${esc(c.n)}</b><span>${esc(c.d)}</span></div><button class="btn sm${c.on?" gold":" ghost"}" data-ntog="${k}" aria-pressed="${c.on}">${c.on?"Ligado":"Desligado"}</button></div>
+  return `<div class="nrow${c.on?" on":""}"><div class="log"><div class="d"><b>${esc(c.n)}</b><span>${esc(k==="bomdia"&&DRV&&DRV.connected&&DRV.on?"Abre o dia e conta se o backup deu certo":c.d)}</span></div><button class="btn sm${c.on?" gold":" ghost"}" data-ntog="${k}" aria-pressed="${c.on}">${c.on?"Ligado":"Desligado"}</button></div>
     ${c.on?`<div class="nt">${k==="semana"?`<select data-ndow="${k}" aria-label="Dia do resumo">${[0,1,2,3,4,5,6].map(v=>`<option value="${v}" ${c.dow===v?"selected":""}>${DOWN[v].charAt(0).toUpperCase()+DOWN[v].slice(1)}</option>`).join("")}</select>`:k==="mes"?`<span>Dia 1, às</span>`:`<span>Às</span>`}<input type="time" data-ntime="${k}" value="${esc(hm(c.t)||NOTIF_DEF[k].t)}" aria-label="Horário: ${esc(c.n)}"></div>`:""}</div>`;}
 function notifInner(){const now=Date.now();const tp=taskPlan(now,now+864e5),gp=genPlan().filter(x=>x.at<=now+864e5);
   const next=tp.map(x=>({at:x.at,n:gName(x.g),s:x.q.title,go:`data-open="${esc(x.q.id+"|"+x.g.id)}"`})).concat(gp.map(x=>({at:x.at,n:ncfg(x.k).n,s:x.body,go:""}))).sort((a,b)=>a.at-b.at);
@@ -3313,6 +3315,54 @@ function widgetHTML(){const vis=wVis(),sel=widgetCats().map(c=>c.id),auto=!Array
     <div class="kinds wsel">${vis.map(c=>{const on=sel.includes(c.id);return `<button type="button" class="kind" data-wcat="${esc(c.id)}" aria-pressed="${on}" style="--a:${(AREAS[c.area]||AREAS.body).color}" ${!on&&sel.length>=4?"disabled":""}>${IC[c.icon]||IC.star}<span>${esc(c.name)}</span></button>`;}).join("")}</div>
     <p class="hint">${auto?"Agora ele mostra as 4 bolhas que você mais usou nos últimos 14 dias. Toque para escolher as suas.":`Escolhidas por você (até 4). <button class="link" data-wauto>Voltar ao automático</button>`}${WPL()?"":" O widget precisa do APK 1.0.10 ou mais novo."}</p></section></details>`;}
 
+/* ---------- Backup no Google Drive (APK): pasta oculta do app, como o WhatsApp ---------- */
+let DRV=null,DRVBUSY="",DRVFILES=null,DRVSNAPT=null,MSIG="";
+function DRVP(){try{const C=window.Capacitor;return IS_NATIVE()&&C&&C.isPluginAvailable&&C.isPluginAvailable("TrackingDrive")?C.Plugins.TrackingDrive:null;}catch(e){return null;}}
+async function drvLoad(){const P=DRVP();if(!P)return;try{DRV=await P.getStatus();drvRefresh();if(DRV.connected)drvSnap(true);}catch(e){}}
+function drvSnap(now){const P=DRVP();if(!P||!DRV||!DRV.connected||!S)return;clearTimeout(DRVSNAPT);DRVSNAPT=setTimeout(()=>{try{P.snapshot({data:JSON.stringify(snapshot())}).catch(()=>{});}catch(e){}},now?0:6000);}
+function bkValid(j){if(!j||(j.app!=="tracking"&&j.app!=="ficha-de-vida")||!j.state||typeof j.state!=="object"||(j.months&&typeof j.months!=="object"))return false;for(const mk in (j.months||{})){if(!/^\d{4}-\d{2}$/.test(mk)||!Array.isArray(j.months[mk]))return false;}return true;}
+function drvErr(e){const m=String((e&&(e.message||e.errorMessage))||e||"");if(/cancel/i.test(m))return "";
+  if(/\b10\b|DEVELOPER/i.test(m))return "O Google ainda não reconhece o app. Confira no Google Cloud o cliente Android (pacote app.tracking.rpg e o SHA-1).";
+  if(/\b7\b|network|rede|Unable to resolve|timeout/i.test(m))return "Sem internet agora. Tente de novo daqui a pouco.";
+  return m.length>140?m.slice(0,140)+"…":m;}
+function fmtWhen(t){if(!t)return "";const d=new Date(+t||t),dd=Math.round((new Date(dayKey(d)+"T12:00")-new Date(dayKey(new Date())+"T12:00"))/864e5);
+  return (dd===0?"hoje":dd===-1?"ontem":d.toLocaleDateString("pt-BR",{day:"2-digit",month:"short"}).replace(".",""))+" às "+fmtHM(d);}
+function fmtKB(n){n=+n||0;return n>=1048576?fmtNum(n/1048576,1)+" MB":Math.max(1,Math.round(n/1024))+" KB";}
+function driveInner(){const P=DRVP();
+  if(!IS_NATIVE())return `<p class="hint">O backup automático no Google Drive funciona no app instalado no celular.</p>`;
+  if(!P)return `<p class="hint">O backup no Google Drive precisa do APK novo. Instale o último APK que está no chat, por cima deste. Seus dados ficam.</p>`;
+  const d=DRV||{};
+  if(!d.connected)return `<p class="small muted">Todo dia o app copia seus dados para uma pasta oculta do seu Google Drive, que só o Tracking enxerga, como o WhatsApp faz. Não aparece na sua lista de arquivos. Se trocar de celular, é só conectar a mesma conta e restaurar.</p>
+    <button class="btn gold" data-drv="connect"${DRVBUSY?" disabled":""}>${DRVBUSY==="connect"?"Conectando…":"Conectar Google Drive"}</button>`;
+  const err=d.lastErr&&+d.lastErrAt>+d.lastOk;
+  return `<div class="log"><div class="qicon">${IC.cloud||IC.star}</div><div class="d"><b>Google Drive</b><span>${esc(d.email||"conectado")}</span></div></div>
+    <p class="small ${err?"warnc":"muted"}">${d.lastOk?`Último backup ${esc(fmtWhen(d.lastOk))} · ${fmtKB(d.lastSize)}`:"Nenhum backup no Drive ainda."}${err?`<br>A última tentativa falhou: ${esc(drvErr(d.lastErr)||d.lastErr)}`:""}</p>
+    <div class="nrow${d.on?" on":""}"><div class="log"><div class="d"><b>Backup automático</b><span>Uma vez por dia, mesmo com o app fechado</span></div><button class="btn sm${d.on?" gold":" ghost"}" data-drv="auto" aria-pressed="${!!d.on}">${d.on?"Ligado":"Desligado"}</button></div>
+      ${d.on?`<div class="nt"><span>Todo dia às</span><input type="time" data-drvtime value="${esc(d.time||"04:00")}" aria-label="Horário do backup"></div>`:""}</div>
+    ${d.on?`<p class="hint">De madrugada é o melhor horário: antes do Bom dia, que já conta se o backup deu certo. Sem internet na hora, ele tenta de novo quando a conexão voltar.</p>`:""}
+    <div class="bk-row"><button class="btn" data-drv="now"${DRVBUSY?" disabled":""}>${DRVBUSY==="now"?"Enviando…":"Fazer backup agora"}</button><button class="btn" data-drv="list"${DRVBUSY?" disabled":""}>${DRVBUSY==="list"?"Procurando…":"Restaurar do Drive"}</button></div>
+    ${DRVFILES?(DRVFILES.length?DRVFILES.map(f=>`<div class="log"><div class="d"><b>${f.name==="tracking-backup.json"?"Mais recente":"Do dia anterior"}</b><span>${esc(fmtWhen(new Date(f.modifiedTime).getTime()))} · ${fmtKB(f.size)}</span></div><button class="btn sm" data-drvget="${esc(f.id)}"${DRVBUSY?" disabled":""}>${DRVBUSY==="get"+f.id?"Baixando…":"Restaurar"}</button></div>`).join(""):`<p class="hint">Nenhum backup encontrado nesta conta.</p>`):""}
+    <button class="link" data-drv="off">${armed==="drvoff"?"Toque de novo para desconectar":"Desconectar"}</button>`;}
+function driveHTML(){return `<div class="drv-box"><div class="ts-h">Google Drive</div>${driveInner()}</div>`;}
+function drvRefresh(){const b=document.querySelector(".drv-box");if(b)b.innerHTML=`<div class="ts-h">Google Drive</div>${driveInner()}`;const sm=document.querySelector("[data-bksum]");if(sm)sm.textContent=bkSum();}
+function bkSum(){return (DRV&&DRV.connected?"Drive · ":"")+bkAge();}
+async function drvAct(k,id){const P=DRVP();if(!P)return;
+  if(k==="off"&&armed!=="drvoff"){armed="drvoff";drvRefresh();setTimeout(()=>{if(armed==="drvoff"){armed=null;drvRefresh();}},4000);return;}
+  DRVBUSY=k==="get"?"get"+id:k;drvRefresh();
+  try{
+    if(k==="connect"){DRV=await P.connect();DRVBUSY="";drvRefresh();toast("Google Drive conectado");if(S){const sn=JSON.stringify(snapshot());await P.snapshot({data:sn});DRVBUSY="now";drvRefresh();DRV=await P.backupNow();toast("Primeiro backup feito no Drive");}}
+    else if(k==="auto"){DRV=await P.configure({on:!DRV.on});toast(DRV.on?"Backup automático ligado":"Backup automático desligado");}
+    else if(k==="now"){await P.snapshot({data:JSON.stringify(snapshot())});DRV=await P.backupNow();toast("Backup feito no Drive");}
+    else if(k==="list"){const r=await P.list();DRVFILES=(r&&r.files)||[];}
+    else if(k==="get"){const r=await P.download({id});let j=null;try{j=JSON.parse(String(r.data||"").trim());}catch(e){}
+      if(!bkValid(j)){toast("Esse backup do Drive não abriu. Tente o outro.");}else{pendingImport=j;armed="import";DRVBUSY="";DRVFILES=null;render();setTimeout(()=>{const b=document.querySelector(".bk-conf");b&&b.scrollIntoView({block:"center",behavior:"smooth"});},60);return;}}
+    else if(k==="off"){armed=null;DRV=await P.disconnect();DRVFILES=null;toast("Google Drive desconectado");}
+  }catch(e){const m=drvErr(e);if(m)toast(m);try{DRV=await P.getStatus();}catch(x){}}
+  DRVBUSY="";drvRefresh();if(IS_NATIVE())nativeSchedule(false);}
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-drv],[data-drvget]");if(!b)return;e.stopPropagation();if(DRVBUSY)return;
+  if(b.dataset.drvget)drvAct("get",b.dataset.drvget);else drvAct(b.dataset.drv);},true);
+document.addEventListener("change",e=>{const t=e.target;if(!t.matches||!t.matches("[data-drvtime]"))return;const v=hm(t.value),P=DRVP();if(!v||!P)return;
+  P.configure({time:v}).then(r=>{DRV=r;toast("Backup todo dia às "+v);}).catch(()=>{});});
 /* ---------- Nativo (APK) ---------- */
 let NSCHED=null,NSIG="";
 function cycleEnd(p){const n=new Date();if(p==="day")return new Date(n.getFullYear(),n.getMonth(),n.getDate()+1).getTime();
@@ -3322,19 +3372,19 @@ function nativePlan(){const now=Date.now();if(!S)return [];
   const out=taskPlan(now+30000,now+15*864e5);
   const mk=(n,id)=>({id,title:n.title,body:n.body,schedule:{at:new Date(n.at),allowWhileIdle:true},smallIcon:"ic_stat_tracking",iconColor:"#f0c24b",extra:n.extra||{go:"track"}});
   let sm=[];try{sm=smartPlan().filter(n=>!inQuiet(n.at)).map((n,i)=>mk(n,5000+i));}catch(e){}
-  let gp=[];try{gp=genPlan().slice(0,60).map((n,i)=>mk(n,6000+i));}catch(e){}
+  let gp=[];try{let g0=genPlan();const MP=DRVP();if(MP){const bd=g0.filter(n=>n.k==="bomdia").map(n=>({at:n.at,title:n.title,body:n.body}));g0=g0.filter(n=>n.k!=="bomdia");const sg=JSON.stringify(bd);if(sg!==MSIG){MSIG=sg;MP.setMorning({list:sg}).catch(()=>{MSIG="";});}}gp=g0.slice(0,60).map((n,i)=>mk(n,6000+i));}catch(e){}
   return out.slice(0,340).map((n,i)=>mk(n,1000+i)).concat(sm,gp);}
 function nativeSchedule(ask){if(!IS_NATIVE())return;clearTimeout(NSCHED);NSCHED=setTimeout(async()=>{const P=window.Capacitor.Plugins,LN=P&&P.LocalNotifications;if(!LN||!S)return;
   const list=nativePlan(),sig=JSON.stringify(list.map(n=>[n.id,n.title,n.body,+n.schedule.at]));if(sig===NSIG&&!ask)return;
   try{let perm=await LN.checkPermissions();if(list.length&&perm.display!=="granted"&&ask)perm=await LN.requestPermissions();
     const pend=await LN.getPending();if(pend.notifications.length)await LN.cancel({notifications:pend.notifications.map(n=>({id:n.id}))});
     if(list.length&&perm.display==="granted")await LN.schedule({notifications:list});NSIG=sig;}catch(e){}},ask?50:900);}
-if(IS_NATIVE()){const _ss=saveState;saveState=function(){_ss.apply(this,arguments);nativeSchedule(false);wPush();};
-  const _sm=saveMonth;saveMonth=function(){_sm.apply(this,arguments);nativeSchedule(false);wPush();};setTimeout(widgetDrain,1800);
+if(IS_NATIVE()){const _ss=saveState;saveState=function(){_ss.apply(this,arguments);nativeSchedule(false);wPush();drvSnap();};
+  const _sm=saveMonth;saveMonth=function(){_sm.apply(this,arguments);nativeSchedule(false);wPush();drvSnap();};setTimeout(drvLoad,1300);setTimeout(widgetDrain,1800);
   const P=window.Capacitor.Plugins;setTimeout(()=>nativeSchedule(false),1500);
   setTimeout(async()=>{if(await otaApply())return;otaConfirm();setTimeout(()=>otaCheck(true),4000);},1200);
   if(P.LocalNotifications&&P.LocalNotifications.addListener){try{P.LocalNotifications.addListener("localNotificationActionPerformed",a=>{const x=(a&&a.notification&&a.notification.extra)||{};setTimeout(()=>nGo(x),500);});}catch(e){}}
-  if(P.App){P.App.addListener("appStateChange",st=>{if(st.isActive){NSIG="";nativeSchedule(false);render();otaCheck(false);widgetDrain();}else{wPush(true);otaApply();}});
+  if(P.App){P.App.addListener("appStateChange",st=>{if(st.isActive){NSIG="";nativeSchedule(false);render();otaCheck(false);widgetDrain();drvLoad();}else{wPush(true);drvSnap(true);otaApply();}});
     P.App.addListener("backButton",()=>{const no=document.querySelector(".cpop-w [data-cpno]")||document.querySelector(".sug-w [data-sugno]");if(no){no.click();}else if(layer.querySelector(".scrim")){closeSheet();render();}else if(tab!=="track"){const b=document.querySelector('.nav [data-tab="track"]');b?b.click():P.App.minimizeApp();}else P.App.minimizeApp();});}}
 /* ---------- Eventos ---------- */
 const TABORD=["quests","track","home","log","more"];let ENTT=0;
