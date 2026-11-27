@@ -539,6 +539,18 @@ body{letter-spacing:-.005em}
 .track-h .track-a .link{padding:3px 0 3px 8px}
 .kinds .kind[aria-pressed="true"]{background:var(--sel)!important;color:var(--sel-ink)}
 .kinds .kind:disabled{opacity:.38}
+.sheet.swap{animation:shswap .16s ease both!important}
+@keyframes shswap{from{opacity:.55}}
+.trigp{display:flex;flex-direction:column;gap:10px}
+.trig-h{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.trig-h svg{width:15px;height:15px;color:var(--a)}
+.trig-l{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.trig{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:999px;background:var(--surf2,#ffffff10);border:1px solid #ffffff14;color:var(--fg);font:inherit;font-size:13px;max-width:100%}
+.trig span{overflow-wrap:anywhere}
+.trig svg{width:16px;height:16px;flex:none;color:var(--a)}
+.trig[aria-pressed=true]{background:var(--a);border-color:var(--a);color:#0c0e12}
+.trig[aria-pressed=true] svg{color:#0c0e12}
+.tg-b{background:none;border:0;padding:4px 2px;margin:-4px -2px;font:inherit;color:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer}
 .cat-x{font:inherit;font-weight:700;color:var(--a);margin-left:3px}
 /* véu único do fundo, controlado em Aparência → Fundo (0 a 80%) */
 #bg::after,#bg.img::after,#bg.live::after{display:block;z-index:1;transition:background .4s;background:linear-gradient(180deg,rgba(7,9,13,calc(var(--dim,.5) * .72 + var(--dx,0))) 0%,rgba(7,9,13,calc(var(--dim,.5) * .9 + var(--dx,0))) 45%,rgba(7,9,13,calc(var(--dim,.5) * 1.05 + var(--dx,0))) 80%,rgba(7,9,13,calc(var(--dim,.5) * .9 + .25 + var(--dx,0))) 100%)}
@@ -592,6 +604,7 @@ body{background:transparent!important}
 .top-name{overflow-wrap:anywhere}
 .fontseg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .fontseg button{padding:10px 4px}
+.fontseg.motseg{grid-template-columns:repeat(2,1fr)}
 .icpick .icpop{width:min(330px,calc(100vw - 40px))}
 /* contraste */
 :root{--faint:#8d94a0;--muted:#b3b9c3}
@@ -1091,7 +1104,7 @@ html[data-motion=sutil] .rw{transition-duration:.12s,.2s}
 
 <div id="layer"></div>
 
-<script>/* ota-guard: se uma versão nova não abrir em 12 s, volta para a anterior */window.WEB_BUILD=13;window.WEB_DATE="2026-11-26T17:59:00-03:00";(function(){try{var C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform())return;var pend=localStorage.getItem("ota.pending");if(pend!==String(window.WEB_BUILD))return;
+<script>/* ota-guard: se uma versão nova não abrir em 12 s, volta para a anterior */window.WEB_BUILD=14;window.WEB_DATE="2026-11-26T21:48:00-03:00";(function(){try{var C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform())return;var pend=localStorage.getItem("ota.pending");if(pend!==String(window.WEB_BUILD))return;
 setTimeout(function(){if(window.__appOk)return;try{localStorage.setItem("ota.bad",pend);localStorage.removeItem("ota.pending");var prev=localStorage.getItem("ota.prev")||"public",W=C.Plugins.WebView;if(prev==="public")W.setServerAssetPath({path:"public"});else W.setServerBasePath({path:prev});}catch(e){}},12000);}catch(e){}})();</script>
 <script>
 (function(){
@@ -1253,7 +1266,10 @@ function writeDoc(path,data){ // uma escrita por vez por documento, coalescendo
 }
 function saveState(){ if(mode==="db")writeDoc("rpg/main",S); else LS.set("rpg.state",S); }
 function saveMonth(mk){ if(mode==="db")writeDoc("logs/"+mk,{entries:MONTHS[mk]||[]}); else LS.set("rpg.months",MONTHS); }
-function allLogs(){return Object.values(MONTHS).flat().sort((a,b)=>b.t.localeCompare(a.t));}
+let ALC=null,ALR=[],ALN=[],ALM=null; // cache: só refaz a lista quando algum mês muda
+function allLogs(){const ks=Object.keys(MONTHS),refs=ks.map(k=>MONTHS[k]);
+  if(ALC&&ALM===MONTHS&&refs.length===ALR.length&&refs.every((r,i)=>r===ALR[i]&&(r?r.length:0)===ALN[i]))return ALC;
+  ALM=MONTHS;ALR=refs;ALN=refs.map(r=>r?r.length:0);ALC=Object.values(MONTHS).flat().sort((a,b)=>b.t.localeCompare(a.t));return ALC;}
 
 async function boot(){
   render();
@@ -1293,7 +1309,7 @@ function goalProgress(g){
     return {cur,target,pct,done:cur>=target,claimed:false,pk:"m"+target,prev,n:i};}
   if(g.src==="manual"){cur=+g.current||0;pct=target?cur/target:0;}
   else if(g.src==="stat"){const v=latestStat(g.statId);cur=v==null?+g.start:v;const span=(+g.start)-target;pct=span?((+g.start)-cur)/span:(cur===target?1:0);}
-  else{const from=periodStart(g.period,g.since);const ls=allLogs().filter(l=>l.kind===g.kind&&(!g.sub||l.sub===g.sub)&&new Date(l.t).getTime()>=from);
+  else{const from=periodStart(g.period,g.since),m=goalMatches(g);const ls=allLogs().filter(l=>new Date(l.t).getTime()>=from&&m(l));
     cur=g.src==="count"?ls.length:ls.reduce((a,l)=>a+(+l.value||0),0);pct=target?cur/target:0;}
   pct=Math.max(0,Math.min(1,pct));
   const pk=periodKey(g.period||"all");const claimed=(g.claims||[]).includes(pk);
@@ -1658,7 +1674,7 @@ function render(){
   if(!(S.v>=14)){S.quests.forEach(q=>q.goals.forEach(g=>{if(!g.base&&canAuto(g)){g.base=baseOf(g);syncTitle(g);}}));S.v=14;saveState();}
   if(!(S.v>=15)){const q=S.quests.find(x=>x.type==="main"&&x.area==="family");if(q&&q.title==="Pai e Marido")q.title="Casa e Família";S.v=15;saveState();}
   }
-  syncAreas();ensureCats();
+  syncAreas();ensureCats();ensureTrig();
   const ti=document.getElementById("topinfo");if(ti&&mode!=="loading"){const th=topHTML();if(ti._h!==th){ti._h=th;ti.innerHTML=th;}}
   document.querySelectorAll(".nav .tab").forEach(b=>b.setAttribute("aria-current",b.dataset.tab===tab?"page":"false"));
   if(mode==="loading"){return;}
@@ -2035,7 +2051,7 @@ const FONTS={p:{n:"Pequeno",z:.94},m:{n:"Padrão",z:1.06},g:{n:"Grande",z:1.16},
 const MOTION={off:"Desligada",sutil:"Sutil",padrao:"Padrão",expr:"Expressiva"};
 function motionKey(){if(S&&S.motion&&MOTION[S.motion])return S.motion;return "padrao";}
 function applyMotion(){const m=motionKey();if(document.documentElement.dataset.motion===m)return;document.documentElement.dataset.motion=m;if(SKY.on){clearTimeout(SKY.tm);cancelAnimationFrame(SKY.raf);SKY.tm=SKY.raf=0;skyKick();}}
-function motionHTML(){const cur=motionKey();return `<section class="sec"><div class="seg fontseg">${Object.entries(MOTION).map(([k,n])=>`<button type="button" data-motion="${k}" aria-pressed="${cur===k}">${n}</button>`).join("")}</div><p class="hint">Intensidade das animações de menus, janelas e do menu radial.</p></section>`;}
+function motionHTML(){const cur=motionKey();return `<section class="sec"><div class="seg fontseg motseg">${Object.entries(MOTION).map(([k,n])=>`<button type="button" data-motion="${k}" aria-pressed="${cur===k}">${n}</button>`).join("")}</div><p class="hint">Intensidade das animações de menus, janelas e do menu radial.</p></section>`;}
 function applyFont(){applyMotion();const gl=S&&S.orbGlass===false?"off":"on";if(document.documentElement.dataset.glass!==gl)document.documentElement.dataset.glass=gl;const f=FONTS[(S&&S.font)||"m"]||FONTS.m;document.documentElement.style.zoom=f.z;const nv=document.querySelector(".nav");if(nv)nv.style.zoom=Math.min(1,1.06/f.z);}
 function fontHTML(){const cur=(S&&S.font)||"m";return `<section class="sec"><div class="seg fontseg">${Object.entries(FONTS).map(([k,f])=>`<button type="button" data-font="${k}" aria-pressed="${cur===k}" style="font-size:${Math.round(13*f.z)}px">${f.n}</button>`).join("")}</div><p class="hint">Aumenta ou diminui o app inteiro, não só as letras.</p></section>`;}
 function bgPhoto(){try{return localStorage.getItem("rpg.bgimg")||"";}catch(e){return "";}}
@@ -2070,7 +2086,7 @@ function drawQS(){
 let IDEAS_QS={};
 function bindHold(){layer.querySelectorAll("[data-qt],[data-qp]").forEach(el=>{let t=null;const start=()=>{t=setTimeout(()=>{t=null;el.dataset.held="1";holdAction(el);},480);};const end=()=>{if(t){clearTimeout(t);t=null;}};
   el.addEventListener("pointerdown",start);["pointerup","pointerleave","pointercancel"].forEach(ev=>el.addEventListener(ev,end));el.addEventListener("contextmenu",e=>e.preventDefault());});}
-function holdAction(el){if(navigator.vibrate)try{navigator.vibrate(15)}catch(e){}
+function holdAction(el){vib(15);
   if(el.dataset.qt){const [qi,gi]=el.dataset.qt.split("|");QS=false;QSBACK=true;detail={qid:qi,gid:gi};REMOPEN=false;drawDetail();const det=layer.querySelector("details.edit");if(det)det.open=true;}
   else if(el.dataset.qp){QSREN=el.dataset.qp;drawQS();const i=layer.querySelector("#qs-name");if(i)i.focus();}}
 function qsClick(e){const b=e.target.closest("button");if(!b)return false;const d=b.dataset;
@@ -2087,9 +2103,10 @@ function qsClick(e){const b=e.target.closest("button");if(!b)return false;const 
 function movePanel(k,dir){const L=PANEL_KEYS.slice();const i=L.indexOf(k),j=i+dir;if(i<0||j<0||j>=L.length)return;[L[i],L[j]]=[L[j],L[i]];S.panelOrder=L;saveState();render();}
 function plusLabel(g){if(g.src==="sum")return g.unit==="R$"?"+ R$":"+ min";if(g.src==="stat")return "+";return "+1";}
 function plusBtn(q,g){return `<button class="plus" data-plus="${q.id}|${g.id}" aria-label="Adicionar em ${esc(g.title)}">${plusLabel(g)}</button>`;}
-function goalLogs(g){if(g.src==="steps")return allLogs().filter(l=>l.kind===g.kind);if(g.src!=="sum"&&g.src!=="count")return [];const from=periodStart(g.period,g.since);return allLogs().filter(l=>l.kind===g.kind&&(!g.sub||l.sub===g.sub)&&new Date(l.t).getTime()>=from);}
+function goalLogs(g){if(g.src==="steps")return allLogs().filter(l=>l.kind===g.kind);if(g.src!=="sum"&&g.src!=="count")return [];const from=periodStart(g.period,g.since),m=goalMatches(g);return allLogs().filter(l=>m(l)&&new Date(l.t).getTime()>=from);}
 function quickPlus(qid,gid){const [q,g]=findGoal(qid,gid);if(!g)return;
   if(g.src==="manual"){g.current=(+g.current||0)+1;saveState();render();toast(`<b>+1</b> · ${esc(g.title)}`);return;}
+  if(g.src==="count"&&Array.isArray(g.trig)){const sp=trigSpecs(g).filter(x=>!x.o.ask);if(sp.length===1){BUMP=sp[0].c.id;addLog(optLog(sp[0].c,sp[0].o));return;}goalDetail(qid,gid);return;}
   if(g.src==="count"&&(g.sub||!KINDS[g.kind].subs)){addLog({kind:g.kind,sub:g.sub,note:""});return;}
   if(g.src==="stat"){logSheet("stat",g.statId);return;}
   goalDetail(qid,gid);}
@@ -2136,7 +2153,7 @@ function drawMgr(){
   const on=q.goals.filter(g=>!g.off),off=q.goals.filter(g=>g.off);
   const per=g=>g.src==="manual"?"manual":g.src==="stat"?"stat":PERIODS[g.period||"all"];
   const row=(g,act)=>`<div class="log" style="--a:${a.color}"><div class="d"><b>${esc(g.title)}</b><span>${esc(per(g))} · alvo ${esc(fmtVal(+g.target,g.unit))} · ${+g.xp||0} XP</span></div>${act}</div>`;
-  layer.innerHTML=`<div class="scrim" data-close><div class="sheet" role="dialog" aria-modal="true" style="--a:${a.color}">
+  layer.innerHTML=`<div class="scrim${LST()}" data-close><div class="sheet${LST()}" role="dialog" aria-modal="true" style="--a:${a.color}">
     <div class="mgr-head">${icPick("area:"+q.area,areaIcon(q.area),"Trocar ícone da quest")}<div><div class="small muted">Toque no ícone para trocar</div><h2>${esc(q.title)}</h2></div></div>
     <button class="btn gold" data-mnew style="padding:12px">+ Nova task</button>
     <div class="sec" style="gap:6px"><h2 class="sub">Ativas (${on.length})</h2>${on.map(g=>row(g,`<button class="btn sm" data-medit="${g.id}">Editar</button><button class="btn sm ghost" data-moff="${g.id}">Desativar</button>`)).join("")||`<div class="hint">Nenhuma task ativa.</div>`}</div>
@@ -2167,7 +2184,9 @@ function drawDetail0(){
   if(g.src==="manual")add=`<div class="stepper"><button class="btn" data-dstep="-1" aria-label="Diminuir 1">−1</button><button class="btn gold" data-dstep="1" aria-label="Somar 1">+1</button></div>
     <div class="field"><label for="d-set">Definir valor exato</label><div class="inrow"><input id="d-set" inputmode="decimal" placeholder="${fmtNum(p.cur)}"><button class="btn" data-dset>Salvar</button></div></div>`;
   else if(g.src==="stat"||g.statId)add=`<button class="btn gold" data-dstat style="padding:13px">Registrar novo valor</button>`;
-  else if(g.src==="count"){
+  else if(g.src==="count"&&Array.isArray(g.trig)&&g.trig.length){
+    add=`<div class="stepper">${trigSpecs(g).map(x=>`<button class="btn gold" data-dcount="${esc(x.k)}">+1 ${esc(x.o.l)}</button>`).join("")}</div>`;
+  } else if(g.src==="count"){
     const subs=g.sub||!K.subs?[[g.sub||"","+1"]]:Object.entries(K.subs).filter(([k])=>!(g.kind==="mente"&&k==="livro")).map(([k,l])=>[k,"+1 "+l]);
     add=`<div class="stepper">${subs.map(([k,l])=>`<button class="btn gold" data-dcount="${k}">${esc(l)}</button>`).join("")}</div>`;
   } else {
@@ -2179,7 +2198,7 @@ function drawDetail0(){
   const ls=goalLogs(g).slice(0,12);
   const list=g.src==="sum"||g.src==="count"||(g.src==="steps"&&!g.statId)?`<details class="dd"><summary><span>Registros ${esc(per)}</span><span class="dd-n num">${ls.length}</span></summary><div class="sec" style="gap:6px;margin-top:8px">${ls.length?ls.map(l=>{const [t,s2]=logDesc(l);return `<div class="log" style="--a:${a.color}"><div class="d"><b>${esc(t)}</b><span>${esc([s2,new Date(l.t).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})].filter(Boolean).join(" · "))}</span></div><button class="btn sm danger" data-drm="${l.id}" aria-label="Remover registro">−</button></div>`}).join(""):`<div class="hint">Nenhum registro ainda neste período.</div>`}</div></details>`:"";
   const claimB=g.src==="steps"?`<span class="small muted">Próximo marco: ${g.statId?"−"+esc(fmtNum(p.target))+" kg":esc(fmtVal(p.target,"R$"))}${+g.xp?` · +${+g.xp} XP`:""}</span>`:p.claimed?`<span class="claimed">✓ Concluída${renewLabel(g)?" · "+renewLabel(g):""}</span>`:p.done?`<button class="btn gold" data-claim="${q.id}|${g.id}">Resgatar +${+g.xp||0} XP</button>`:`<span class="small muted">Recompensa ${+g.xp||0} XP ao completar</span>`;
-  layer.innerHTML=`<div class="scrim" data-close><div class="sheet" role="dialog" aria-modal="true" style="--a:${a.color}">
+  layer.innerHTML=`<div class="scrim${LST()}" data-close><div class="sheet${LST()}" role="dialog" aria-modal="true" style="--a:${a.color}">
     <div><div class="small muted">${esc(a.name)} · ${esc(per)}</div><h2>${esc(g.title)}</h2></div>
     <div class="bigprog ${p.done?"goal done":""}" style="padding:0;border:0"><div class="bigval">${big}</div><div class="pbar"><i style="width:${(p.pct*100).toFixed(1)}%"></i></div><div class="gfoot"><span>${Math.round(p.pct*100)}%</span>${claimB}</div></div>
     ${add}${list}
@@ -2190,7 +2209,7 @@ function drawDetail0(){
       <div class="icpop" id="d-icpop" hidden><div class="icgrid">${ICON_LIST.map(k=>`<button type="button" class="icb" data-dicon="${k}" aria-pressed="${(g.icon||"")===k}" aria-label="${k}">${IC[k]}</button>`).join("")}</div></div></div>
       <div class="row2">${g.src==="steps"?`<div class="field"><label for="d-steps">Marcos (${g.statId?"kg a perder":"R$"})</label><input id="d-steps" inputmode="decimal" value="${esc((g.steps||[200,500]).join(", "))}"></div><div class="field"><label for="d-every">Depois, a cada (${g.statId?"kg":"R$"})</label><input id="d-every" inputmode="decimal" value="${+g.every||250}"></div></div>${g.statId?`<div class="field"><label for="d-start">Peso inicial (kg)</label><input id="d-start" inputmode="decimal" value="${stepStart(g)==null?"":esc(String(stepStart(g)).replace(".",","))}"></div>`:""}<div class="row2">`:`<div class="field"><label for="d-tgt">Alvo</label><input id="d-tgt" inputmode="decimal" value="${esc(String(g.target).replace(".",","))}"></div>`}<div class="field"><label for="d-xp">Recompensa (XP)</label><input id="d-xp" inputmode="numeric" value="${+g.xp||0}"></div></div>
       ${g.src==="count"||g.src==="sum"?`<div class="field"><label for="d-per">Ciclo</label><select id="d-per">${Object.entries({day:"Diário",week:"Semanal",month:"Mensal",year:"Anual",all:"Sem ciclo (acumula)"}).map(([k,l])=>`<option value="${k}" ${g.period===k?"selected":""}>${l}</option>`).join("")}</select></div>`:""}
-      ${g.kind&&g.kind!=="stat"&&(g.src==="count"||g.src==="sum"||g.src==="steps")?(()=>{const fit=cats().filter(c=>catFits(c,g));return `<div class="field"><label for="d-cat">Conta na bolha</label><select id="d-cat"><option value="" ${!g.cat?"selected":""}>Nenhuma (não aparece no anel)</option>${fit.map(c=>`<option value="${esc(c.id)}" ${g.cat===c.id?"selected":""}>${esc(c.name)} · ${esc((AREAS[c.area]||AREAS.body).name)}${c.off?" (oculta)":""}</option>`).join("")}</select></div>`;})():""}
+      ${g.src==="count"||g.src==="sum"?`<div class="field"><label>Conta quando eu registrar</label>${trigPicker(g,g.trig||[])}<small class="hint">${g.src==="sum"?"Soma o valor dessas opções.":"Cada toque numa opção marcada conta 1."} A task aparece no anel das bolhas marcadas.</small></div>`:""}
       <div class="field"><label for="d-quest">Quest vinculada</label><select id="d-quest">${S.quests.filter(x=>x.status==="active").map(x=>`<option value="${x.id}" ${x.id===q.id?"selected":""}>${esc(x.title)}</option>`).join("")}</select></div>
       <p class="hint">Desativar tira a task da tela, mas guarda ela em Editar tasks para reativar quando quiser. Seus registros não são apagados.</p>
       <div class="actions" style="justify-content:space-between"><button class="btn ghost" data-ddeact>Desativar</button><button class="btn gold" data-dsave>Salvar</button></div></div></details>
@@ -2340,8 +2359,10 @@ function onboardHTML(){
 const num=v=>{if(v==null)return NaN;v=String(v).trim().replace(/\s/g,"");if(v.includes(","))v=v.replace(/\./g,"").replace(",",".");return parseFloat(v);};
 
 /* ---------- Folhas (sheets) ---------- */
-function openSheet(html,onMount,refresh){const old=refresh?layer.querySelector(".sheet"):null,top=old?old.scrollTop:0;
-  layer.innerHTML=`<div class="scrim${old?" still":""}" data-close><div class="sheet${old?" still":""}" role="dialog" aria-modal="true">${html}</div></div>`;const sh=layer.querySelector(".sheet");onMount&&onMount(sh);
+function LST(){return layer.querySelector(".sheet")?" still":"";}
+let SHREF=false;
+function openSheet(html,onMount,refresh){refresh=refresh||SHREF;SHREF=false;const prev=layer.querySelector(".sheet"),old=refresh?prev:null,top=old?old.scrollTop:0;
+  layer.innerHTML=`<div class="scrim${prev?" still":""}" data-close><div class="sheet${old?" still":prev?" swap":""}" role="dialog" aria-modal="true">${html}</div></div>`;const sh=layer.querySelector(".sheet");onMount&&onMount(sh);
   if(old){sh.scrollTop=top;return;}
   let touch=false;try{touch=matchMedia("(pointer:coarse)").matches;}catch(e){}
   const f=layer.querySelector(touch?"button.kind":"input,select,button.kind");f&&f.focus({preventScroll:true});}
@@ -2402,6 +2423,7 @@ function goalSheet(qid){
       ${S.stats.map(s=>`<option value="stat:${esc(s.id)}">Stat: ${esc(s.name)} até um alvo</option>`).join("")}
       <option value="count:agua">Copos de água</option><option value="count:ingestao:fruta">Porções de vitaminas</option><option value="count:mente:sol">Banhos de sol</option><option value="count:ingestao:refeicao">Refeições boas</option><option value="count:ingestao:proteina">Doses de proteína</option><option value="count:treino:alongamento">Alongamentos</option><option value="count:familia:todos">Momentos com a família toda</option>
       ${gsOpts(q,false)}<option value="manual">Manual (eu atualizo com + e −)</option></select></div>
+    <div class="field" id="g-trigf"><label>Conta quando eu registrar</label>${trigPicker(null,[])}<small class="hint">Marque as opções das bolhas que contam para esta task. Se não marcar nenhuma, vale o "Como medir" acima.</small></div>
     <div class="row2"><div class="field"><label for="g-target">Alvo</label><input id="g-target" inputmode="decimal" required placeholder="ex: 5000"></div>
     <div class="field"><label for="g-period">Ciclo</label><select id="g-period"><option value="day">Diário</option><option value="week" selected>Semanal</option><option value="month">Mensal</option><option value="year">Anual</option><option value="all">Sem ciclo (acumula)</option></select></div></div>
     <div class="row2"><div class="field"><label for="g-unit">Unidade (manual)</label><input id="g-unit" placeholder="ex: livros" maxlength="12"></div>
@@ -2417,7 +2439,8 @@ function goalSheet(qid){
       else{g.current=0;g.unit=v("g-unit").trim();}
       if(canAuto(g)){g.base=g.title;syncTitle(g);}
       if(newc)g.cat=newc.id;else if(g.kind){const ac=autoCat(g,q);g.cat=ac?ac.id:null;}
-      q.goals.push(g);saveState();const m=mgr;closeSheet();render();if(m)goalsManager(m);toast("Task criada");});
+      if(src==="count"||src==="sum"){const t=readTrig(sh);if(newc)g.trig=[newc.id+":"+sub].concat(t.filter(k=>k!==newc.id+":"+sub));else if(t.length&&src==="count"){g.trig=t;const [c0,o0]=findOpt(t[0]);g.kind=optKind(c0,o0);delete g.sub;}else if(t.length)g.trig=t;else g.trig=autoTrig(g,q);}
+      q.goals.push(g);saveState();const m=mgr;render();if(m)goalsManager(m);else closeSheet();toast("Task criada");});
   });
 }
 function questSheet(){
@@ -2486,21 +2509,39 @@ function segRing(id,g,p,full){const [n,v0]=ringSegs(g,p),v=full?n:v0;const R=44,
 function animRings(){const fs=document.querySelectorAll(".track .cr-fg[data-to]");if(!fs.length)return;requestAnimationFrame(()=>requestAnimationFrame(()=>fs.forEach((e,i)=>{const to=+e.dataset.to;const C=e.style.strokeDasharray.split(/[ ,]+/)[1];e.style.transitionDelay=(i%8)*30+"ms";e.style.strokeDasharray=`${to} ${C}`;if(to>0)e.style.strokeOpacity=1;else setTimeout(()=>{e.style.strokeOpacity=0;},420);})));
   if(BUMP){setTimeout(()=>{BUMP=null;document.querySelectorAll(".cat.bump").forEach(x=>x.classList.remove("bump"));},700);}}
 const RANK={day:0,week:1,month:2};
-function optMatch(c,l){return c.opts.some(o=>{const k=optKind(c,o);return k!=="stat"&&k===l.kind&&(!o.sub||o.sub===l.sub);});}
+function optMatch(c,l){if(l.cat&&l.opt)return l.cat===c.id&&c.opts.some(o=>o.id===l.opt);return c.opts.some(o=>{const k=optKind(c,o);return k!=="stat"&&k===l.kind&&(!o.sub||o.sub===l.sub);});}
+/* Gatilhos: cada task conta os registros de opções específicas das bolhas (g.trig = ["bolha:opção"]) */
+function optKey(c,o){return c.id+":"+o.id;}
+function findOpt(k){const i=String(k).indexOf(":");const c=cats().find(x=>x.id===k.slice(0,i));return [c,c&&c.opts.find(o=>o.id===k.slice(i+1))];}
+function trigSpecs(g){return (g.trig||[]).map(k=>{const [c,o]=findOpt(k);return c&&o?{k,c,o,kind:optKind(c,o)}:null;}).filter(Boolean);}
+function trigMatch(g,l,sp){if(!Array.isArray(g.trig))return l.kind===g.kind&&(!g.sub||l.sub===g.sub);
+  if(l.cat&&l.opt)return g.trig.includes(l.cat+":"+l.opt);
+  return (sp||trigSpecs(g)).some(x=>x.kind===l.kind&&(x.o.sub?l.sub===x.o.sub:!l.sub));} // registros antigos: pelo tipo da opção
+function goalMatches(g){if(!Array.isArray(g.trig))return l=>trigMatch(g,l);const sp=trigSpecs(g);return l=>trigMatch(g,l,sp);}
+function autoTrig(g,q){if(!g.kind||g.kind==="stat"||!(g.src==="count"||g.src==="sum"))return null;
+  const fit=(c,o)=>optKind(c,o)===g.kind&&optKind(c,o)!=="stat"&&(!g.sub||o.sub===g.sub);
+  let cs=cats().filter(c=>c.opts.some(o=>fit(c,o)));if(g.cat&&cs.some(c=>c.id===g.cat))cs=cs.filter(c=>c.id===g.cat);
+  const ks=[];cs.forEach(c=>c.opts.forEach(o=>{if(fit(c,o))ks.push(optKey(c,o));}));return ks.length?ks:null;}
+function ensureTrig(){if(!S)return;let ch=false;S.quests.forEach(q=>q.goals.forEach(g=>{if(g.trig!==undefined||!(g.src==="count"||g.src==="sum"))return;g.trig=autoTrig(g,q);ch=true;}));if(ch)saveState();}
+function trigPicker(g,sel){const sum=g&&g.src==="sum";const cs=cats().filter(c=>c.opts.some(o=>optKind(c,o)!=="stat"&&(!sum||optKind(c,o)===g.kind)));
+  return `<div class="trigp">${cs.map(c=>{const a=AREAS[c.area]||AREAS.body;return `<div class="trig-c" style="--a:${a.color}"><div class="trig-h">${IC[c.icon]||IC.star}<span>${esc(c.name)}</span></div><div class="trig-l">${c.opts.filter(o=>optKind(c,o)!=="stat"&&(!sum||optKind(c,o)===g.kind)).map(o=>`<button type="button" class="trig" data-trig="${esc(optKey(c,o))}" aria-pressed="${sel.includes(optKey(c,o))}">${IC[o.ic]||IC.star}<span>${esc(o.l)}</span></button>`).join("")}</div></div>`;}).join("")}</div>`;}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-trig]");if(!b)return;e.stopPropagation();b.setAttribute("aria-pressed",String(b.getAttribute("aria-pressed")!=="true"));},true);
+function readTrig(root){return [...root.querySelectorAll("[data-trig][aria-pressed=true]")].map(b=>b.dataset.trig);}
 /* Task → Bolha: cada task aponta para uma bolha (g.cat); o anel mostra só as tasks dela, num ciclo só */
 function catFits(c,g){if(!c||!g||!g.kind||g.kind==="stat")return false;return c.opts.some(o=>{const k=optKind(c,o);return k===g.kind&&(!g.sub||!o.sub||o.sub===g.sub);});}
 function autoCat(g,q){const cs=cats().filter(c=>catFits(c,g));if(!cs.length)return null;
   const sc=c=>(g.sub&&c.opts.some(o=>o.sub===g.sub)?4:0)+(q&&c.area===q.area?2:0)+(c.off?0:1);return cs.slice().sort((a,b)=>sc(b)-sc(a))[0];}
 function ensureCats(){if(!S)return;let ch=false;S.quests.forEach(q=>q.goals.forEach(g=>{if(g.cat!==undefined)return;if(!(g.src==="count"||g.src==="sum"||g.src==="steps")||!g.kind||g.kind==="stat")return;
   const c=autoCat(g,q);g.cat=c?c.id:null;ch=true;}));if(ch)saveState();}
-function linkedGoals(c){const out=[];S.quests.filter(q=>q.status==="active"&&q.type==="main"&&!q.archived).forEach(q=>q.goals.forEach(g=>{if(!g.off&&g.cat===c.id&&(g.src==="count"||g.src==="sum"||g.src==="steps"))out.push([q,g]);}));return out;}
+function goalInCat(g,c){return Array.isArray(g.trig)?g.trig.some(k=>k.startsWith(c.id+":")):g.cat===c.id;}
+function linkedGoals(c){const out=[];S.quests.filter(q=>q.status==="active"&&q.type==="main"&&!q.archived).forEach(q=>q.goals.forEach(g=>{if(!g.off&&(g.src==="count"||g.src==="sum"||g.src==="steps")&&goalInCat(g,c))out.push([q,g]);}));return out;}
 const PRK={day:0,week:1,month:2,year:3,all:4};
 function ringCycles(c){const s=new Set();linkedGoals(c).forEach(([q,g])=>{if(g.src!=="steps")s.add(g.period||"all");});return ["day","week","month","year","all"].filter(k=>s.has(k));}
 function aggGoal(c){const gs=linkedGoals(c).map(x=>x[1]);if(!gs.length)return null;
   const grp={};gs.forEach(g=>{const k=g.src==="steps"?"steps|"+g.id:(g.period||"all")+"|"+(g.src==="count"?"x":g.unit||"");(grp[k]=grp[k]||[]).push(g);});
   // ciclo do anel: o escolhido na bolha (c.ring) ou o mais curto que tem task; nunca mistura ciclos
   const ks=Object.keys(grp),pk=k=>k.startsWith("steps")?9:(PRK[k.split("|")[0]]??4),want=ks.filter(k=>c.ring&&k.split("|")[0]===c.ring);
-  const key=(want.length?want:ks).sort((a,b)=>pk(a)-pk(b)||grp[b].length-grp[a].length||(a.endsWith("|x")?0:1)-(b.endsWith("|x")?0:1))[0];
+  const ord=k=>gs.indexOf(grp[k][0]);const key=(want.length?want:ks).sort((a,b)=>pk(a)-pk(b)||grp[b].length-grp[a].length||ord(a)-ord(b))[0];
   const sel=grp[key],g0=sel[0];
   if(key.startsWith("steps")||(sel.length===1&&g0.src!=="count"))return {g:g0,n:1};
   let cur=0,target=0;sel.forEach(g=>{const t=+g.target||0;target+=t;cur+=Math.min(t,+goalProgress(g).cur||0);});
@@ -2532,7 +2573,7 @@ function trackHTML(){setTimeout(fitTrack,0);const by={};cats().filter(c=>!c.off&
   const ts="orb",rs=brl(allLogs().filter(l=>l.kind==="dinheiro").reduce((x,l)=>x+(+l.value||0),0));
   // com mais de 3 quests, quests de poucas bolhas dividem a mesma linha (até 3 bolhas por linha)
   const packs=[];order.forEach(k=>{const n=by[k].length,L=packs[packs.length-1];if(order.length>3&&L&&L.n+n<=3){L.ks.push(k);L.n+=n;}else packs.push({ks:[k],n});});
-  const sec=k=>{const a=AREAS[k];return `<section class="tg" style="--a:${a.color}"><h3 class="tg-h">${esc(a.name)}${k==="money"?`<span class="tg-r num">${esc(rs)}</span>`:""}</h3><div class="tg-l n${by[k].length}">${by[k].map(catHTML).join("")}</div></section>`;};
+  const sec=k=>{const a=AREAS[k];return `<section class="tg" style="--a:${a.color}"><h3 class="tg-h"><button class="tg-b" data-qsum="${esc(k)}" aria-label="Resumo de ${esc(a.name)}">${esc(a.name)}</button>${k==="money"?`<span class="tg-r num">${esc(rs)}</span>`:""}</h3><div class="tg-l n${by[k].length}">${by[k].map(catHTML).join("")}</div></section>`;};
   const rows=packs.map(r=>`<div class="tg-row" data-n="${r.n}">${r.ks.map(sec).join("")}</div>`).join("");
   return `<div class="track ts-${ts}">
     <div class="track-h"><div><div class="track-d">${esc(new Date().toLocaleDateString("pt-BR",{weekday:"short",day:"2-digit",month:"short"}).replace(/\./g,""))}</div><div class="track-s"><b class="num">${tl.length}</b> ${tl.length===1?"registro":"registros"} · <b class="num">+${xp}</b> XP hoje</div>${(()=>{const pl=pendingLinks();return pl.length?`<button class="track-bn" data-sugopen="${esc(pl[0].k.id)}">${IC.zap}<span>Bônus: ${pl.map(p=>`${esc(p.k.to.l)} <b>+${p.k.xp}</b>`).join(" · ")}</span></button>`:"";})()}</div>
@@ -2560,7 +2601,7 @@ function askValue(c,o){const kind=optKind(c,o);const money=kind==="dinheiro";con
     <div class="actions"><button type="button" class="btn ghost" data-cancel>Cancelar</button><button class="btn gold" type="submit">Registrar</button></div></form>`,sh=>{
     sh.addEventListener("click",e=>{const f=e.target.closest("[data-fill]");if(f)sh.querySelector("#av-v").value=f.dataset.fill;});
     sh.addEventListener("submit",e=>{e.preventDefault();const v=num(sh.querySelector("#av-v").value);if(!isFinite(v)||v<=0){toast("Informe um valor maior que zero");return;}
-      const l={kind,sub:o.sub||undefined,note:""};l.value=money&&o.sub==="retirei"?-v:v;closeSheet();const r0=rwSnap(c);RWQ=rwOn();addLog(l);RWQ=false;reward(c,o,l,r0);});});}
+      const l=optLog(c,o);l.value=money&&o.sub==="retirei"?-v:v;closeSheet();const r0=rwSnap(c);RWQ=rwOn();addLog(l);RWQ=false;reward(c,o,l,r0);});});}
 /* menu radial: segurar, deslizar e soltar */
 let RAD=null;
 function radOpen(c,x,y){const el=document.createElement("div");el.className="radial";document.body.appendChild(el);
@@ -2592,7 +2633,7 @@ function confirmPop(c,o,x,y,host){document.querySelectorAll(".cpop-w").forEach(e
   requestAnimationFrame(()=>w.classList.add("on"));
   const close=()=>{w.classList.remove("on");if(host)host.classList.remove("on");setTimeout(()=>{w.remove();if(host)host.remove();},220);};
   w.addEventListener("click",e=>{if(e.target.closest("[data-cpok]")){vib(18);close();doOpt(c,o);return;}if(e.target.closest("[data-cpno]")||!e.target.closest(".cpop")){close();}});}
-function vib(ms){try{navigator.vibrate&&navigator.vibrate(ms)}catch(e){}}
+function vib(ms){try{if(navigator.userActivation&&!navigator.userActivation.hasBeenActive)return;navigator.vibrate&&navigator.vibrate(ms)}catch(e){}}
 (()=>{let H=null;const HOLD=320;
   const begin=(b,x,y,kind)=>{const c=cats().find(k=>k.id===b.dataset.cat);if(!c)return;if(kind==="t")vib(4);H={b,c,x,y,kind,t:setTimeout(()=>{if(!H)return;H.open=true;b.classList.add("held");radOpen(c,H.x,H.y);},HOLD)};b.classList.add("press");};
   const cancelH=()=>{if(!H)return;clearTimeout(H.t);H.b.classList.remove("press","held");H=null;};
@@ -2612,7 +2653,7 @@ function vib(ms){try{navigator.vibrate&&navigator.vibrate(ms)}catch(e){}}
 /* toque: detalhes da categoria (tasks ligadas, registrar, últimos registros) */
 let CATOPEN=null;
 function catLogs(c){const ks=new Set(c.opts.map(o=>optKind(c,o)));return allLogs().filter(l=>ks.has(l.kind)).sort((a,b)=>a.t<b.t?1:-1);}
-function catSheet(c){CATOPEN=c.id;const a=AREAS[c.area]||AREAS.body;const ks=new Set(c.opts.map(o=>optKind(c,o)).filter(k=>k!=="stat"));
+function catSheet(c,refresh){SHREF=!!refresh;CATOPEN=c.id;const a=AREAS[c.area]||AREAS.body;const ks=new Set(c.opts.map(o=>optKind(c,o)).filter(k=>k!=="stat"));
   const goals=linkedGoals(c);
   const ls=catLogs(c).slice(0,6);
   openSheet(`<div class="mgr-head" style="--a:${a.color}"><span class="qicon" style="width:52px;height:52px;border-radius:16px">${IC[c.icon]||IC.star}</span><div style="min-width:0"><div class="small muted">${esc(a.name)}</div><h2>${esc(c.name)}</h2></div></div>
@@ -2622,9 +2663,9 @@ function catSheet(c){CATOPEN=c.id;const a=AREAS[c.area]||AREAS.body;const ks=new
     <details class="dd"><summary><span>Últimos registros</span><span class="dd-n num">${ls.length}</span></summary><div class="day-l">${ls.map(logRow).join("")||`<div class="hint">Nada registrado ainda.</div>`}</div></details>
     <div class="actions" style="justify-content:space-between"><button class="btn ghost" data-cedit="${esc(c.id)}">Editar bolha</button><button class="btn ghost" data-cancel>Fechar</button></div>`,sh=>{
   sh.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
-    if(b.dataset.copt){const o=c.opts.find(x=>x.id===b.dataset.copt);if(o.ask){doOpt(c,o);return;}doOpt(c,o);catSheet(c);return;}
+    if(b.dataset.copt){const o=c.opts.find(x=>x.id===b.dataset.copt);if(o.ask){doOpt(c,o);return;}doOpt(c,o);catSheet(c,true);return;}
     if(b.dataset.cedit){catEdit(c.id);return;}
-    if(b.dataset.dellog){e.stopPropagation();delLog(b.dataset.dellog);catSheet(c);toast("Registro apagado");return;}
+    if(b.dataset.dellog){e.stopPropagation();delLog(b.dataset.dellog);catSheet(c,true);toast("Registro apagado");return;}
     if(b.dataset.plus){e.stopPropagation();const [qi,gi]=b.dataset.plus.split("|");closeSheet();quickPlus(qi,gi);return;}});
   sh.addEventListener("click",e=>{const g=e.target.closest("[data-open]");if(g&&!e.target.closest("button")){const [qi,gi]=g.dataset.open.split("|");goalDetail(qi,gi);}});});}
 /* editar botões e opções */
@@ -2640,7 +2681,8 @@ function catEdit(id,refresh){const c=ownCats().find(k=>k.id===id);if(!c)return;c
     const saveNames=()=>{c.name=sh.querySelector("#ce-name").value.trim()||c.name;const rg=sh.querySelector("#ce-ring");if(rg){if(rg.value)c.ring=rg.value;else delete c.ring;}sh.querySelectorAll("[data-ol]").forEach(i=>{const o=c.opts.find(x=>x.id===i.dataset.ol);if(o)o.l=i.value.trim()||o.l;});};
     sh.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
       if(b.dataset.odel){saveNames();if(c.opts.length<=optMin(c))return;c.opts=c.opts.filter(o=>o.id!==b.dataset.odel);saveState();render();catEdit(c.id,true);toast("Opção removida");return;}
-      if("oadd" in b.dataset){saveNames();const v=sh.querySelector("#ce-new").value.trim();if(!v){toast("Escreva o nome da opção");return;}const nid="c"+uid();c.opts.push({id:nid,l:v,ic:c.icon,sub:c.kind==="estudo"?undefined:nid,value:c.kind==="estudo"?30:c.kind==="dinheiro"?undefined:undefined,ask:c.kind==="dinheiro"?1:undefined});saveState();syncAreas();render();catEdit(c.id,true);return;}
+      if("oadd" in b.dataset){saveNames();const v=sh.querySelector("#ce-new").value.trim();if(!v){toast("Escreva o nome da opção");return;}const nid="c"+uid(),all=c.opts.filter(o=>optKind(c,o)!=="stat").map(o=>optKey(c,o));c.opts.push({id:nid,l:v,ic:c.icon,sub:nid,value:c.kind==="estudo"?30:undefined,ask:c.kind==="dinheiro"||c.kind==="estudo"?1:undefined});
+        let nT=0;S.quests.forEach(q=>q.goals.forEach(g=>{if(Array.isArray(g.trig)&&all.length&&all.every(k=>g.trig.includes(k))){g.trig.push(c.id+":"+nid);nT++;}}));if(nT)toast(`A opção nova já conta em ${nT} ${nT===1?"task":"tasks"} desta bolha`);saveState();syncAreas();render();catEdit(c.id,true);return;}
       if("coff" in b.dataset){saveNames();c.off=!c.off;saveState();closeSheet();render();toast(c.off?"Bolha escondida. Para mostrar de novo, use Organizar no Tracking.":"Bolha visível");return;}
       if("csave" in b.dataset){saveNames();saveState();syncAreas();closeSheet();render();toast("Bolha salva");return;}});},refresh);}
 
@@ -2686,7 +2728,7 @@ function questEdit(qid,refresh){const q=S.quests.find(x=>x.id===qid);if(!q)retur
     sh.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
       if("qesave" in b.dataset){save();QARM=null;closeSheet();render();toast("Quest salva");return;}
       if(b.dataset.qecat){save();catEdit(b.dataset.qecat);return;}
-      if(b.dataset.mgr2){save();closeSheet();render();goalsManager(q.id);return;}
+      if(b.dataset.mgr2){save();render();goalsManager(q.id);return;}
       if("qeaddcat" in b.dataset){const v=sh.querySelector("#qe-newcat").value.trim();if(!v){toast("Escreva o nome da bolha");return;}save();const c=newCat(q.area,v.slice(0,20),areaIcon(q.area));addOpt(c,v);saveState();syncAreas();render();catEdit(c.id);toast("Bolha criada. Adicione as opções do radial.");return;}
       if("qearch" in b.dataset){if(QARM!==q.id){QARM=q.id;questEdit(q.id,true);return;}QARM=null;q.archived=true;ownCats().forEach(c=>{if(c.area===q.area)c.off=true;});saveState();syncAreas();closeSheet();render();toast("Quest arquivada. Os registros continuam no Diário.");return;}});},refresh);}
 let NEWQ=null;
@@ -2704,6 +2746,13 @@ function newQuestSheet(){NEWQ={icon:"star",color:AREA_PAL[S.quests.filter(q=>q.t
       const c=newCat(area,t.slice(0,20),NEWQ.icon);ops.forEach(o=>addOpt(c,o));
       saveState();syncAreas();QOPEN.add(q.id);NEWQ=null;closeSheet();QVIEW="q";tab="quests";render();
       toast(ops.length?"Quest criada com a bolha no Tracking":"Quest criada. Crie uma task para a bolha aparecer.");setTimeout(()=>goalSheet(q.id),350);});});}
+function questSum(k,refresh){const q=mainOf(k);if(!q)return;SHREF=!!refresh;const a=AREAS[k]||AREAS.body,ag=q.goals.filter(g=>!g.off),lv=areaLevel(xpWeek().by[k]||0);
+  openSheet(`<div class="mgr-head" style="--a:${a.color}"><span class="qicon" style="width:52px;height:52px;border-radius:16px">${IC[areaIcon(k)]}</span><div style="min-width:0"><div class="small muted">Nv ${lv.L} · ${ag.filter(g=>goalProgress(g).done).length}/${ag.length} tasks</div><h2>${esc(q.title)}</h2></div></div>
+    <div class="quest open" style="--a:${a.color}"><div class="goals">${cycGroups(ag).map(([kk,gs],i,arr)=>(arr.length>1?`<div class="gcyc">${esc(CYCN[kk])}</div>`:"")+gs.map(g=>goalHTML(q,g,false)).join("")).join("")||`<div class="goal muted small">Nenhuma task ativa.</div>`}</div></div>
+    <div class="actions" style="justify-content:space-between"><button class="btn ghost" data-qsedit="${q.id}">Editar quest</button><button class="btn" data-qsmgr="${q.id}">Editar tasks</button></div>`,sh=>{
+    sh.addEventListener("click",e=>{const b=e.target.closest("button");if(b&&b.dataset.qsedit){questEdit(b.dataset.qsedit);return;}if(b&&b.dataset.qsmgr){goalsManager(b.dataset.qsmgr);return;}
+      if(b&&b.dataset.plus){e.stopPropagation();const [qi,gi]=b.dataset.plus.split("|");quickPlus(qi,gi);questSum(k,true);return;}
+      const g=e.target.closest("[data-open]");if(g&&!b){const [qi,gi]=g.dataset.open.split("|");goalDetail(qi,gi);}});});}
 /* organizar o Tracking */
 function orgSheet(refresh){const ks=areaKeys();
   openSheet(`<h2>Organizar o Tracking</h2><p class="hint">As setas mudam a ordem das quests e das bolhas. O olho mostra ou esconde a bolha.</p>
@@ -2785,7 +2834,7 @@ function behindAt(at){ // o que vai estar atrasado no horário "at", contando s�
   const ws=new Date(weekKey(d)+"T00:00").getTime(),di=Math.floor((d.getTime()-ws)/864e5),out=[];
   const rec=allLogs().filter(l=>new Date(l.t).getTime()>=Date.now()-14*864e5); // só cobra hábito que você tem feito nas últimas 2 semanas
   S.quests.filter(q=>q.status==="active"&&q.type==="main"&&!q.archived).forEach(q=>q.goals.filter(g=>!g.off&&g.src==="count"&&+g.target>0).forEach(g=>{
-    const t=+g.target;if(!rec.some(l=>l.kind===g.kind&&(!g.sub||l.sub===g.sub)))return;
+    const t=+g.target,m=goalMatches(g);if(!rec.some(m))return;
     if(g.period==="day"){const cur=today?(+goalProgress(g).cur||0):0;if(cur<t&&cur<t*frac-Math.max(.5,t*.15))out.push({g,need:t-cur,w:(t-cur)/t,wk:0});}
     else if(g.period==="week"&&mins>=18*60){const cur=sameWeek?(+goalProgress(g).cur||0):0;const exp=t*(di+1)/7;
       if(cur<t&&cur<exp-Math.max(.5,t*.12))out.push({g,need:t-cur,w:(t-cur)/t*.8,wk:7-di});}}));
@@ -2826,7 +2875,7 @@ function widgetCats(){const vis=wVis();let ids;
     const ord=areaKeys();ids=vis.slice().sort((a,b)=>(cnt[b.id]||0)-(cnt[a.id]||0)||ord.indexOf(a.area)-ord.indexOf(b.area)).map(c=>c.id);}
   return ids.slice(0,4).map(id=>vis.find(c=>c.id===id)).filter(Boolean);}
 function quickOpt(c){const ok=o=>o&&!o.ask&&optKind(c,o)!=="stat";const l=catLast(c);return ok(l)?l:(c.opts.find(ok)||null);}
-function optLog(c,o){const kind=optKind(c,o);const l={kind,sub:o.sub||undefined,note:""};if(o.sub&&KINDS[kind]&&(KINDS[kind].custom||!(KINDS[kind].subs||{})[o.sub]))l.label=o.l;
+function optLog(c,o){const kind=optKind(c,o);const l={kind,sub:o.sub||undefined,note:"",cat:c.id,opt:o.id};if(o.sub&&KINDS[kind]&&(KINDS[kind].custom||!(KINDS[kind].subs||{})[o.sub]))l.label=o.l;
   if(kind==="dinheiro"){l.value=o.sub==="retirei"?-Math.abs(+o.value||0):Math.abs(+o.value||0);}
   if(kind==="estudo")l.value=+o.value||0;return l;}
 function wFmt(u,v){return u==="R$"?(v>=1000?String(+(v/1000).toFixed(1)).replace(".",",")+"k":String(Math.round(v))):u==="min"?(v>=60?String(+(v/60).toFixed(1)).replace(".",",")+"h":Math.round(v)+"m"):fmtNum(v,0);}
@@ -2945,7 +2994,7 @@ layer.addEventListener("click",e=>{if(e.target.matches("[data-close]")||e.target
   if(d.dstep){g.current=Math.max(0,(+g.current||0)+(+d.dstep));saveState();render();return;}
   if("dset" in d){const v=num(sh.querySelector("#d-set").value);if(!isFinite(v)){toast("Informe um número");return;}g.current=Math.max(0,v);saveState();render();toast("Valor atualizado");return;}
   if("dstat" in d){const sid=g.statId;closeSheet();logSheet("stat",sid);return;}
-  if("dcount" in d){addLog({kind:g.kind,sub:d.dcount||undefined,note:""});return;}
+  if("dcount" in d){if(d.dcount.includes(":")){const [c,o]=findOpt(d.dcount);if(c&&o){if(o.ask){askValue(c,o);return;}BUMP=c.id;addLog(optLog(c,o));}return;}addLog({kind:g.kind,sub:d.dcount||undefined,note:""});return;}
   if(d.ddir){sh.querySelectorAll("[data-ddir]").forEach(x=>x.setAttribute("aria-pressed",x===b));return;}
   const addAmt=v=>{if(!isFinite(v)||v<=0){toast("Informe um valor maior que zero");return;}
     if(g.unit==="R$"){const out=sh.querySelector('[data-ddir="out"][aria-pressed="true"]');addLog({kind:"dinheiro",sub:out?"retirei":"guardei",value:out?-v:v,note:""});}
@@ -2961,11 +3010,11 @@ layer.addEventListener("click",e=>{if(e.target.matches("[data-close]")||e.target
   if(d.rmode){g.remind=readRemind(sh,Object.assign({},g.remind,{mode:d.rmode}));drawDetail();return;}
   if("rsave" in d){g.remind=readRemind(sh,g.remind||{});g.remind.on=true;saveState();render();drawDetail();askNotify();nativeSchedule(true);toast("Lembrete salvo");return;}
   if("roff" in d){g.remind=Object.assign({},g.remind,{on:false});saveState();render();drawDetail();toast("Lembrete desligado");return;}
-  if("dsave" in d){const dc=sh.querySelector("#d-cat");if(dc)g.cat=dc.value||null;const nq=sh.querySelector("#d-quest");if(nq&&nq.value!==q.id){const to=S.quests.find(x=>x.id===nq.value);if(to){q.goals=q.goals.filter(x=>x.id!==g.id);to.goals.push(g);detail.qid=to.id;}}
+  if("dsave" in d){if(sh.querySelector(".trigp")){const t=readTrig(sh);if(!t.length&&g.src==="count"){toast("Marque pelo menos uma opção");return;}g.trig=t;}const nq=sh.querySelector("#d-quest");if(nq&&nq.value!==q.id){const to=S.quests.find(x=>x.id===nq.value);if(to){q.goals=q.goals.filter(x=>x.id!==g.id);to.goals.push(g);detail.qid=to.id;}}
     const ds=sh.querySelector("#d-steps");if(ds){const arr=ds.value.split(/[;\s]+|,\s+/).map(v=>num(v)).filter(v=>isFinite(v)&&v>0);if(arr.length)g.steps=[...new Set(arr)].sort((a,b)=>a-b);const ev=num(sh.querySelector("#d-every").value);if(isFinite(ev)&&ev>0)g.every=ev;const st0=sh.querySelector("#d-start");if(st0){const v=num(st0.value);if(isFinite(v)&&v>0)g.start=v;}reconcileClaims();}
     const t=sh.querySelector("#d-tgt")?num(sh.querySelector("#d-tgt").value):NaN,x=num(sh.querySelector("#d-xp").value),ti=sh.querySelector("#d-title").value.trim(),pe=sh.querySelector("#d-per");if(isFinite(t)&&t>0)g.target=t;if(isFinite(x)&&x>=0)g.xp=Math.round(x);if(pe)g.period=pe.value;const fx=sh.querySelector("#d-fix");
     if(fx&&fx.checked){g.fixName=true;if(ti)g.title=ti;}else if(canAuto(g)){delete g.fixName;g.base=ti||g.base||baseOf(g);syncTitle(g);}else if(ti)g.title=ti;saveState();autoClaim();render();toast("Task salva");return;}
-  if("ddeact" in d){g.off=true;g.offAt=new Date().toISOString();saveState();const m=mgr;closeSheet();render();if(m)goalsManager(m);toast("Task desativada · está em Editar tasks");return;}
+  if("ddeact" in d){g.off=true;g.offAt=new Date().toISOString();saveState();const m=mgr;render();if(m)goalsManager(m);else closeSheet();toast("Task desativada · está em Editar tasks");return;}
   if("ddel" in d){if(armed==="g"+g.id){armed=null;q.goals=q.goals.filter(x=>x.id!==g.id);saveState();closeSheet();render();toast("Task apagada");}else{armed="g"+g.id;drawDetail();}return;}
 });
 document.addEventListener("change",e=>{if(e.target.id!=="d-fix"||!detail)return;const [,g]=findGoal(detail.qid,detail.gid),ti=document.getElementById("d-title");if(!g||!ti)return;
@@ -3010,6 +3059,7 @@ app.addEventListener("click",e=>{
   if("newquest" in d||"newq2" in d){newQuestSheet();return;}
   if(d.qedit){questEdit(d.qedit);return;}
   if("torg" in d){orgSheet();return;}
+  if(d.qsum){questSum(d.qsum);return;}
   if(d.smart){S.smart=Object.assign({},S.smart,d.smart==="off"?{on:false}:{on:true,lvl:d.smart});saveState();render();if(S.smart.on){askNotify();if(IS_NATIVE())nativeSchedule(true);}toast(S.smart.on?"Lembretes inteligentes ligados":"Lembretes inteligentes desligados");return;}
   if(d.wcat){let l=widgetCats().map(c=>c.id);l=l.includes(d.wcat)?l.filter(x=>x!==d.wcat):l.concat([d.wcat]).slice(0,4);S.widget=l;saveState();render();wPush(true);return;}
   if("wauto" in d){delete S.widget;saveState();render();wPush(true);return;}
