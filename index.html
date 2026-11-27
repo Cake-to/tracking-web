@@ -912,6 +912,11 @@ html[data-motion=sutil] .sh-ghost .scrim.out .sheet{opacity:0}
 .rad-c{transition:transform var(--r-d) var(--r-e)}
 .radial:not(.on) .rad-c{transform:scale(.8)}
 .rad-o.sel span{transition:transform .18s var(--r-e),background .12s}
+/* troca de aba em carrossel */
+.tab-ghost{position:fixed;bottom:0;z-index:2;overflow:hidden;pointer-events:none;margin:0!important;contain:layout paint}
+#app.sliding,.tab-ghost{will-change:transform;backface-visibility:hidden}
+body{overflow-x:clip}
+body.sliding{overflow-x:hidden}
 #app.enter{animation:enter var(--en-d) var(--e-out) backwards}
 @keyframes enter{from{opacity:0;transform:translate(var(--en-x,0px),var(--en-y))}to{opacity:1;transform:none}}
 /* entrada das bolhas em cascata */
@@ -1140,6 +1145,31 @@ html[data-motion="off"] .sug{transition:none}
 .rw.big .rw-ic{animation-duration:.8s}
 html[data-motion=sutil] .rw{transition-duration:.12s,.2s}
 .ver .d{gap:2px}.ver-m{display:block;margin-top:4px;color:var(--gold)!important}
+/* v18: títulos das quests no Tracking com fundinho translúcido, igual às bolhas */
+.ts-orb .tg .tg-h{align-self:center;width:fit-content;box-sizing:border-box;margin:0 auto;padding:6px 14px 6px 11px;border-radius:999px;background:rgba(10,12,18,.58);-webkit-backdrop-filter:blur(8px) saturate(1.15);backdrop-filter:blur(8px) saturate(1.15);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 4px 14px rgba(0,0,0,.25);color:color-mix(in srgb,var(--a) 40%,#fff);text-shadow:none}
+.ts-orb .tg .tg-h .tg-b{text-align:center}
+/* v18: jornada */
+.jn-lead{margin:0 0 10px;color:var(--muted);font-size:14px;line-height:1.4}.jn-lead b{color:var(--fg)}
+.jn-hi{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.jn-hi li{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px 12px;min-width:0}
+.jn-hi li>div{min-width:0;display:flex;flex-direction:column;gap:1px}
+.jn-hi small{font-family:var(--f-display);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.jn-hi b{font-size:15px;overflow-wrap:anywhere}.jn-hi em{font-style:normal;font-size:12px;color:var(--a,var(--muted))}
+.jn-ic{flex:none;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;color:var(--a);background:color-mix(in srgb,var(--a) 16%,transparent)}
+.jn-ic svg{width:18px;height:18px}
+.jn-q{margin-top:16px}
+.jn-qh{margin:0 0 6px;font-family:var(--f-display);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:color-mix(in srgb,var(--a) 60%,var(--fg));display:flex;align-items:center;gap:7px}
+.jn-qh::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--a)}
+.jn-t{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}
+.jn-t:last-child{border-bottom:0}
+.jn-tb{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.jn-tl{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.jn-tl b{font-weight:600;font-size:14px;min-width:0;overflow-wrap:anywhere}
+.jn-tl span{flex:none;font-family:var(--f-display);font-weight:700;font-size:15px;color:var(--a);font-variant-numeric:tabular-nums;max-width:50%;text-align:right}
+.jn-bar{display:block;height:3px;border-radius:3px;background:color-mix(in srgb,var(--a) 14%,transparent);overflow:hidden}
+.jn-bar>i{display:block;height:100%;border-radius:3px;background:var(--a)}
+.jn-tb small{font-size:11px;color:var(--muted)}
+.jn-t.z{opacity:.5}
 </style>
 
 </head>
@@ -1156,7 +1186,7 @@ html[data-motion=sutil] .rw{transition-duration:.12s,.2s}
 
 <div id="layer"></div>
 
-<script>/* ota-guard: se uma versão nova não abrir em 12 s, volta para a anterior */window.WEB_BUILD=17;window.WEB_DATE="2026-11-27T08:11:00-03:00";(function(){try{var C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform())return;var pend=localStorage.getItem("ota.pending");if(pend!==String(window.WEB_BUILD))return;
+<script>/* ota-guard: se uma versão nova não abrir em 12 s, volta para a anterior */window.WEB_BUILD=18;window.WEB_DATE="2026-11-27T10:01:00-03:00";(function(){try{var C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform())return;var pend=localStorage.getItem("ota.pending");if(pend!==String(window.WEB_BUILD))return;
 setTimeout(function(){if(window.__appOk)return;try{localStorage.setItem("ota.bad",pend);localStorage.removeItem("ota.pending");var prev=localStorage.getItem("ota.prev")||"public",W=C.Plugins.WebView;if(prev==="public")W.setServerAssetPath({path:"public"});else W.setServerBasePath({path:prev});}catch(e){}},12000);}catch(e){}})();</script>
 <script>
 (function(){
@@ -1401,6 +1431,8 @@ function attrs(){
     {k:"LAÇ",n:"Laços",v:sc(c("familia"),16),a:"var(--family)",h:"momentos em família em 30 dias (meta 16)"},
   ];
 }
+// treino de verdade = força ou cardio (outros botões da bolha Treino, como escovar os dentes ou sol, não contam)
+const isTreino=l=>l.kind==="treino"&&(!l.sub||l.sub==="forca"||l.sub==="cardio");
 function totals(fromT,toT){
   const ls=allLogs().filter(l=>{const t=new Date(l.t).getTime();return (!fromT||t>=fromT)&&(!toT||t<toT);});
   const c=(k,s)=>ls.filter(l=>l.kind===k&&(!s||l.sub===s)).length;
@@ -1410,7 +1442,7 @@ function totals(fromT,toT){
   const base=fromT?(w.filter(l=>new Date(l.t).getTime()<fromT).pop()||wIn[0]):w[0];
   const kg=w.length&&base?(w[w.length-1].value-base.value):0;
   const days=new Set(ls.map(l=>dayKey(l.t))).size;
-  return {treinos:c("treino"),forca:c("treino","forca"),cardio:c("treino","cardio"),minTreino:sum("treino","minutes"),
+  return {treinos:ls.filter(isTreino).length,forca:c("treino","forca"),cardio:c("treino","cardio"),minTreino:sum("treino","minutes"),
     kg,reais:sum("dinheiro"),estudo:sum("estudo"),meditacoes:c("mente","meditacao"),leituras:c("mente","leitura"),livros:c("mente","livro"),
     filho:c("familia","filho"),casal:c("familia","casal"),casa:c("familia","casa"),days,registros:ls.length,xp:ls.reduce((a,l)=>a+lxp(l),0)};
 }
@@ -1420,7 +1452,7 @@ function bestStreak(){const ds=[...new Set(allLogs().map(l=>dayKey(l.t)))].sort(
 const CQT=[{n:"Bronze",c:"#c98b55",xp:25},{n:"Prata",c:"#cfd5de",xp:50},{n:"Ouro",c:"#f0c24b",xp:100}];
 const isK=(k,sub)=>l=>l.kind===k&&(!sub||l.sub===sub);
 const CONQ=[
-  {id:"treino",g:"Corpo",n:"Ritmo de treino",d:"Treinos de força ou cardio",a:"body",ic:"dumbbell",t:[10,50,150],u:"treinos",m:"cnt",f:l=>l.kind==="treino"&&l.sub!=="alongamento"},
+  {id:"treino",g:"Corpo",n:"Ritmo de treino",d:"Treinos de força ou cardio",a:"body",ic:"dumbbell",t:[10,50,150],u:"treinos",m:"cnt",f:l=>isTreino(l)},
   {id:"agua",g:"Corpo",n:"Hidratado",d:"Dias com a meta de água completa",a:"body",ic:"drop",t:[7,30,100],u:"dias",m:"agua"},
   {id:"peso",g:"Corpo",n:"Mais leve",d:"Quilos a menos desde o começo",a:"body",ic:"scale",t:[1,5,10],u:"kg",m:"peso"},
   {id:"sol",g:"Corpo",n:"Sol na pele",d:"Banhos de sol",a:"body",ic:"sun",t:[5,20,60],u:"banhos de sol",m:"cnt",f:isK("mente","sol")},
@@ -1515,6 +1547,27 @@ function weekRecapCheck(){
     <div class="sumgrid">${line(T.treinos,`treinos (${T.forca} força · ${T.cardio} cardio)`)}${line(esc(brl(T.reais)),"guardados")}${line(esc(fmtVal(T.estudo,"min")),"de estudo")}${line(T.meditacoes,"meditações")}${line(T.filho+T.casal,"momentos em família")}${line(T.days+"/7","dias ativos")}</div>
     <div class="muted small">Nova semana começando. Mantenha o ritmo para segurar o nível.</div><div class="muted small">Toque para continuar</div></div></div>`;},400);}
 function kgText(kg){return (kg>0?"+":"")+fmtNum(kg)+" kg";}
+/* v18: Jornada até aqui — tudo vem das tasks de hoje (nada de tipos fixos antigos) */
+function taskIcon(g){const k=Array.isArray(g.trig)&&g.trig[0];if(k){const [ci,oi]=k.split(":");const c=cats().find(x=>x.id===ci),o=c&&c.opts.find(x=>x.id===oi);if(o&&IC[o.ic]&&!g.icon)return IC[o.ic];}return ringIcon(g);}
+function journeyData(){const L=allLogs();const days=[...new Set(L.map(l=>dayKey(l.t)))].sort();const T=totals();
+  const qs=S.quests.filter(q=>q.type==="main"&&!q.archived&&q.status!=="done").map(q=>{const a=AREAS[q.area]||AREAS.body;
+    const ts=q.goals.filter(g=>!g.off&&(g.src==="count"||g.src==="sum")).map(g=>{const m=goalMatches(g),ls=L.filter(m);const n=ls.length,v=g.src==="sum"?ls.reduce((x,l)=>x+(+l.value||0),0):n;
+      const u=(g.unit||"").trim();const txt=g.src==="sum"?fmtVal(v,u):(u&&!/^x$|^vezes?$/i.test(u)?fmtNum(n)+" "+(n===1?u.replace(/ões$/,"ão").replace(/ães$/,"ão").replace(/s$/,""):u):fmtNum(n)+(n===1?" vez":" vezes"));
+      return {g,n,v,txt,sub:g.src==="sum"&&n?`${n} ${n===1?"registro":"registros"}`:""};}).sort((x,y)=>y.n-x.n);
+    return {q,a,ts,n:ts.reduce((x,t)=>x+t.n,0)};}).filter(x=>x.ts.length);
+  const all=qs.flatMap(x=>x.ts.map(t=>Object.assign({q:x},t)));const top=all.slice().sort((x,y)=>y.n-x.n)[0];
+  const wd=[0,0,0,0,0,0,0];L.forEach(l=>wd[new Date(l.t).getDay()]++);const wi=wd.indexOf(Math.max(...wd));
+  return {T,qs,top:top&&top.n?top:null,days:days.length,first:days[0],streak:bestStreak(),regs:L.length,wday:L.length?["domingo","segunda","terça","quarta","quinta","sexta","sábado"][wi]:"",qtop:qs.slice().sort((x,y)=>y.n-x.n)[0]};}
+function journeyHTML(){const J=journeyData(),T=J.T;
+  const tile=(v,l,a)=>`<div class="tile" style="--a:${a}"><b>${v}</b><span>${l}</span></div>`;
+  const kg=T.kg;const dt=J.first?new Date(J.first+"T12:00").toLocaleDateString("pt-BR",{day:"numeric",month:"short",year:"numeric"}).replace(/\./g,""):"";
+  const hi=[];if(J.top)hi.push(`<li><span class="jn-ic" style="--a:${J.top.q.a.color}">${taskIcon(J.top.g)}</span><div><small>O que você mais fez</small><b>${esc(J.top.g.title)}</b><em>${esc(J.top.txt)}</em></div></li>`);
+  if(J.qtop&&J.qtop.n)hi.push(`<li><span class="jn-ic" style="--a:${J.qtop.a.color}">${IC[J.qtop.a.icon]||IC.star}</span><div><small>Quest mais ativa</small><b>${esc(J.qtop.q.title)}</b><em>${fmtNum(J.qtop.n)} registros nas tasks</em></div></li>`);
+  if(J.wday&&J.days>=14)hi.push(`<li><span class="jn-ic" style="--a:var(--gold)">${IC.cal||IC.star}</span><div><small>Seu dia mais forte</small><b>${J.wday[0].toUpperCase()+J.wday.slice(1)}</b><em>quando você mais registra</em></div></li>`);
+  return `<p class="jn-lead">${J.regs?`<b>${fmtNum(J.regs)}</b> registros em <b>${J.days}</b> ${J.days===1?"dia":"dias"}${dt?` desde ${esc(dt)}`:""}.`:"Seus registros vão aparecer aqui."}</p>
+  <div class="tiles">${tile(esc(brl(T.reais)),"guardados","var(--money)")}${tile(kg<0?fmtNum(-kg)+" kg":kgText(kg),kg<0?"perdidos":"no peso","var(--body)")}${tile(J.streak+(J.streak===1?" dia":" dias"),"melhor sequência","var(--gold)")}</div>
+  ${hi.length?`<ul class="jn-hi">${hi.join("")}</ul>`:""}
+  ${J.qs.map(x=>{const mx=Math.max(1,...x.ts.map(t=>t.n));return `<div class="jn-q" style="--a:${x.a.color}"><h3 class="jn-qh">${esc(x.q.title)}</h3>${x.ts.map(t=>`<div class="jn-t${t.n?"":" z"}"><span class="jn-ic">${taskIcon(t.g)}</span><div class="jn-tb"><div class="jn-tl"><b>${esc(t.g.title)}</b><span>${esc(t.txt)}</span></div><i class="jn-bar"><i style="width:${Math.round(t.n/mx*100)}%"></i></i>${t.sub?`<small>${t.sub}</small>`:""}</div></div>`).join("")}</div>`;}).join("")}`;}
 function tilesHTML(T){
   const tile=(v,l,a)=>`<div class="tile" style="--a:${a}"><b>${v}</b><span>${l}</span></div>`;
   return `<div class="tiles">
@@ -1879,7 +1932,7 @@ function homeHTML(){
     hero:["Personagem",heroHTML()],
     rings:["Tasks",rings?`<section class="sec"><div class="sec-head"><h2>${pn("rings","Tasks")}</h2></div><div class="rings ${ORG?"org":""}">${rings}</div></section>`:""],
     stats:["Stats",`<section class="sec"><h2>${pn("stats","Stats")}</h2>${stats||`<div class="empty">Nenhuma stat ainda.</div>`}</section>`],
-    jornada:["Jornada até aqui",`<section class="sec"><div class="sec-head"><h2>${pn("jornada","Jornada até aqui")}</h2></div>${tilesHTML(totals())}${conqMini()}</section>`],
+    jornada:["Jornada até aqui",`<section class="sec"><div class="sec-head"><h2>${pn("jornada","Jornada até aqui")}</h2></div>${journeyHTML()}${conqMini()}</section>`],
   };
   const keys=Object.keys(PANELS);const PO=(S.panelOrder||[]).filter(k=>PANELS[k]);keys.forEach(k=>{if(!PO.includes(k))PO.push(k);});PANEL_KEYS=PO;
   const HID=S.panelHidden||{};
@@ -3178,16 +3231,52 @@ if(IS_NATIVE()){const _ss=saveState;saveState=function(){_ss.apply(this,argument
     P.App.addListener("backButton",()=>{const no=document.querySelector(".cpop-w [data-cpno]")||document.querySelector(".sug-w [data-sugno]");if(no){no.click();}else if(layer.querySelector(".scrim")){closeSheet();render();}else if(tab!=="track"){const b=document.querySelector('.nav [data-tab="track"]');b?b.click():P.App.minimizeApp();}else P.App.minimizeApp();});}}
 /* ---------- Eventos ---------- */
 const TABORD=["quests","track","home","log","more"];let ENTT=0;
-// deslizar para o lado troca de aba: dedo para a esquerda vai para a aba da direita (Quests ↔ Tracking ↔ Nível)
-(()=>{const MAIN=["quests","track","home"];let sw=null;
+// troca de aba: a tela segue o dedo e a aba vizinha já vem montada ao lado (só transform, nada de re-render no arrasto)
+const MAINT=["quests","track","home"];let SLIDE=null;
+function tabHTML(t){const o=tab;tab=t;try{return (note&&t!=="track"?`<div class="banner" style="margin-top:14px">${esc(note)}</div>`:"")+({home:homeHTML,quests:questsHTML,log:logHTML,more:moreHTML,track:trackHTML}[t]||homeHTML)();}finally{tab=o;}}
+function slideK(){const w=app.getBoundingClientRect().width;return w?app.offsetWidth/w:1;} // tela → px do layout (zoom do texto)
+function slideMode(){return document.documentElement.dataset.motion||"normal";}
+function mkGhost(t){const g=document.createElement("div");g.className="wrap tab-ghost"+(t==="track"?" g-track":"");g.setAttribute("aria-hidden","true");g.dataset.t=t;
+  g.style.top=app.offsetTop+"px";g.style.left=app.offsetLeft+"px";g.style.width=app.offsetWidth+"px";g.innerHTML=tabHTML(t);document.body.appendChild(g);return g;}
+function slidePos(x){const V=innerWidth*SLIDE.k;app.style.transform=`translate3d(${x}px,0,0)`;
+  if(SLIDE.gR)SLIDE.gR.style.transform=`translate3d(${x+V}px,0,0)`;if(SLIDE.gL)SLIDE.gL.style.transform=`translate3d(${x-V}px,0,0)`;}
+function slideBegin(){const i=MAINT.indexOf(tab);SLIDE={k:slideK(),i,L:MAINT[i-1],R:MAINT[i+1],gL:null,gR:null,x:0,raf:0};app.classList.add("sliding");document.body.classList.add("sliding");}
+function slideNeed(dir){if(dir>0&&SLIDE.R&&!SLIDE.gR)SLIDE.gR=mkGhost(SLIDE.R);if(dir<0&&SLIDE.L&&!SLIDE.gL)SLIDE.gL=mkGhost(SLIDE.L);}
+function slideClean(){if(!SLIDE)return;cancelAnimationFrame(SLIDE.raf);[SLIDE.gL,SLIDE.gR].forEach(g=>g&&g.remove());app.style.transition="";app.style.transform="";app.classList.remove("sliding");document.body.classList.remove("sliding");SLIDE=null;}
+function slideAnim(to,ms,done){const e="cubic-bezier(.2,.85,.25,1)";[app,SLIDE.gL,SLIDE.gR].forEach(n=>{if(n)n.style.transition=ms?`transform ${ms}ms ${e}`:"none";});
+  requestAnimationFrame(()=>{slidePos(to);clearTimeout(SLIDE.tm);SLIDE.tm=setTimeout(done,ms+20);});}
+function slideSwap(nt){const g=nt===SLIDE.R?SLIDE.gR:SLIDE.gL,prev=tab;tab=nt;armed=null;LASTHTML="";
+  if(g){app.innerHTML=g.innerHTML;}render();window.scrollTo(0,0);
+  app.style.transition="none";app.style.transform="";slideClean();}
+// toque na barra: mesma animação de carrossel
+function goTab(nt){if(nt===tab)return;const i=MAINT.indexOf(tab),j=MAINT.indexOf(nt);
+  if(i<0||j<0||slideMode()==="off"||SLIDE){if(SLIDE)slideClean();const prev=tab;tab=nt;armed=null;LASTHTML="";app.innerHTML="";render();window.scrollTo(0,0);enterFx(TABORD.indexOf(tab)-TABORD.indexOf(prev));return;}
+  slideBegin();const dir=j>i?1:-1;if(dir>0)SLIDE.R=nt;else SLIDE.L=nt;slideNeed(dir);const V=innerWidth*SLIDE.k;
+  [app,SLIDE.gL,SLIDE.gR].forEach(n=>n&&(n.style.transition="none"));slidePos(0);void app.offsetWidth;
+  slideAnim(-dir*V,slideMode()==="sutil"?220:slideMode()==="expr"?380:300,()=>slideSwap(nt));}
+(()=>{let d=null;
   const skip=t=>t.closest&&t.closest('input,select,textarea,.hscroll,[data-hscroll],.scroller,.wk-cats,.radial,.cpop,.icpop,[data-noswipe]');
-  document.addEventListener("touchstart",e=>{sw=null;if(e.touches.length!==1||!S||ORG||!MAIN.includes(tab)||layer.querySelector(".sheet")||skip(e.target))return;const t=e.touches[0];sw={x:t.clientX,y:t.clientY,t:Date.now(),ok:true};},{passive:true});
-  document.addEventListener("touchmove",e=>{if(!sw)return;if(document.querySelector(".radial.on"))sw.ok=false;},{passive:true});
-  document.addEventListener("touchend",e=>{const s0=sw;sw=null;if(!s0||!s0.ok||document.querySelector(".radial.on"))return;const t=e.changedTouches[0],dx=t.clientX-s0.x,dy=t.clientY-s0.y;
-    if(Date.now()-s0.t>700||Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*2)return;const i=MAIN.indexOf(tab)+(dx<0?1:-1);if(i<0||i>=MAIN.length)return;
-    const b=document.querySelector(`.nav [data-tab="${MAIN[i]}"]`);if(b)b.click();},{passive:true});})();
+  const can=()=>S&&!ORG&&!SLIDE&&MAINT.includes(tab)&&!layer.querySelector(".sheet")&&!document.querySelector(".radial.on,.cpop-w");
+  const back=()=>{if(!SLIDE)return;if(slideMode()==="off"){slideClean();return;}slideAnim(0,220,slideClean);};
+  document.addEventListener("touchstart",e=>{d=null;if(e.touches.length!==1||!can()||skip(e.target))return;const t=e.touches[0];d={x:t.clientX,y:t.clientY,lock:0,lx:t.clientX,lt:performance.now(),v:0};},{passive:true});
+  document.addEventListener("touchmove",e=>{if(!d)return;const t=e.touches[0],dx=t.clientX-d.x,dy=t.clientY-d.y;
+    if(document.querySelector(".radial.on")){if(d.lock)back();d=null;return;}
+    if(!d.lock){if(Math.abs(dx)<10&&Math.abs(dy)<10)return;if(Math.abs(dx)<=Math.abs(dy)*1.2||!can()){d=null;return;}d.lock=1;d.x=t.clientX;slideBegin();}
+    if(e.cancelable)e.preventDefault();
+    const now=performance.now(),dt=Math.max(1,now-d.lt);d.v=d.v*.3+(t.clientX-d.lx)/dt*.7;d.lx=t.clientX;d.lt=now;
+    const ddx=t.clientX-d.x,side=ddx<0?1:-1,has=side>0?SLIDE.R:SLIDE.L;if(has&&ddx)slideNeed(side);
+    SLIDE.x=(has?ddx:ddx*.22)*SLIDE.k;if(!SLIDE.raf)SLIDE.raf=requestAnimationFrame(()=>{if(!SLIDE)return;SLIDE.raf=0;slidePos(SLIDE.x);});},{passive:false});
+  const end=e=>{const s0=d;d=null;if(!s0||!s0.lock||!SLIDE)return;cancelAnimationFrame(SLIDE.raf);SLIDE.raf=0;
+    const ddx=(e.changedTouches&&e.changedTouches[0]?e.changedTouches[0].clientX:s0.lx)-s0.x,side=ddx<0?1:-1,nt=side>0?SLIDE.R:SLIDE.L,v=s0.v;
+    if(performance.now()-s0.lt>90)s0.v=0;
+    const go=nt&&e.type==="touchend"&&(Math.abs(ddx)>innerWidth*.3||(Math.abs(s0.v)>.35&&Math.sign(s0.v)===Math.sign(ddx)&&Math.abs(ddx)>24));
+    if(!go){back();return;}
+    if(slideMode()==="off"){slideSwap(nt);return;}
+    const V=innerWidth*SLIDE.k,rest=Math.abs(V-Math.abs(SLIDE.x))/SLIDE.k,sp=Math.max(1.4,Math.abs(s0.v)),ms=Math.round(Math.max(150,Math.min(320,rest/sp*1.6)));
+    slideAnim(-side*V,ms,()=>slideSwap(nt));};
+  document.addEventListener("touchend",end,{passive:true});document.addEventListener("touchcancel",end,{passive:true});})();
 function enterFx(dir){const ap=app;ap.style.setProperty("--en-x",(dir>0?22:dir<0?-22:0)+"px");ap.classList.remove("enter");void ap.offsetWidth;ap.classList.add("enter");clearTimeout(ENTT);ENTT=setTimeout(()=>ap.classList.remove("enter"),1100);}
-document.querySelector(".nav").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(b){const prev=tab,ch=tab!==b.dataset.tab;tab=b.dataset.tab;armed=null;if(ch){LASTHTML="";app.innerHTML="";}render();window.scrollTo(0,0);if(ch)enterFx(TABORD.indexOf(tab)-TABORD.indexOf(prev));}});
+document.querySelector(".nav").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(b){if(tab!==b.dataset.tab)goTab(b.dataset.tab);else{armed=null;render();window.scrollTo(0,0);}}});
 
 document.getElementById("avfile").addEventListener("change",e=>setAvatar(e.target.files[0]));
 (()=>{let drag=null;
