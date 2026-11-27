@@ -1185,6 +1185,7 @@ html[data-motion=off] #bg{transition:none}
 .cat-c .cat-x{margin-left:4px}
 .track.tight .cat-c{font-size:11px}.track.tight .cat-c em{font-size:9px;margin-right:4px}
 /* v20: stats genéricos, conexões */
+.nrow{display:flex;flex-direction:column;gap:6px}.nt{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:0 4px 4px;color:var(--muted);font-size:14px}.nt input[type=time],.nt select{width:auto;min-width:0;flex:0 1 auto;padding:8px 10px;background:#0000003d;border:1px solid var(--gline,#ffffff1f);border-radius:10px;color:inherit;font:inherit;font-size:15px;color-scheme:dark}.nt input[type=time]{color:var(--ink,#fff);font-variant-numeric:tabular-nums}.nrow.on{background:#ffffff08;border:1px solid #ffffff0d;border-radius:var(--r)}.nrow.on>.log{background:none!important;border:0!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}.nrow.on>.nt{padding:0 12px 12px}.nt select{flex:1 1 140px}.nx{cursor:pointer}.nx-t{min-width:4.2em;font-weight:700;color:var(--ink,#fff);font-size:14px;white-space:nowrap}.nx-go{color:var(--muted);font-size:20px;line-height:1}.nnext .nx .d span,.nnext .nx .d b{overflow-wrap:anywhere}.warnc{color:var(--warn)}
 .zero-tip{color:var(--muted);text-align:center;font-size:14px;line-height:1.5;margin:24px 8px 4px}.zero-track{margin:auto;max-width:300px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center;padding:16px;font-size:15px;line-height:1.5}.zero-track p{margin:0}.zero-track .btn{margin-top:10px}
 .st-form .st-h-sum{display:none}.st-form.is-sum .st-h-sum{display:block}.st-form.is-sum .st-h-med{display:none}
 .chk{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--fg);cursor:pointer}.chk input{width:20px;height:20px;accent-color:var(--gold);flex:none}
@@ -1209,7 +1210,7 @@ html[data-motion=off] #bg{transition:none}
 
 <div id="layer"></div>
 
-<script>/* ota-guard: se uma versão nova não abrir em 12 s, volta para a anterior */window.WEB_BUILD=20;window.WEB_DATE="2026-11-27T13:01:00-03:00";(function(){try{var C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform())return;var pend=localStorage.getItem("ota.pending");if(pend!==String(window.WEB_BUILD))return;
+<script>/* ota-guard: se uma versão nova não abrir em 12 s, volta para a anterior */window.WEB_BUILD=21;window.WEB_DATE="2026-11-27T13:24:00-03:00";(function(){try{var C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform())return;var pend=localStorage.getItem("ota.pending");if(pend!==String(window.WEB_BUILD))return;
 setTimeout(function(){if(window.__appOk)return;try{localStorage.setItem("ota.bad",pend);localStorage.removeItem("ota.pending");var prev=localStorage.getItem("ota.prev")||"public",W=C.Plugins.WebView;if(prev==="public")W.setServerAssetPath({path:"public"});else W.setServerBasePath({path:prev});}catch(e){}},12000);}catch(e){}})();</script>
 <script>
 (function(){
@@ -1897,7 +1898,7 @@ function wkData(ws){const we=ws+7*864e5,ls=allLogs().filter(l=>{const t=new Date
   let tasks=0;S.quests.forEach(q=>q.goals.forEach(g=>Object.values(g.claimT||{}).forEach(t=>{const x=new Date(t).getTime();if(x>=ws&&x<we&&g.src!=="steps")tasks++;})));
   const active=new Set(ls.map(l=>dayKey(l.t))).size;
   return {n:ls.length,xp:xpTotals(ws,we).total,lv:levelOf(xpAt(we-1).total).L,days:Object.fromEntries(Object.entries(days).map(([k,v])=>[k,v.size])),tasks,active,ps:periodSum(ws,we)};}
-function weekSummary(){const W=7*864e5,ws=wkStart()-W,a=wkData(ws),b=wkData(ws-W);
+function weekSummary(ws0){const W=7*864e5,ws=ws0!=null?ws0:wkStart()-W,a=wkData(ws),b=wkData(ws-W);
   const fmt=d=>new Date(d).toLocaleDateString("pt-BR",{day:"2-digit",month:"short"}).replace(/\./g,"");
   const ks=Object.keys(a.days);const NM=k=>(AREAS[k]||{}).name||k;const diff=ks.map(k=>({k,d:a.days[k]-(b.days[k]||0),v:a.days[k]}));
   const up=diff.filter(x=>x.d>0).sort((x,y)=>y.d-x.d),down=diff.filter(x=>x.d<0).sort((x,y)=>x.d-y.d);
@@ -2296,9 +2297,9 @@ function remindTick(){if(!S||IS_NATIVE())return;const n=new Date(),dk=dayKey(n),
   S.quests.filter(q=>q.status==="active"&&q.type==="main"&&!q.archived).forEach(q=>q.goals.filter(g=>!g.off&&g.remind&&g.remind.on).forEach(g=>{
     if(!(g.remind.days||[0,1,2,3,4,5,6]).includes(n.getDay()))return;
     try{if(g.src!=="steps"&&goalProgress(g).done)return;}catch(e){} // já concluída no ciclo: sem lembrete
-    remindTimes(g.remind).forEach(t=>{const m=+t.slice(0,2)*60+ +t.slice(3);const key=g.id+"|"+dk+"|"+t;if(FIRED[key]||nowM<m||nowM>m+20)return;FIRED[key]=1;try{localStorage.setItem("rpg.fired",JSON.stringify(FIRED))}catch(e){}
+    remindTimes(g.remind).forEach(t=>{const m=+t.slice(0,2)*60+ +t.slice(3);const key=g.id+"|"+dk+"|"+t;if(FIRED[key]||nowM<m||nowM>m+20||inQuiet(n.getTime()))return;FIRED[key]=1;try{localStorage.setItem("rpg.fired",JSON.stringify(FIRED))}catch(e){}
       const p=goalProgress(g);const body=`${g.title} · ${p.src==="stat"?"":Math.round(p.pct*100)+"% feito"}`;
-      let shown=false;try{if(NOTIF_OK()&&Notification.permission==="granted"){shown=true;(navigator.serviceWorker&&navigator.serviceWorker.ready?navigator.serviceWorker.ready.then(r=>r.showNotification("Tracking",{body,tag:key,icon:"icon-192.png",badge:"icon-192.png"})):Promise.reject()).catch(()=>new Notification("Tracking",{body}));}}catch(e){shown=false}
+      let shown=false;try{if(NOTIF_OK()&&Notification.permission==="granted"){shown=true;(navigator.serviceWorker&&navigator.serviceWorker.ready?navigator.serviceWorker.ready.then(r=>r.showNotification("Tracking",{body,tag:key,icon:"icon-192.png",badge:"icon-192.png"})):Promise.reject()).catch(()=>{const nn=new Notification("Tracking",{body});nn.onclick=()=>{window.focus();nGo({go:"task",q:q.id,g:g.id});};});}}catch(e){shown=false}
       if(!shown||document.visibilityState==="visible")toast(`🔔 <b>Lembrete</b> · ${esc(g.title)}`);});}));}
 setInterval(remindTick,30000);setTimeout(remindTick,3000);
 function goalsManager(qid){mgr=qid;drawMgr();}
@@ -2479,7 +2480,7 @@ function moreHTML(){
     <p class="hint">O som sai no volume de mídia do celular. Para silenciar, abaixe a mídia ou desligue aqui.</p></section></details>
   </div></div>
   <div class="setg"><h2 class="setg-h">Tasks e metas</h2><div class="setg-l">
-  ${smartHTML()}${widgetHTML()}
+  ${widgetHTML()}
   <details class="dd acc"><summary><span>Tasks</span></summary><section class="sec">${S.quests.filter(q=>q.status==="active"&&q.type==="main"&&!q.archived).map(q=>{const off=q.goals.filter(g=>g.off).length;return `<div class="log" style="--a:${AREAS[q.area].color}"><div class="d"><b>${esc(q.title)}</b><span>${q.goals.length-off} ativas${off?" · "+off+" desativadas":""}</span></div><button class="btn sm" data-mgr="${q.id}">Editar tasks</button></div>`}).join("")}</section></details>
   <details class="dd acc"><summary><span>Conexões e bônus</span></summary><section class="sec"><p class="hint">Depois de um registro, o app sugere o próximo passo. Fazendo dentro do prazo, ganha XP bônus.</p>
     <div class="sec-head"><button class="link" data-linknew>+ Nova conexão</button></div>
@@ -2487,6 +2488,7 @@ function moreHTML(){
   <details class="dd acc"><summary><span>Stats acompanhadas</span></summary><section class="sec"><div class="sec-head"><button class="link" data-newstat>+ Nova stat</button></div>
     ${S.stats.map(st=>`<div class="log" style="--a:${(AREAS[st.area]||AREAS.body).color}"><div class="qicon">${IC[statIcon(st)]}</div><div class="d"><b>${esc(st.name)}</b><span>${esc(st.unit)} · ${st.dir==="down"?"quero diminuir":"quero aumentar"}${st.target!=null?" · alvo "+fmtNum(st.target):""}</span></div><button class="btn sm" data-editstat="${esc(st.id)}">Editar</button></div>`).join("")}</section></details>
   </div></div>
+  ${notifHTML()}
   <div class="setg"><h2 class="setg-h">Dados</h2><div class="setg-l">
   <details class="dd acc"><summary><span>Backup</span><span class="dd-n">${esc(bkAge())}</span></summary><section class="sec bk">
     <p class="small muted">${mode==="db"?"Seus dados ficam na sua conta do Claude. Para levar ao app do celular, exporte aqui e restaure lá.":"Seus dados ficam só neste aparelho. Exporte toda semana e guarde no Drive."}</p>
@@ -3185,6 +3187,96 @@ function smartHTML(){const c=smartCfg();
     <div class="seg" role="radiogroup" aria-label="Lembretes inteligentes">${[["off","Desligados"],["leve","Leve · 2 por dia"],["normal","Normal · até 4"]].map(([k,l])=>`<button type="button" data-smart="${k}" aria-pressed="${k==="off"?!c.on:c.on&&c.lvl===k}">${l}</button>`).join("")}</div>
     <p class="hint">${c.on?`Horários: ${(SMART_SETS[c.lvl]||SMART_SETS.normal).t.map(x=>x.replace(":00","h").replace(":","h")).join(", ")}. Tasks diárias são conferidas em todos; as semanais, a partir das 18h.`:"Os lembretes de cada task continuam funcionando."}</p></section></details>`;}
 
+/* ---------- Notificações e lembretes (v21): avisos gerais, resumo, silêncio ---------- */
+const NOTIF_DEF={
+  bomdia:{n:"Bom dia",d:"Abre o dia com o que tem pela frente",t:"07:30",on:true,cat:"dia"},
+  reta:{n:"Reta final do dia",d:"Só chega se ainda faltar alguma task diária",t:"21:00",on:true,cat:"dia"},
+  seq:{n:"Sequência em risco",d:"Se você ainda não registrou nada no dia",t:"19:00",on:false,cat:"dia"},
+  semana:{n:"Resumo da semana",d:"XP, dias ativos e tasks fechadas",t:"20:00",dow:0,on:true,cat:"res"},
+  mes:{n:"Resumo do mês",d:"No dia 1, como foi o mês que passou",t:"09:00",on:false,cat:"res"}};
+const DOWN=["domingo","segunda","terça","quarta","quinta","sexta","sábado"];
+function ncfg(k){return Object.assign({},NOTIF_DEF[k],(S&&S.notif&&S.notif[k])||{});}
+function quietCfg(){return Object.assign({on:false,from:"22:30",to:"07:00"},S&&S.quiet);}
+function inQuiet(at){const q=quietCfg();if(!q.on)return false;const d=new Date(at),m=d.getHours()*60+d.getMinutes(),a=hmM(q.from),b=hmM(q.to);return a<=b?(m>=a&&m<b):(m>=a||m<b);}
+function liveQuests(){return S.quests.filter(q=>q.status==="active"&&q.type==="main"&&!q.archived);}
+function dailyLeft(at){const today=dayKey(at)===dayKey(Date.now()),out=[];
+  liveQuests().forEach(q=>q.goals.filter(g=>!g.off&&(g.src==="count"||g.src==="sum")&&g.period==="day"&&+g.target>0).forEach(g=>{let cur=0;if(today){try{cur=+goalProgress(g).cur||0;}catch(e){}}if(cur<+g.target)out.push({q,g,cur,t:+g.target});}));return out;}
+const BD_FR=["Bora começar mais um dia.","Um passo de cada vez, todo dia.","Este dia conta. Vamos nessa.","Constância vence intensidade.","Mais um dia para subir de nível.","Pequenas vitórias somam.","Seu eu do futuro agradece."];
+function nItem(k,at){if(!S)return null;const d=new Date(at),ahead=Math.round((new Date(dayKey(at)+"T12:00")-new Date(dayKey(Date.now())+"T12:00"))/864e5);
+  const nm=String(S.name||"").trim().split(/\s+/)[0]||"",hasToday=allLogs().some(l=>dayKey(l.t)===dayKey(Date.now()));
+  if(k==="bomdia"){const n=dailyLeft(at).length,st=ahead===0?streak():ahead===1&&hasToday?streak():0;
+    return {title:`Bom dia${nm?", "+nm:""}!`,body:[BD_FR[Math.floor(at/864e5)%BD_FR.length],n?(n===1?"Hoje tem 1 task diária.":`Hoje tem ${n} tasks diárias.`):"",st>=2?`Sequência de ${st} dias.`:""].filter(Boolean).join(" "),extra:{go:"track"}};}
+  if(k==="reta"){const L=dailyLeft(at);if(!L.length)return null;
+    return {title:"Reta final do dia",body:"Ainda dá tempo: "+L.slice(0,3).map(x=>`${gName(x.g)} ${fmtNum(x.cur)}/${fmtNum(x.t)}`).join(" · ")+(L.length>3?` · e mais ${L.length-3}`:""),extra:{go:"track"}};}
+  if(k==="seq"){let st=0;if(ahead===0&&!hasToday)st=streak();else if(ahead===1&&hasToday)st=streak();if(st<2)return null;
+    return {title:`Sua sequência de ${st} dias termina hoje`,body:"Um registro já mantém ela viva.",extra:{go:"track"}};}
+  if(k==="semana"){if(d.getDay()!==ncfg(k).dow)return null;const W=7*864e5,cur=new Date(weekKey(at)+"T00:00").getTime(),ws=[5,6,0].includes(d.getDay())?cur:cur-W;
+    if(ws>new Date(weekKey(Date.now())+"T00:00").getTime())return null;const a=wkData(ws);
+    return {title:a.n?`Sua semana: ${a.n} ${a.n===1?"registro":"registros"}`:"Sua semana fechou",body:a.n?`${a.active}/7 dias ativos · +${fxp(a.xp)} XP${a.tasks?` · ${a.tasks} ${a.tasks===1?"task fechada":"tasks fechadas"}`:""}. Toque para ver o resumo.`:"Nenhum registro nesta semana. A próxima começa já.",extra:{go:"week",ws}};}
+  if(k==="mes"){if(d.getDate()!==1)return null;const m0=new Date(d.getFullYear(),d.getMonth()-1,1).getTime(),m1=new Date(d.getFullYear(),d.getMonth(),1).getTime();if(m0>Date.now())return null;
+    const P=periodSum(m0,m1),mn=new Date(m0).toLocaleDateString("pt-BR",{month:"long"});const top=P.tasks[0];
+    return {title:`${mn.charAt(0).toUpperCase()+mn.slice(1)} fechou`,body:P.regs?`${P.regs} registros em ${P.days} dias${top?`. O que mais fez: ${gName(top.g)} (${top.txt})`:""}.`:"Nenhum registro no mês. Este é um bom mês para começar.",extra:{go:"lvl"}};}
+  return null;}
+function nAt(day,t){return new Date(day.getFullYear(),day.getMonth(),day.getDate(),+t.slice(0,2),+t.slice(3)).getTime();}
+function genPlan(){const out=[],now=Date.now();if(!S)return out;
+  Object.keys(NOTIF_DEF).forEach(k=>{const c=ncfg(k);if(!c.on||!hm(c.t))return;const span=k==="mes"?32:k==="semana"?8:3;
+    for(let i=0;i<span;i++){const d=new Date();d.setDate(d.getDate()+i);const at=nAt(d,hm(c.t));if(at<=now+60000)continue;let it=null;try{it=nItem(k,at);}catch(e){}if(it)out.push(Object.assign({at,k},it));}});
+  return out.sort((a,b)=>a.at-b.at);}
+function taskPlan(fromT,toT){const out=[];if(!S)return out;
+  liveQuests().forEach(q=>q.goals.filter(g=>!g.off&&g.remind&&g.remind.on).forEach(g=>{let until=0;try{const pr=goalProgress(g);if(pr.done&&g.src!=="steps")until=cycleEnd(g.period);}catch(e){}
+    const days=g.remind.days||[0,1,2,3,4,5,6],times=remindTimes(g.remind);
+    for(let k=0;k<15;k++){const d=new Date();d.setDate(d.getDate()+k);if(!days.includes(d.getDay()))continue;
+      times.forEach(t=>{const at=nAt(d,t);if(at<=fromT||at>toT||at<until||inQuiet(at))return;out.push({at,title:g.title,body:q.title,extra:{go:"task",q:q.id,g:g.id},q,g});});}}));
+  return out.sort((a,b)=>a.at-b.at);}
+function nGo(x){if(!x||!S)return;try{
+  if(x.go==="task"){const q=S.quests.find(y=>y.id===x.q),g=q&&q.goals.find(y=>y.id===x.g);if(g){closeSheet();goalDetail(q.id,g.id);}return;}
+  if(x.go==="week"){closeSheet();weekSummary(x.ws);return;}
+  const nt=x.go==="lvl"?"home":"track";if(tab!==nt){closeSheet();tab=nt;render();}}catch(e){}}
+function webNotify(title,body,key,extra){let shown=false;
+  try{if(NOTIF_OK()&&Notification.permission==="granted"){shown=true;(navigator.serviceWorker&&navigator.serviceWorker.ready?navigator.serviceWorker.ready.then(r=>r.showNotification(title,{body,tag:key,icon:"icon-192.png",badge:"icon-192.png"})):Promise.reject()).catch(()=>{const n=new Notification(title,{body});n.onclick=()=>{window.focus();nGo(extra);};});}}catch(e){shown=false}
+  if(!shown||document.visibilityState==="visible")toast(`🔔 <b>${esc(title)}</b> · ${esc(body)}`);}
+function genTick(){if(!S||IS_NATIVE())return;const n=new Date(),dk=dayKey(n),nowM=n.getHours()*60+n.getMinutes();
+  Object.keys(NOTIF_DEF).forEach(k=>{const c=ncfg(k);if(!c.on||!hm(c.t))return;const m=hmM(hm(c.t)),key="gen|"+k+"|"+dk;if(FIRED[key]||nowM<m||nowM>m+20)return;FIRED[key]=1;try{localStorage.setItem("rpg.fired",JSON.stringify(FIRED))}catch(e){}
+    let it=null;try{it=nItem(k,n.getTime());}catch(e){}if(it)webNotify(it.title,it.body,key,it.extra);});}
+setInterval(genTick,30000);setTimeout(genTick,4000);
+function nWhen(at){const d=new Date(at),dd=Math.round((new Date(dayKey(at)+"T12:00")-new Date(dayKey(Date.now())+"T12:00"))/864e5);
+  return (dd===0?"":dd===1?"amanhã ":d.toLocaleDateString("pt-BR",{weekday:"short"}).replace(".","")+" ")+fmtHM(at);}
+function rmDesc(g){const r=g.remind,t=remindTimes(r),ds=r.days||[0,1,2,3,4,5,6];
+  return (r.mode==="interval"?`a cada ${fmtNum(+r.every||2)} h, das ${hm(r.from||"08:00")} às ${hm(r.to||"22:00")}`:t.join(", "))+" · "+(ds.length>=7?"todo dia":ds.length===5&&!ds.includes(0)&&!ds.includes(6)?"dias úteis":[1,2,3,4,5,6,0].filter(v=>ds.includes(v)).map(v=>DOWN[v].slice(0,3)).join(", "));}
+function nRow(k){const c=ncfg(k);
+  return `<div class="nrow${c.on?" on":""}"><div class="log"><div class="d"><b>${esc(c.n)}</b><span>${esc(c.d)}</span></div><button class="btn sm${c.on?" gold":" ghost"}" data-ntog="${k}" aria-pressed="${c.on}">${c.on?"Ligado":"Desligado"}</button></div>
+    ${c.on?`<div class="nt">${k==="semana"?`<select data-ndow="${k}" aria-label="Dia do resumo">${[0,1,2,3,4,5,6].map(v=>`<option value="${v}" ${c.dow===v?"selected":""}>${DOWN[v].charAt(0).toUpperCase()+DOWN[v].slice(1)}</option>`).join("")}</select>`:k==="mes"?`<span>Dia 1, às</span>`:`<span>Às</span>`}<input type="time" data-ntime="${k}" value="${esc(hm(c.t)||NOTIF_DEF[k].t)}" aria-label="Horário: ${esc(c.n)}"></div>`:""}</div>`;}
+function notifInner(){const now=Date.now();const tp=taskPlan(now,now+864e5),gp=genPlan().filter(x=>x.at<=now+864e5);
+  const next=tp.map(x=>({at:x.at,n:gName(x.g),s:x.q.title,go:`data-open="${esc(x.q.id+"|"+x.g.id)}"`})).concat(gp.map(x=>({at:x.at,n:ncfg(x.k).n,s:x.body,go:""}))).sort((a,b)=>a.at-b.at);
+  const withR=[],noR=[];liveQuests().forEach(q=>q.goals.filter(g=>!g.off&&g.src!=="steps").forEach(g=>{(g.remind&&g.remind.on?withR:noR).push({q,g});}));
+  const qd=quietCfg(),sm=smartCfg(),genOn=Object.keys(NOTIF_DEF).filter(k=>ncfg(k).on).length;
+  const perm=IS_NATIVE()?"":NOTIF_OK()?(typeof Notification!=="undefined"&&Notification.permission==="denied"?`<p class="hint warnc">As notificações deste navegador estão bloqueadas. Libere nas configurações do site.</p>`:""):`<p class="hint">Nesta versão de prévia, os avisos aparecem dentro do app quando ele está aberto. Com o app instalado, o celular avisa mesmo fechado.</p>`;
+  return `${perm}<details class="dd acc" data-nk="next" open><summary><span>Próximas 24 horas</span><span class="dd-n">${next.length?next.length+(next.length===1?" aviso":" avisos"):"nada agendado"}</span></summary><section class="sec nnext">
+    ${next.length?next.slice(0,14).map(x=>`<div class="log nx"${x.go?" "+x.go+' role="button" tabindex="0"':""}><span class="nx-t num">${esc(nWhen(x.at))}</span><div class="d"><b>${esc(x.n)}</b><span>${esc(x.s)}</span></div>${x.go?`<span class="nx-go" aria-hidden="true">›</span>`:""}</div>`).join("")+(next.length>14?`<p class="hint">e mais ${next.length-14}</p>`:""):`<p class="hint">Nenhum aviso nas próximas 24 horas.</p>`}
+    <p class="hint">${sm.on?"Os lembretes inteligentes não entram na lista: só chegam se você estiver ficando para trás.":"Toque num lembrete de task para abrir a task."}</p></section></details>
+  <details class="dd acc" data-nk="tasks"><summary><span>Lembretes das tasks</span><span class="dd-n">${withR.length?withR.length+(withR.length===1?" ativo":" ativos"):"nenhum"}</span></summary><section class="sec">
+    ${withR.map(({q,g})=>{let done=false;try{done=g.src!=="steps"&&goalProgress(g).done;}catch(e){}return `<div class="log" style="--a:${(AREAS[q.area]||AREAS.body).color}" data-open="${esc(q.id+"|"+g.id)}" role="button" tabindex="0"><div class="qicon">${IC.bell}</div><div class="d"><b>${esc(gName(g))}</b><span>${esc(rmDesc(g))}${done?" · concluída, volta no próximo ciclo":""}</span></div><span class="nx-go" aria-hidden="true">›</span></div>`;}).join("")||`<p class="hint">Nenhuma task com lembrete ainda.</p>`}
+    ${noR.length?`<div class="ts-h" style="margin-top:6px">Sem lembrete</div>${noR.map(({q,g})=>`<div class="log"><div class="d"><b>${esc(gName(g))}</b><span>${esc(q.title)}</span></div><button class="btn sm" data-nrem="${esc(q.id+"|"+g.id)}">+ Lembrete</button></div>`).join("")}`:""}</section></details>
+  <details class="dd acc" data-nk="gen"><summary><span>Avisos do dia e resumos</span><span class="dd-n">${genOn} ${genOn===1?"ligado":"ligados"}</span></summary><section class="sec">
+    <div class="ts-h">Rotina do dia</div>${["bomdia","reta","seq"].map(nRow).join("")}
+    <div class="ts-h" style="margin-top:6px">Resumos</div>${["semana","mes"].map(nRow).join("")}</section></details>
+  ${smartHTML()}
+  <details class="dd acc" data-nk="quiet"><summary><span>Horário de silêncio</span><span class="dd-n">${qd.on?esc(qd.from+" às "+qd.to):"Desligado"}</span></summary><section class="sec">
+    <div class="log"><div class="d"><b>Não avisar de madrugada</b><span>Vale para os lembretes das tasks e os inteligentes</span></div><button class="btn sm${qd.on?" gold":" ghost"}" data-quiettog aria-pressed="${qd.on}">${qd.on?"Ligado":"Desligado"}</button></div>
+    ${qd.on?`<div class="nt"><span>Das</span><input type="time" data-quiet="from" value="${esc(qd.from)}" aria-label="Início do silêncio"><span>às</span><input type="time" data-quiet="to" value="${esc(qd.to)}" aria-label="Fim do silêncio"></div>`:""}
+    <p class="hint">Bom dia, reta final e resumos chegam no horário que você escolheu, mesmo dentro do silêncio.</p></section></details>`;}
+function notifHTML(){return `<div class="setg" id="nset"><h2 class="setg-h">Notificações e lembretes</h2><div class="setg-l">${notifInner()}</div></div>`;}
+function nRefresh(){const box=document.querySelector("#nset .setg-l");if(!box){render();return;}const open=new Set([...box.querySelectorAll("details[data-nk]")].filter(x=>x.open).map(x=>x.dataset.nk));const smOpen=[...box.querySelectorAll("details")].some(x=>!x.dataset.nk&&x.open);
+  box.innerHTML=notifInner();box.querySelectorAll("details").forEach(x=>{x.open=x.dataset.nk?open.has(x.dataset.nk):smOpen;});}
+function nSave(ask){saveState();nRefresh();if(ask){askNotify();if(IS_NATIVE())nativeSchedule(true);}}
+document.addEventListener("click",e=>{if(!S)return;const b=e.target.closest&&e.target.closest("[data-ntog],[data-quiettog],[data-nrem]");if(!b)return;e.stopPropagation();
+  if(b.dataset.ntog){const k=b.dataset.ntog,c=ncfg(k);S.notif=Object.assign({},S.notif,{[k]:Object.assign({},(S.notif||{})[k],{on:!c.on})});nSave(!c.on);toast(`${esc(c.n)} ${!c.on?"ligado":"desligado"}`);return;}
+  if("quiettog" in b.dataset){const q=quietCfg();S.quiet=Object.assign({},S.quiet,{on:!q.on});nSave(false);return;}
+  if(b.dataset.nrem){const [qi,gi]=b.dataset.nrem.split("|");goalDetail(qi,gi);REMOPEN=true;drawDetail();}},true);
+document.addEventListener("change",e=>{if(!S)return;const t=e.target;
+  if(t.dataset&&t.dataset.ntime){const k=t.dataset.ntime,v=hm(t.value);if(!v)return;S.notif=Object.assign({},S.notif,{[k]:Object.assign({},(S.notif||{})[k],{t:v})});nSave(false);toast(`${esc(ncfg(k).n)} às ${v}`);return;}
+  if(t.dataset&&t.dataset.ndow){const k=t.dataset.ndow;S.notif=Object.assign({},S.notif,{[k]:Object.assign({},(S.notif||{})[k],{dow:+t.value})});nSave(false);return;}
+  if(t.dataset&&t.dataset.quiet){const v=hm(t.value);if(!v)return;S.quiet=Object.assign({},quietCfg(),{[t.dataset.quiet]:v});nSave(false);}});
 /* ---------- Widget na tela inicial (APK) ---------- */
 let WSIG="",WT=null;const WICON={};
 function WPL(){const C=window.Capacitor;return C&&C.Plugins&&C.Plugins.TrackingWidget;}
@@ -3226,18 +3318,14 @@ let NSCHED=null,NSIG="";
 function cycleEnd(p){const n=new Date();if(p==="day")return new Date(n.getFullYear(),n.getMonth(),n.getDate()+1).getTime();
   if(p==="week"){const s=new Date(periodStart("week"));s.setDate(s.getDate()+7);return s.getTime();}
   if(p==="month")return new Date(n.getFullYear(),n.getMonth()+1,1).getTime();if(p==="year")return new Date(n.getFullYear()+1,0,1).getTime();return 0;}
-function nativePlan(){const out=[],now=Date.now();if(!S)return out;
-  S.quests.filter(q=>q.status==="active"&&q.type==="main"&&!q.archived).forEach(q=>q.goals.filter(g=>!g.off&&g.remind&&g.remind.on).forEach(g=>{
-    let until=0;try{const pr=goalProgress(g);if(pr.done&&g.src!=="steps")until=cycleEnd(g.period);}catch(e){}
-    const days=g.remind.days||[0,1,2,3,4,5,6],times=remindTimes(g.remind);
-    for(let k=0;k<14;k++){const d=new Date();d.setDate(d.getDate()+k);if(!days.includes(d.getDay()))continue;
-      times.forEach(t=>{const at=new Date(d.getFullYear(),d.getMonth(),d.getDate(),+t.slice(0,2),+t.slice(3)).getTime();if(at<=now+30000||at<until)return;
-        out.push({at,title:g.title,body:q.title});});}}));
-  out.sort((a,b)=>a.at-b.at);const mk=(n,id)=>({id,title:n.title,body:n.body,schedule:{at:new Date(n.at),allowWhileIdle:true},smallIcon:"ic_stat_tracking",iconColor:"#f0c24b"});
-  let sm=[];try{sm=smartPlan().map((n,i)=>mk(n,5000+i));}catch(e){}
-  return out.slice(0,380).map((n,i)=>mk(n,1000+i)).concat(sm);}
+function nativePlan(){const now=Date.now();if(!S)return [];
+  const out=taskPlan(now+30000,now+15*864e5);
+  const mk=(n,id)=>({id,title:n.title,body:n.body,schedule:{at:new Date(n.at),allowWhileIdle:true},smallIcon:"ic_stat_tracking",iconColor:"#f0c24b",extra:n.extra||{go:"track"}});
+  let sm=[];try{sm=smartPlan().filter(n=>!inQuiet(n.at)).map((n,i)=>mk(n,5000+i));}catch(e){}
+  let gp=[];try{gp=genPlan().slice(0,60).map((n,i)=>mk(n,6000+i));}catch(e){}
+  return out.slice(0,340).map((n,i)=>mk(n,1000+i)).concat(sm,gp);}
 function nativeSchedule(ask){if(!IS_NATIVE())return;clearTimeout(NSCHED);NSCHED=setTimeout(async()=>{const P=window.Capacitor.Plugins,LN=P&&P.LocalNotifications;if(!LN||!S)return;
-  const list=nativePlan(),sig=JSON.stringify(list.map(n=>[n.title,n.body,+n.schedule.at]));if(sig===NSIG&&!ask)return;
+  const list=nativePlan(),sig=JSON.stringify(list.map(n=>[n.id,n.title,n.body,+n.schedule.at]));if(sig===NSIG&&!ask)return;
   try{let perm=await LN.checkPermissions();if(list.length&&perm.display!=="granted"&&ask)perm=await LN.requestPermissions();
     const pend=await LN.getPending();if(pend.notifications.length)await LN.cancel({notifications:pend.notifications.map(n=>({id:n.id}))});
     if(list.length&&perm.display==="granted")await LN.schedule({notifications:list});NSIG=sig;}catch(e){}},ask?50:900);}
@@ -3245,6 +3333,7 @@ if(IS_NATIVE()){const _ss=saveState;saveState=function(){_ss.apply(this,argument
   const _sm=saveMonth;saveMonth=function(){_sm.apply(this,arguments);nativeSchedule(false);wPush();};setTimeout(widgetDrain,1800);
   const P=window.Capacitor.Plugins;setTimeout(()=>nativeSchedule(false),1500);
   setTimeout(async()=>{if(await otaApply())return;otaConfirm();setTimeout(()=>otaCheck(true),4000);},1200);
+  if(P.LocalNotifications&&P.LocalNotifications.addListener){try{P.LocalNotifications.addListener("localNotificationActionPerformed",a=>{const x=(a&&a.notification&&a.notification.extra)||{};setTimeout(()=>nGo(x),500);});}catch(e){}}
   if(P.App){P.App.addListener("appStateChange",st=>{if(st.isActive){NSIG="";nativeSchedule(false);render();otaCheck(false);widgetDrain();}else{wPush(true);otaApply();}});
     P.App.addListener("backButton",()=>{const no=document.querySelector(".cpop-w [data-cpno]")||document.querySelector(".sug-w [data-sugno]");if(no){no.click();}else if(layer.querySelector(".scrim")){closeSheet();render();}else if(tab!=="track"){const b=document.querySelector('.nav [data-tab="track"]');b?b.click():P.App.minimizeApp();}else P.App.minimizeApp();});}}
 /* ---------- Eventos ---------- */
@@ -3437,7 +3526,7 @@ app.addEventListener("click",e=>{
   if("torg" in d){orgSheet();return;}
   if("xpsheet" in d){xpSheet();return;}
   if(d.qsum){questSum(d.qsum);return;}
-  if(d.smart){S.smart=Object.assign({},S.smart,d.smart==="off"?{on:false}:{on:true,lvl:d.smart});saveState();render();if(S.smart.on){askNotify();if(IS_NATIVE())nativeSchedule(true);}toast(S.smart.on?"Lembretes inteligentes ligados":"Lembretes inteligentes desligados");return;}
+  if(d.smart){S.smart=Object.assign({},S.smart,d.smart==="off"?{on:false}:{on:true,lvl:d.smart});saveState();nRefresh();if(S.smart.on){askNotify();if(IS_NATIVE())nativeSchedule(true);}toast(S.smart.on?"Lembretes inteligentes ligados":"Lembretes inteligentes desligados");return;}
   if(d.wcat){let l=widgetCats().map(c=>c.id);l=l.includes(d.wcat)?l.filter(x=>x!==d.wcat):l.concat([d.wcat]).slice(0,4);S.widget=l;saveState();render();wPush(true);return;}
   if("wauto" in d){delete S.widget;saveState();render();wPush(true);return;}
   if("newstat" in d){statSheet();return;}
