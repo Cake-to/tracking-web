@@ -559,6 +559,9 @@ body{letter-spacing:-.005em}
 .icq{width:100%;margin:0 0 8px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;color:var(--fg);font:inherit;font-size:14px}
 .icgs{display:flex;flex-direction:column;gap:8px}.icgh{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:2px 0 6px}
 .icpop{max-height:320px!important}
+.ce-ring{display:flex;flex-direction:column;gap:6px;padding:12px 14px;border-radius:16px;background:#ffffff08;border-left:3px solid var(--a)}
+.ce-ring-f{font-size:15px;line-height:1.4}
+.ce-ring-p{display:block;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--a)}
 .ce-free{font-size:12px;color:var(--warn,#f5a524)}
 .ce-ms{display:block;font-size:13px;color:var(--muted);padding-left:2px}
 .ce-danger{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding-top:4px;border-top:1px solid var(--line)}
@@ -1153,7 +1156,7 @@ html[data-motion=sutil] .rw{transition-duration:.12s,.2s}
 
 <div id="layer"></div>
 
-<script>/* ota-guard: se uma versão nova não abrir em 12 s, volta para a anterior */window.WEB_BUILD=16;window.WEB_DATE="2026-11-26T23:06:00-03:00";(function(){try{var C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform())return;var pend=localStorage.getItem("ota.pending");if(pend!==String(window.WEB_BUILD))return;
+<script>/* ota-guard: se uma versão nova não abrir em 12 s, volta para a anterior */window.WEB_BUILD=17;window.WEB_DATE="2026-11-27T08:11:00-03:00";(function(){try{var C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform())return;var pend=localStorage.getItem("ota.pending");if(pend!==String(window.WEB_BUILD))return;
 setTimeout(function(){if(window.__appOk)return;try{localStorage.setItem("ota.bad",pend);localStorage.removeItem("ota.pending");var prev=localStorage.getItem("ota.prev")||"public",W=C.Plugins.WebView;if(prev==="public")W.setServerAssetPath({path:"public"});else W.setServerBasePath({path:prev});}catch(e){}},12000);}catch(e){}})();</script>
 <script>
 (function(){
@@ -1599,7 +1602,7 @@ function cycKey(per,t){const dk=dayKey(t);if(per==="day")return dk;if(per==="wee
 function xpGoal(g){return (g.src==="count"||g.src==="sum")&&g.kind!=="dinheiro"&&g.unit!=="R$";}
 function cfgAt(g,t){const hs=g.cfgs||[];for(const h of hs){if(t<h.to)return Object.assign({},g,h);}return g;}
 function goalLive(q,g,dk){if(!xpGoal(g)||q.archived)return false;if(g.since&&dk<dayKey(g.since))return false;if(g.off&&(!g.offAt||dk>=dayKey(g.offAt)))return false;return true;}
-function dw(c){return (DIFF[c.diff||"normal"]||DIFF.normal).w;}
+function dw(c){return 1;} // v17: sem dificuldade, fatias iguais
 function xpSig(){return S.quests.map(q=>q.area+(q.archived?1:0)+q.goals.map(g=>[g.id,g.target,g.period,g.trig&&g.trig.join(),g.diff,g.off?1:0,g.offAt,g.since,g.kind,g.sub,g.src,(g.cfgs||[]).length].join("~")).join("^")).join("|")+"|"+((S.linksOff)||[]).join();}
 let XPC={key:""};
 function xpLive(){const gs=[];S.quests.filter(q=>q.type==="main"&&q.status==="active").forEach(q=>q.goals.forEach(g=>{if(xpGoal(g))gs.push([q,g]);}));return gs;}
@@ -1636,7 +1639,7 @@ function goalCycXP(g){if(!xpGoal(g)||g.off)return 0;const gs=xpLive(),W=wOfDay(g
 function xpWhen(per){return {day:"por dia",week:"por semana",month:"por mês",year:"por ano"}[per]||"no total";}
 function xpSheet(refresh){const X=xpMap(),gs=xpLive(),today=dayKey(new Date()),W=wOfDay(gs,today);SHREF=!!refresh;
   const rows=gs.filter(([q,g])=>goalLive(q,g,today)).map(([q,g])=>{const a=AREAS[q.area]||AREAS.body,cap=goalCycXP(g),c0=dayKey(periodStart(g.period||"all",g.since)),got=Math.round(Object.entries(X.gd).reduce((a,[k,v])=>{const i=k.lastIndexOf("|");return k.slice(0,i)===g.id&&k.slice(i+1)>=c0?a+v:a;},0));
-    return `<div class="log" style="--a:${a.color}"><div class="d"><b>${esc(g.title)}</b><span>${esc((DIFF[g.diff||"normal"]||DIFF.normal).n)} · até ${cap} XP ${xpWhen(g.period)}</span></div><span class="num xp-got">${got?"+"+got:"0"}</span></div>`;}).join("");
+    return `<div class="log" style="--a:${a.color}"><div class="d"><b>${esc(g.title)}</b><span>até ${cap} XP ${xpWhen(g.period)}</span></div><span class="num xp-got">${got?"+"+got:"0"}</span></div>`;}).join("");
   const days=[];for(let i=0;i<7;i++){const dk=dayKey(Date.now()-i*864e5);const fz=S.xpd&&S.xpd[dk];let v=0;
     if(fz)v=Object.values(fz).reduce((a,x)=>a+x,0);else allLogs().forEach(l=>{if(dayKey(l.t)===dk)v+=(X.cr[l.id]||[]).reduce((a,p)=>a+p[1],0);});
     days.push(`<div class="xpd"><span>${i===0?"Hoje":i===1?"Ontem":esc(new Date(dk+"T12:00").toLocaleDateString("pt-BR",{weekday:"short",day:"2-digit"}).replace(".",""))}</span><i style="width:${Math.min(100,v/XP_DAY*100).toFixed(0)}%"></i><b class="num">${Math.round(v)}</b></div>`);}
@@ -2305,7 +2308,7 @@ function drawDetail0(){
       <div class="field"><label for="d-title">${canAuto(g)&&!g.fixName?"Nome (alvo e ciclo entram sozinhos)":"Nome da task"}</label><div class="icname"><button type="button" class="icsel" data-icsel aria-expanded="false" aria-controls="d-icpop" aria-label="Trocar ícone"><span class="icsel-i">${ringIcon(g)}</span><span class="icsel-p" aria-hidden="true">✎</span></button><input id="d-title" maxlength="80" value="${esc(canAuto(g)&&!g.fixName?(g.base||baseOf(g)):g.title)}"></div>
       ${canAuto(g)?`<label class="fixname"><input type="checkbox" id="d-fix" ${g.fixName?"checked":""}> Nome fixo (não atualizar com alvo e ciclo)</label>`:""}
       <div class="icpop" id="d-icpop" hidden>${icGrid(k=>`<button type="button" class="icb" data-dicon="${k}" aria-pressed="${(g.icon||"")===k}" aria-label="${k}">${IC[k]}</button>`)}</div></div>
-      ${(g.src==="count"||g.src==="sum")?`${g.next?`<p class="hint">Mudança agendada: vale a partir de ${esc(new Date(g.next.at).toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"short"}))}.</p>`:""}${taskFields(g,q,DIDS,false)}`:`<div class="row2">${g.src==="steps"?`<div class="field"><label for="d-steps">Marcos (${g.statId?"kg a perder":"R$"})</label><input id="d-steps" inputmode="decimal" value="${esc((g.steps||[200,500]).join(", "))}"></div><div class="field"><label for="d-every">Depois, a cada (${g.statId?"kg":"R$"})</label><input id="d-every" inputmode="decimal" value="${+g.every||250}"></div></div>${g.statId?`<div class="field"><label for="d-start">Peso inicial (kg)</label><input id="d-start" inputmode="decimal" value="${stepStart(g)==null?"":esc(String(stepStart(g)).replace(".",","))}"></div>`:""}<div class="row2">`:`<div class="field"><label for="d-tgt">Alvo</label><input id="d-tgt" inputmode="decimal" value="${esc(String(g.target).replace(".",","))}"></div>`}${xpGoal(g)?`<div class="field"><label for="d-diff">Dificuldade</label><select id="d-diff">${Object.entries(DIFF).map(([k,d])=>`<option value="${k}" ${(g.diff||"normal")===k?"selected":""}>${d.n}</option>`).join("")}</select></div>`:""}</div>${g.next?`<p class="hint">Mudança agendada: vale a partir de ${esc(new Date(g.next.at).toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"short"}))}.</p>`:""}
+      ${(g.src==="count"||g.src==="sum")?`${g.next?`<p class="hint">Mudança agendada: vale a partir de ${esc(new Date(g.next.at).toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"short"}))}.</p>`:""}${taskFields(g,q,DIDS,false)}`:`<div class="row2">${g.src==="steps"?`<div class="field"><label for="d-steps">Marcos (${g.statId?"kg a perder":"R$"})</label><input id="d-steps" inputmode="decimal" value="${esc((g.steps||[200,500]).join(", "))}"></div><div class="field"><label for="d-every">Depois, a cada (${g.statId?"kg":"R$"})</label><input id="d-every" inputmode="decimal" value="${+g.every||250}"></div></div>${g.statId?`<div class="field"><label for="d-start">Peso inicial (kg)</label><input id="d-start" inputmode="decimal" value="${stepStart(g)==null?"":esc(String(stepStart(g)).replace(".",","))}"></div>`:""}<div class="row2">`:`<div class="field"><label for="d-tgt">Alvo</label><input id="d-tgt" inputmode="decimal" value="${esc(String(g.target).replace(".",","))}"></div>`}</div>${g.next?`<p class="hint">Mudança agendada: vale a partir de ${esc(new Date(g.next.at).toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"short"}))}.</p>`:""}
       ${g.src==="count"||g.src==="sum"?`<div class="field"><label for="d-per">Ciclo</label><select id="d-per">${Object.entries({day:"Diário",week:"Semanal",month:"Mensal",year:"Anual",all:"Sem ciclo (acumula)"}).map(([k,l])=>`<option value="${k}" ${g.period===k?"selected":""}>${l}</option>`).join("")}</select></div>`:""}
       ${g.src==="count"||g.src==="sum"?`<div class="field"><label>Conta quando eu registrar</label>${trigPicker(g,g.trig||[])}<small class="hint">${g.src==="sum"?"Soma o valor dessas opções.":"Cada toque numa opção marcada conta 1."} A task aparece no anel das bolhas marcadas.</small></div>`:""}`}
       <div class="field"><label for="d-quest">Quest vinculada</label><select id="d-quest">${S.quests.filter(x=>x.status==="active").map(x=>`<option value="${x.id}" ${x.id===q.id?"selected":""}>${esc(x.title)}</option>`).join("")}</select></div>
@@ -2437,7 +2440,7 @@ function moreHTML(){
   <details class="dd acc"><summary><span>Como o XP funciona</span></summary><section class="sec"><div class="stat small" style="gap:4px">
     <div><b>Um dia perfeito vale sempre ${XP_DAY} XP.</b> Esse valor é dividido entre as suas tasks ativas. Criar mais tasks ou aumentar a meta só divide o bolo, então o nível não infla.</div>
     <div>Cada task rende pelo ciclo: uma diária completa vale 1 dia da fatia dela, uma semanal completa vale 7. Cada registro rende a parte que andou. Passar da meta rende 1 XP, no máximo 3 por dia.</div>
-    <div>Dificuldade (Fácil, Normal, Difícil) muda só a fatia de cada task, nunca o total. Mudar meta, ciclo, opções ou dificuldade vale a partir do próximo ciclo, e os dias que já passaram guardam o XP que renderam.</div>
+    <div>Todas as tasks ativas valem a mesma fatia. Mudar meta, ciclo ou botões vale a partir do próximo ciclo, e os dias que já passaram guardam o XP que renderam.</div>
     <div>Marcos de peso dão ${STEP_XP} XP cada. Dinheiro não dá XP: o Guardar mostra só o total e os marcos.</div>
     <div><b>Seu nível mede o seu ritmo recente.</b> Cada XP vale 100% por 7 dias e perde valor aos poucos até zerar no dia 30. 30 dias perfeitos levam ao nível ${MAXL}.</div>
     <button class="btn sm" data-xpsheet style="align-self:flex-start">De onde vem o XP · Recalcular</button>
@@ -2560,8 +2563,7 @@ function taskFields(g,q,ids,allowStat){const src=g&&g.src==="sum"?"sum":"count";
       <div class="ts-stat field"><label for="${ids.s}">Stat</label><select id="${ids.s}">${S.stats.map(s=>`<option value="${esc(s.id)}">${esc(s.name)} (${esc(s.unit)})</option>`).join("")}</select></div>
       <div class="row2"><div class="field"><label for="${ids.t}">Alvo</label><input id="${ids.t}" inputmode="decimal" value="${g?esc(String(g.target).replace(".",",")):""}" placeholder="ex: 8"></div>
       <div class="field ts-unit"><label for="${ids.u}">Unidade</label><input id="${ids.u}" maxlength="12" value="${esc(unit)}" placeholder="ex: copos"></div></div>
-      <div class="row2"><div class="field ts-per"><label for="${ids.p}">Ciclo</label><select id="${ids.p}">${Object.entries(PERL).map(([k,l])=>`<option value="${k}" ${per===k?"selected":""}>${l}</option>`).join("")}</select></div>
-      <div class="field"><label for="${ids.d}">Dificuldade</label><select id="${ids.d}">${Object.entries(DIFF).map(([k,d])=>`<option value="${k}" ${((g&&g.diff)||"normal")===k?"selected":""}>${d.n}</option>`).join("")}</select></div></div></div></div>`;}
+      <div class="field ts-per"><label for="${ids.p}">Ciclo</label><select id="${ids.p}">${Object.entries(PERL).map(([k,l])=>`<option value="${k}" ${per===k?"selected":""}>${l}</option>`).join("")}</select></div></div></div>`;}
 function tsRead(r){const ids=JSON.parse(r.dataset.ids);const v=id=>{const e=r.querySelector("#"+id);return e?e.value:"";};const sb=r.querySelector("[data-tsrc][aria-pressed=true]");
   return {src:sb?sb.dataset.tsrc:"count",trig:readTrig(r),target:num(v(ids.t)),unit:v(ids.u).trim(),period:v(ids.p),diff:v(ids.d)||"normal",stat:v(ids.s)};}
 function tsUpdate(r){const f=tsRead(r);r.classList.toggle("is-stat",f.src==="stat");const el=r.querySelector("[data-tsent]");if(!el)return;
@@ -2719,7 +2721,7 @@ function ringSegs(g,p){let n,v;
   else if(+p.target>=1&&+p.target<=16&&Number.isInteger(+p.target)){n=+p.target;v=+p.cur;}
   else{n=8;v=p.pct*8;}
   return [n,Math.max(0,Math.min(n,v))];}
-function segRing(id,g,p,full){const [n,v0]=ringSegs(g,p),v=full?n:v0;const R=44,C=2*Math.PI*R;const gap=n>1?Math.max(C*.018,2)+5:0,seg=C/n-gap;
+function segRing(id,g,p,full,R=44){const [n,v0]=ringSegs(g,p),v=full?n:v0;const C=2*Math.PI*R;const gap=n>1?Math.max(C*.018,2)+5:0,seg=C/n-gap;
   const from=RPREV[id]!=null?Math.min(n,RPREV[id]):v;let h="";
   for(let i=0;i<n;i++){const deg=(i*360/n)+(gap/2/C*360);const f=seg*Math.max(0,Math.min(1,v-i)),f0=seg*Math.max(0,Math.min(1,from-i));
     h+=`<circle cx="50" cy="50" r="${R}" class="cr-bg" style="stroke-dasharray:${seg.toFixed(2)} ${C.toFixed(1)}" transform="rotate(${deg.toFixed(2)} 50 50)"/>`;
@@ -2762,18 +2764,37 @@ function aggGoal(c){const gs=linkedGoals(c).map(x=>x[1]);if(!gs.length)return nu
   const ks=Object.keys(grp),pk=k=>k.startsWith("steps")?9:(PRK[k.split("|")[0]]??4),want=ks.filter(k=>c.ring&&k.split("|")[0]===c.ring);
   const ord=k=>gs.indexOf(grp[k][0]);const key=(want.length?want:ks).sort((a,b)=>pk(a)-pk(b)||grp[b].length-grp[a].length||ord(a)-ord(b))[0];
   const sel=grp[key],g0=sel[0];
-  if(key.startsWith("steps")||(sel.length===1&&g0.src!=="count"))return {g:g0,n:1};
+  if(key.startsWith("steps")||(sel.length===1&&g0.src!=="count"))return {g:g0,n:1,sel};
   let cur=0,target=0;sel.forEach(g=>{const t=+g.target||0;target+=t;cur+=Math.min(t,+goalProgress(g).cur||0);});
   const per=g0.period;let extra=0;
   if(g0.src==="count"&&per&&per!=="all"){const ps=periodStart(per);extra=Math.max(0,allLogs().filter(l=>new Date(l.t).getTime()>=ps&&optMatch(c,l)).length-cur);}
   const done=target>0&&cur>=target;
-  return {g:{src:g0.src,period:per,unit:g0.src==="count"?"x":g0.unit,target},p:{cur,target,pct:target?cur/target:0,done,claimed:done,extra},n:sel.length};}
-function catHTML(c){const a=AREAS[c.area]||AREAS.body;const cg=aggGoal(c);let ring="",cnt="",sig="0";
-  let full=false;if(cg){const p=cg.p||goalProgress(cg.g);full=p.claimed||p.done;ring=segRing(c.id,cg.g,p,full);sig=(full?"f":"")+p.cur+"/"+p.target;
+  return {g:{src:g0.src,period:per,unit:g0.src==="count"?"x":g0.unit,target},p:{cur,target,pct:target?cur/target:0,done,claimed:done,extra},n:sel.length,sel};}
+function ringInfo(c){const rs=ringsOf(c),all=linkedGoals(c).map(x=>x[1]),fora=all.filter(g=>!rs.some(r=>r.sel.includes(g)));
+  const head=`<div class="ts-h">Anéis da bolha</div>`,nm=g=>esc(g.base||baseOf(g)),PN={day:"Diário",week:"Semanal",month:"Mensal"};
+  if(!rs.length){const cg=aggGoal(c);return `<div class="ce-ring">${head}<small class="hint">${cg?`O anel mostra <b>${esc(cg.g.title||cg.sel[0].title)}</b>. Anéis aparecem para tasks diárias, semanais e mensais.`:"Nenhuma task conta os botões desta bolha, então o anel fica vazio."}</small></div>`;}
+  const pos=i=>rs.length===1?"Anel":i===0?"Anel de dentro":i===rs.length-1?"Anel de fora":"Anel do meio";
+  return `<div class="ce-ring">${head}${rs.map((r,i)=>{const u=r.g.unit==="x"||r.g.mixed?"":" "+esc(r.g.unit);
+    const f=r.g.mixed?`${r.sel.map(nm).join(" + ")} <small class="muted">(1 parte por task)</small>`:r.sel.length>1?`${r.sel.map(g=>`${nm(g)} <b>${fmtNum(+g.target)}</b>`).join(" + ")} = <b>${fmtNum(r.p.target)}</b>${u}`:`${nm(r.sel[0])} <b>${fmtNum(r.p.target)}</b>${u}`;
+    return `<div class="ce-ring-f"><span class="ce-ring-p">${pos(i)} · ${PN[r.g.period]}</span>${f}</div>`;}).join("")}
+    <small class="hint">Os anéis aparecem sozinhos: diário dentro, semanal por fora${rs.some(r=>r.g.period==="month")?", mensal no lado de fora":""}. Cada um chega a 100% quando todas as tasks dele batem a meta.${fora.length?` Fora dos anéis (sem ciclo ou anual): ${fora.map(g=>esc(g.title)).join(", ")}.`:""}</small></div>`;}
+const RING_PERS=["day","week","month"],RING_R={1:[44],2:[35,44],3:[26,35,44]};
+function ringsOf(c){const gs=linkedGoals(c).map(x=>x[1]).filter(g=>g.src!=="steps"&&RING_PERS.includes(g.period));const out=[];
+  RING_PERS.forEach(per=>{const sel=gs.filter(g=>g.period===per);if(!sel.length)return;const us=[...new Set(sel.map(g=>g.src==="count"?"x":(g.unit||"")))];let cur=0,target=0,g;
+    if(us.length===1){sel.forEach(x=>{const t=+x.target||0;target+=t;cur+=Math.min(t,+goalProgress(x).cur||0);});g={src:us[0]==="x"?"count":"sum",period:per,unit:us[0],target};}
+    else{sel.forEach(x=>{cur+=Math.min(1,+goalProgress(x).pct||0);});target=sel.length;g={src:"count",period:per,unit:"tasks",target,mixed:1};}
+    let extra=0;if(g.src==="count"&&!g.mixed){const ps=periodStart(per),ms=sel.map(goalMatches);extra=Math.max(0,allLogs().filter(l=>new Date(l.t).getTime()>=ps&&ms.some(m=>m(l))).length-cur);}
+    const done=target>0&&cur>=target-1e-9;out.push({g,p:{cur,target,pct:target?cur/target:0,done,claimed:done,extra},sel});});return out;}
+const CYS={day:"hoje",week:"semana",month:"mês"},CYS2={day:"hoje",week:"sem",month:"mês"};
+function catHTML(c){const a=AREAS[c.area]||AREAS.body;const rs=ringsOf(c);const cg=rs.length?rs[0]:aggGoal(c);let ring="",cnt="",sig="0";
+  let full=false;if(cg){const p=cg.p||goalProgress(cg.g);
+    if(rs.length){const R=RING_R[rs.length];full=rs.every(r=>r.p.done);ring=rs.map((r,i)=>segRing(c.id+"|"+r.g.period,r.g,r.p,r.p.done,R[i])).join("");sig=rs.map(r=>(r.p.done?"f":"")+r.p.cur+"/"+r.p.target).join(",");}
+    else{full=p.claimed||p.done;ring=segRing(c.id,cg.g,p,full);sig=(full?"f":"")+p.cur+"/"+p.target;}
     const u=cg.g.unit,sh=v=>u==="R$"?(v>=1000?String(+(v/1000).toFixed(1)).replace(".",",")+"k":String(Math.round(v))):u==="min"?(v>=60?String(+(v/60).toFixed(1)).replace(".",",")+"h":Math.round(v)+"m"):fmtNum(v,0);
-    const cy={day:"hoje",week:"semana",month:"mês"}[cg.g.period]||"";
+    const sh2=r=>{const u2=r.g.unit,f=v=>u2==="min"?(v>=60?String(+(v/60).toFixed(1)).replace(".",",")+"h":Math.round(v)+"m"):fmtNum(v,0);return r.p.done?"✓":f(r.p.cur)+"/"+f(r.p.target);};
+    const cy=rs.length>1?CYS2[cg.g.period]+" · "+rs.slice(1).map(r=>CYS2[r.g.period]+" "+sh2(r)).join(" · "):(CYS[cg.g.period]||"");
     const ex=p.extra?`<b class="cat-x${BUMP===c.id&&p.cur>=p.target?" roll":""}">+${p.extra}</b>`:"";
-    cnt=p.claimed?`<span class="cat-n ok">✓ ${ex}${ex?" ":""}<i>${esc(renewLabel(cg.g).replace("renova ","até "))}</i></span>`:`<span class="cat-n num">${u==="R$"?"R$ ":""}${BUMP===c.id?`<b class="roll">${esc(sh(p.cur))}</b>`:esc(sh(p.cur))}<i>/${esc(sh(p.target))}</i>${ex}${cy?`<em class="cat-cy">${cy}</em>`:""}</span>`;}
+    cnt=p.claimed&&rs.length<2?`<span class="cat-n ok">✓ ${ex}${ex?" ":""}<i>${esc(renewLabel(cg.g).replace("renova ","até "))}</i></span>`:p.claimed?`<span class="cat-n ok">✓ ${ex}<em class="cat-cy">${esc(cy)}</em></span>`:`<span class="cat-n num">${u==="R$"?"R$ ":""}${BUMP===c.id?`<b class="roll">${esc(sh(p.cur))}</b>`:esc(sh(p.cur))}<i>/${esc(sh(p.target))}</i>${ex}${cy?`<em class="cat-cy">${cy}</em>`:""}</span>`;}
   else ring=`<circle cx="50" cy="50" r="44" class="cr-bg"/>`;
   return `<button class="cat${full?" full":""}${BUMP===c.id?" bump":""}" data-cat="${esc(c.id)}" style="--a:${a.color}" aria-label="${esc(c.name)}: toque para detalhes, segure para registrar"><span class="cat-r"><svg viewBox="0 0 100 100" aria-hidden="true" data-sig="${sig}"><g transform="rotate(-90 50 50)">${ring}</g></svg><span class="cat-i">${IC[c.icon]||IC.star}</span>${full?`<span class="cat-ok" aria-hidden="true">${IC.check||"✓"}</span>`:""}</span><span class="cat-l">${esc(c.name)}</span>${cnt}</button>`;}
 function fitTrack(){fitOrbs();animRings();}
@@ -2894,7 +2915,7 @@ function catEdit(id,refresh){const c=ownCats().find(k=>k.id===id);if(!c)return;c
   openSheet(`<div class="ed-tag" style="--a:${a.color}">${IC[c.icon]||IC.star}<span>Bolha · ${esc(a.name)}</span></div>
     ${catPrev(c,a)}
     <div class="mgr-head ce-head">${icPick("cat:"+c.id,c.icon,"Trocar ícone da bolha")}<div style="flex:1;min-width:0"><input id="ce-name" class="ce-name" maxlength="20" value="${esc(c.name)}" aria-label="Nome da bolha"></div></div>
-    ${(()=>{const cy=ringCycles(c);return cy.length>1?`<div class="field"><label for="ce-ring">O anel mostra</label><select id="ce-ring"><option value="">Automático</option>${cy.map(k=>`<option value="${k}" ${c.ring===k?"selected":""}>${k==="all"?"Metas longas":"Tasks "+esc(CYCN[k].toLowerCase())}</option>`).join("")}</select><small class="hint">No automático, o anel usa o ciclo mais curto. As outras tasks aparecem ao tocar na bolha.</small></div>`:"";})()}
+    ${ringInfo(c)}
     <div class="sec" style="gap:12px"><h2 class="sub">Botões do radial (${c.opts.length})</h2>
     ${c.opts.map(o=>optRowE(c,o)).join("")}
     ${c.opts.length<8?`<div class="ce-o ce-new"><span class="ce-plus">＋</span><input id="ce-new" maxlength="20" placeholder="Botão novo, ex: Natação"><button class="btn sm gold" data-oadd>Adicionar</button></div>`:""}
@@ -3157,6 +3178,14 @@ if(IS_NATIVE()){const _ss=saveState;saveState=function(){_ss.apply(this,argument
     P.App.addListener("backButton",()=>{const no=document.querySelector(".cpop-w [data-cpno]")||document.querySelector(".sug-w [data-sugno]");if(no){no.click();}else if(layer.querySelector(".scrim")){closeSheet();render();}else if(tab!=="track"){const b=document.querySelector('.nav [data-tab="track"]');b?b.click():P.App.minimizeApp();}else P.App.minimizeApp();});}}
 /* ---------- Eventos ---------- */
 const TABORD=["quests","track","home","log","more"];let ENTT=0;
+// deslizar para o lado troca de aba: dedo para a esquerda vai para a aba da direita (Quests ↔ Tracking ↔ Nível)
+(()=>{const MAIN=["quests","track","home"];let sw=null;
+  const skip=t=>t.closest&&t.closest('input,select,textarea,.hscroll,[data-hscroll],.scroller,.wk-cats,.radial,.cpop,.icpop,[data-noswipe]');
+  document.addEventListener("touchstart",e=>{sw=null;if(e.touches.length!==1||!S||ORG||!MAIN.includes(tab)||layer.querySelector(".sheet")||skip(e.target))return;const t=e.touches[0];sw={x:t.clientX,y:t.clientY,t:Date.now(),ok:true};},{passive:true});
+  document.addEventListener("touchmove",e=>{if(!sw)return;if(document.querySelector(".radial.on"))sw.ok=false;},{passive:true});
+  document.addEventListener("touchend",e=>{const s0=sw;sw=null;if(!s0||!s0.ok||document.querySelector(".radial.on"))return;const t=e.changedTouches[0],dx=t.clientX-s0.x,dy=t.clientY-s0.y;
+    if(Date.now()-s0.t>700||Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*2)return;const i=MAIN.indexOf(tab)+(dx<0?1:-1);if(i<0||i>=MAIN.length)return;
+    const b=document.querySelector(`.nav [data-tab="${MAIN[i]}"]`);if(b)b.click();},{passive:true});})();
 function enterFx(dir){const ap=app;ap.style.setProperty("--en-x",(dir>0?22:dir<0?-22:0)+"px");ap.classList.remove("enter");void ap.offsetWidth;ap.classList.add("enter");clearTimeout(ENTT);ENTT=setTimeout(()=>ap.classList.remove("enter"),1100);}
 document.querySelector(".nav").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(b){const prev=tab,ch=tab!==b.dataset.tab;tab=b.dataset.tab;armed=null;if(ch){LASTHTML="";app.innerHTML="";}render();window.scrollTo(0,0);if(ch)enterFx(TABORD.indexOf(tab)-TABORD.indexOf(prev));}});
 
